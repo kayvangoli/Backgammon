@@ -1,21 +1,23 @@
 package com.k1apps.backgammon.buisness
 
+import com.k1apps.backgammon.dagger.DaggerGameComponent
 import junit.framework.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import javax.inject.Inject
 
 class BoardTest {
-    private lateinit var board: Board
+    @Inject
+    lateinit var board: Board
     @Before
     fun setup() {
-        board = Board()
-        board.initBoard()
+        val dagger = DaggerGameComponent.create()
     }
 
     @Test
     fun list_size_must_be_15() {
-        assertTrue("list1 size is ${board.pieceList1.size}", board.pieceList1.size==15)
-        assertTrue("list2 size is ${board.pieceList2.size}", board.pieceList2.size==15)
+        assertTrue("list1 size is ${board.pieceList1.size}", board.pieceList1.size == 15)
+        assertTrue("list2 size is ${board.pieceList2.size}", board.pieceList2.size == 15)
     }
 
     @Test
