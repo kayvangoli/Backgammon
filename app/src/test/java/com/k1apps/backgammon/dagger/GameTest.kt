@@ -12,3 +12,8 @@ import javax.inject.Scope
 interface BoardComponentTest{
     fun inject(boardTest: BoardTest)
 }
+
+@GameScope
+@Component(modules = [GameModule::class])
+interface GameComponentTest{
+}

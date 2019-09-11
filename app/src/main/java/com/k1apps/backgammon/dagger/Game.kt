@@ -39,6 +39,7 @@ class GameModule {
         return PlayerImpl(diceRollCallback)
     }
 
+    @GameScope
     @Provides
     fun provideDiceRollCallback(turnaround: Turnaround): DiceRollCallback {
         return turnaround
