@@ -8,8 +8,8 @@ class PlayerImpl(override val diceRollCallback: DiceRollCallback) : Player {
     override var pieceList: ArrayList<Piece>? = null
 
     override fun roll() {
-        if (dice != null) {
-
+        when {
+            dice != null -> diceRollCallback.onThrewDice(this, dice!!.roll())
         }
     }
 
