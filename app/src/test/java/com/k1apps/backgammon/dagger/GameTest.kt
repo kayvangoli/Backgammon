@@ -4,16 +4,23 @@ import com.k1apps.backgammon.buisness.*
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
-import javax.inject.Scope
 
 @GameScope
 @Component(modules = [BoardModule::class])
-interface BoardComponentTest{
+interface BoardComponentTest {
     fun inject(boardTest: BoardTest)
 }
 
 @GameScope
-@Component(modules = [GameModule::class])
-interface GameComponentTest{
+@Component(modules = [TurnaroundModuleTest::class])
+interface TurnaroundComponentTest {
+    fun inject(turnaroundTest: TurnaroundTest)
+}
+
+@Module(includes = [DiceBoxModule::class])
+class TurnaroundModuleTest {
+    @Provides
+    fun provideTurnaround(diceBox: DiceBox): Turnaround {
+        return TurnaroundImpl(diceBox)
+    }
 }

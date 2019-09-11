@@ -12,6 +12,10 @@ class PlayerImpl(override val diceRollCallback: DiceRollCallback) : Player {
 
         }
     }
+
+    override fun retakeDice() {
+        dice = null
+    }
 }
 
 interface Player {
@@ -20,4 +24,5 @@ interface Player {
     var dice: Dice?
     val diceRollCallback: DiceRollCallback
     fun roll()
+    fun retakeDice()
 }

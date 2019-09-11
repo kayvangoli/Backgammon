@@ -49,6 +49,11 @@ dependencies {
     // ROBOLECTRIC
     testImplementation 'org.robolectric:robolectric:3.8'
 
-    testImplementation "org.mockito:mockito-core:$mockito_version"
-    testImplementation "org.mockito:mockito-android:$mockito_version"
+    //for kotlin mockito
+    testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0'
+
+    //java mockito
+//    testImplementation "org.mockito:mockito-core:$mockito_version"
+//    testImplementation "org.mockito:mockito-android:$mockito_version"
+
 }

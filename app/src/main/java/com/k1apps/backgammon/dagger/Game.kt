@@ -15,7 +15,7 @@ annotation class GameScope
 interface GameComponent {
 }
 
-@Module
+@Module(includes = [DiceBoxModule::class])
 class GameModule {
     @Provides
     @GameScope
@@ -30,8 +30,8 @@ class GameModule {
 
     @Provides
     @GameScope
-    fun provideTurnaround(): Turnaround {
-        return TurnaroundImpl()
+    fun provideTurnaround(diceBox: DiceBox): Turnaround {
+        return TurnaroundImpl(diceBox)
     }
 
     @Provides
