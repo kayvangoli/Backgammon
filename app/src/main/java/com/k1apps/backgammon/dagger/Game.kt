@@ -4,17 +4,19 @@ import com.k1apps.backgammon.buisness.*
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Named
 import javax.inject.Scope
 
 @Scope
 @Retention
 annotation class GameScope
 
-@Component(modules = [GameModule::class])
+@GameScope
+@Component(modules = [GameModule::class, BoardModule::class, DiceBoxModule::class])
 interface GameComponent {
 }
 
-@Module(includes = [BoardModule::class, DiceBoxModule::class])
+@Module
 class GameModule {
     @Provides
     @GameScope
@@ -45,16 +47,11 @@ class BoardModule {
 
     @Provides
     @GameScope
-    fun provideBoard(
-        pieceList1: ArrayList<Piece>,
-        pieceList2: ArrayList<Piece>
-    ): Board {
-        return BoardImpl(pieceList1, pieceList2)
+    fun provideBoard(): Board {
+        return BoardImpl(getList1(), getList2())
     }
 
-    @Provides
-    @GameScope
-    fun providePieceList1(): ArrayList<Piece> {
+    private fun getList1(): ArrayList<Piece> {
         val arrayList: ArrayList<Piece> = arrayListOf()
         for (item in 0 until 15) {
             arrayList.add(getPieceNormal())
@@ -66,9 +63,7 @@ class BoardModule {
         return PieceImpl(MoveType.Normal)
     }
 
-    @Provides
-    @GameScope
-    fun providePieceList2(): ArrayList<Piece> {
+    private fun getList2(): ArrayList<Piece> {
         val arrayList: ArrayList<Piece> = arrayListOf()
         for (item in 0 until 15) {
             arrayList.add(getPieceRevers())
@@ -79,7 +74,6 @@ class BoardModule {
     private fun getPieceRevers(): Piece {
         return PieceImpl(MoveType.Revers)
     }
-
 }
 
 @Module

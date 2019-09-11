@@ -1,6 +1,6 @@
 package com.k1apps.backgammon.buisness
 
-import com.k1apps.backgammon.dagger.DaggerGameComponent
+import com.k1apps.backgammon.dagger.DaggerBoardComponentTest
 import junit.framework.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -9,9 +9,10 @@ import javax.inject.Inject
 class BoardTest {
     @Inject
     lateinit var board: Board
+
     @Before
     fun setup() {
-        val dagger = DaggerGameComponent.create()
+        DaggerBoardComponentTest.create().inject(this)
     }
 
     @Test
