@@ -1,6 +1,5 @@
 package com.k1apps.backgammon.buisness
 
-interface RollListener {
+interface DiceRollCallback {
     fun onThrewDice(player: Player, number: Byte)
-    fun onThrewDiceBox(player: Player, pair: Pair<Byte, Byte>)
 }
