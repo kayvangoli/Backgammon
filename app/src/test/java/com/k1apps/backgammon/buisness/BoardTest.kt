@@ -1,7 +1,7 @@
 package com.k1apps.backgammon.buisness
 
 import com.k1apps.backgammon.dagger.DaggerBoardComponentTest
-import junit.framework.Assert.assertTrue
+import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
 import javax.inject.Inject
@@ -13,10 +13,11 @@ class BoardTest {
     @Before
     fun setup() {
         DaggerBoardComponentTest.create().inject(this)
+        board.initBoard()
     }
 
     @Test
-    fun list_size_must_be_15() {
+    fun list_size_is_15() {
         assertTrue("list1 size is ${board.pieceList1.size}", board.pieceList1.size == 15)
         assertTrue("list2 size is ${board.pieceList2.size}", board.pieceList2.size == 15)
     }

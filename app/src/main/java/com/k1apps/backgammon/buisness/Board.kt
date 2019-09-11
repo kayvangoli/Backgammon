@@ -2,7 +2,6 @@ package com.k1apps.backgammon.buisness
 
 import androidx.collection.ArrayMap
 import javax.inject.Inject
-import javax.inject.Named
 
 interface Board {
     val pieceList1: ArrayList<Piece>
@@ -17,24 +16,19 @@ class BoardImpl @Inject constructor(
     private val cells: ArrayMap<Int, ArrayList<Piece>> = ArrayMap()
 
     override fun initBoard() {
-        cells.clear()
-        pieceList1.clear()
-        pieceList2.clear()
         initLists()
     }
 
     private fun initLists() {
-        setPiecesToCells(pieceList1.subList(0, 1), 1)
+        setPiecesToCells(pieceList1.subList(0, 2), 1)
         setPiecesToCells(pieceList1.subList(2, 7), 12)
-        setPiecesToCells(pieceList1.subList(8, 11), 17)
-        setPiecesToCells(pieceList1.subList(12, 17), 19)
+        setPiecesToCells(pieceList1.subList(7, 10), 17)
+        setPiecesToCells(pieceList1.subList(10, 15), 19)
 
-        setPiecesToCells(pieceList2.subList(0, 1), 1)
+        setPiecesToCells(pieceList2.subList(0, 2), 1)
         setPiecesToCells(pieceList2.subList(2, 7), 12)
-        setPiecesToCells(pieceList2.subList(8, 11), 17)
-        setPiecesToCells(pieceList2.subList(12, 17), 19)
-
-
+        setPiecesToCells(pieceList2.subList(7, 10), 17)
+        setPiecesToCells(pieceList2.subList(10, 15), 19)
     }
 
     private fun setPiecesToCells(pieces: MutableList<Piece>, location: Int) {
