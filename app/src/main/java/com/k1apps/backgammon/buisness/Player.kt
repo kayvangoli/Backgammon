@@ -30,5 +30,5 @@ interface Player {
 }
 
 enum class PlayerType {
-    LocalPlayer
+    LocalPlayer, AndroidPlayer
 }

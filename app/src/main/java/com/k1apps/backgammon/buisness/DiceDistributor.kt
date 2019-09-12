@@ -14,6 +14,16 @@ class DiceDistributorImpl(private val diceBox: DiceBox) : DiceDistributor {
         EventBus.getDefault().register(this)
     }
 
+    override fun whichPlayerHasDice(): Player? {
+        if (player1!!.diceBox != null) {
+            return player1!!
+        }
+        if (player2!!.diceBox != null) {
+            return player2!!
+        }
+        return null
+    }
+
     @Synchronized
     @Subscribe
     fun onEvent(event: DiceThrownEvent) {
@@ -47,4 +57,5 @@ class DiceDistributorImpl(private val diceBox: DiceBox) : DiceDistributor {
 
 interface DiceDistributor {
     fun start()
+    fun whichPlayerHasDice(): Player?
 }
