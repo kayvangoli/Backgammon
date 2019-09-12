@@ -4,7 +4,8 @@ class RefereeImpl(
     private val board: Board,
     private val diceBox: DiceBox,
     private val player1: Player,
-    private val player2: Player
+    private val player2: Player,
+    private val turnaround: Turnaround
 ) : Referee {
 
     init {

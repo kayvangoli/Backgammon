@@ -4,6 +4,7 @@ import com.k1apps.backgammon.buisness.*
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Scope
 
 @Scope
@@ -23,9 +24,10 @@ class GameModule {
         board: Board,
         diceBox: DiceBox,
         player1: Player,
-        player2: Player
+        player2: Player,
+        turnaround: Turnaround
     ): Referee {
-        return RefereeImpl(board, diceBox, player1, player2)
+        return RefereeImpl(board, diceBox, player1, player2, turnaround)
     }
 
     @Provides
@@ -35,14 +37,8 @@ class GameModule {
     }
 
     @Provides
-    fun providePlayer(diceRollCallback: DiceRollCallback): Player {
-        return PlayerImpl(diceRollCallback)
-    }
-
-    @GameScope
-    @Provides
-    fun provideDiceRollCallback(turnaround: Turnaround): DiceRollCallback {
-        return turnaround
+    fun providePlayer(): Player {
+        return PlayerImpl()
     }
 }
 

@@ -1,10 +1,11 @@
 package com.k1apps.backgammon.dagger
 
 import com.k1apps.backgammon.buisness.*
-import com.nhaarman.mockitokotlin2.mock
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.greenrobot.eventbus.EventBus
+import org.mockito.Mockito.mock
 
 @GameScope
 @Component(modules = [BoardModule::class])
@@ -21,7 +22,7 @@ interface TurnaroundComponentTest {
 @Module(includes = [DiceBoxModule::class])
 class TurnaroundModuleTest {
     @Provides
-    fun provideTurnaround(diceBox: DiceBox): Turnaround {
+    fun provideTurnaround(diceBox: DiceBox): TurnaroundImpl {
         return TurnaroundImpl(diceBox)
     }
 }
@@ -37,13 +38,15 @@ interface PlayerComponentTest{
 class PlayerModuleTest {
     @GameScope
     @Provides
-    fun providePlayer(diceRollCallback: DiceRollCallback): Player {
-        return PlayerImpl(diceRollCallback)
+    fun providePlayer(): Player {
+        return PlayerImpl()
     }
 
     @GameScope
     @Provides
-    fun provideDiceRollCallback(): DiceRollCallback {
-        return mock()
+    fun provideTurnaround(): TurnaroundImpl {
+        val mockTurnaroundImpl = mock(TurnaroundImpl::class.java)
+        EventBus.getDefault().register(mockTurnaroundImpl)
+        return mockTurnaroundImpl
     }
 }

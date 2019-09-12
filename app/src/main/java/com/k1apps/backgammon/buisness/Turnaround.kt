@@ -1,28 +1,36 @@
 package com.k1apps.backgammon.buisness
 
-class TurnaroundImpl(private val diceBox: DiceBox) : Turnaround {
+import com.k1apps.backgammon.buisness.event.DiceThrownEvent
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+
+open class TurnaroundImpl(private val diceBox: DiceBox) : Turnaround {
     private var player1: Player? = null
     private var player2: Player? = null
     private var player1DiceNumber: Byte = -1
 
+    init {
+        EventBus.getDefault().register(this)
+    }
+
     @Synchronized
-    override fun onThrewDice(player: Player, number: Byte) {
+    @Subscribe
+    fun onEvent(event: DiceThrownEvent) {
         if (player1 == null) {
-            player1 = player
-            player1DiceNumber = number
+            player1 = event.player
+            player1DiceNumber = event.number
         } else {
-            player2 = player
+            player2 = event.player
             when {
-                number < player1DiceNumber -> {
+                event.number < player1DiceNumber -> {
                     player1!!.diceBox = diceBox
                     retakeDices()
                 }
-                number > player1DiceNumber -> {
+                event.number > player1DiceNumber -> {
                     player2!!.diceBox = diceBox
                     retakeDices()
                 }
             }
-
         }
     }
 
@@ -33,6 +41,5 @@ class TurnaroundImpl(private val diceBox: DiceBox) : Turnaround {
 
 }
 
-interface Turnaround : DiceRollCallback {
-
+interface Turnaround {
 }
