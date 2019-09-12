@@ -60,14 +60,14 @@ interface RefereeComponentTest {
 
 @Module(includes = [DiceBoxModule::class])
 class RefereeModuleTest {
-    private val player1 = mock(Player::class.java)
-    private val player2 = mock(Player::class.java)
 
     @GameScope
     @Provides
     fun provideReferee(
         board: Board,
         diceBox: DiceBox,
+        @Named("normalPlayer") player1: Player,
+        @Named("reversePlayer") player2: Player,
         diceDistributor: DiceDistributor
     ): RefereeImpl {
         return RefereeImpl(board, diceBox, player1, player2, diceDistributor)
@@ -89,14 +89,14 @@ class RefereeModuleTest {
     @Provides
     @Named("normalPlayer")
     fun providePlayer1(): Player {
-        return player1
+        return mock(Player::class.java)
     }
 
     @GameScope
     @Provides
     @Named("reversePlayer")
     fun providePlayer2(): Player {
-        return player2
+        return mock(Player::class.java)
     }
 
 }

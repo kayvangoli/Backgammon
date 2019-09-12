@@ -4,6 +4,7 @@ import com.k1apps.backgammon.buisness.*
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Named
 import javax.inject.Scope
 
 @Scope
@@ -22,8 +23,8 @@ class GameModule {
     fun provideReferee(
         board: Board,
         diceBox: DiceBox,
-        player1: Player,
-        player2: Player,
+        @Named("normalPlayer") player1: Player,
+        @Named("reversePlayer") player2: Player,
         diceDistributor: DiceDistributor
     ): Referee {
         return RefereeImpl(board, diceBox, player1, player2, diceDistributor)
@@ -35,8 +36,17 @@ class GameModule {
         return DiceDistributorImpl(diceBox)
     }
 
+    @GameScope
     @Provides
-    fun providePlayer(): Player {
+    @Named("normalPlayer")
+    fun providePlayer1(): Player {
+        return PlayerImpl()
+    }
+
+    @GameScope
+    @Provides
+    @Named("reversePlayer")
+    fun providePlayer2(): Player {
         return PlayerImpl()
     }
 }
