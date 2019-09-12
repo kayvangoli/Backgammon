@@ -41,7 +41,7 @@ class DiceDistributorImpl(private val diceBox: DiceBox) : DiceDistributor {
     }
 
     override fun start() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        player1DiceNumber = -1
     }
 }
 

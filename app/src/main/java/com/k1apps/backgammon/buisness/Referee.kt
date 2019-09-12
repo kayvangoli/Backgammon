@@ -8,7 +8,7 @@ class RefereeImpl(
     private val diceDistributor: DiceDistributor
 ) : Referee {
 
-    init {
+    override fun start() {
         diceDistributor.start()
         board.initBoard()
         player1.pieceList = board.pieceList1
@@ -19,6 +19,6 @@ class RefereeImpl(
 }
 
 interface Referee {
-
+    fun start()
 }
 

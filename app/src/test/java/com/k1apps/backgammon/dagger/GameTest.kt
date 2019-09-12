@@ -6,6 +6,7 @@ import dagger.Module
 import dagger.Provides
 import org.greenrobot.eventbus.EventBus
 import org.mockito.Mockito.mock
+import javax.inject.Named
 
 @GameScope
 @Component(modules = [BoardModule::class])
@@ -57,18 +58,45 @@ interface RefereeComponentTest {
     fun inject(refereeTest: RefereeTest)
 }
 
-@Module
+@Module(includes = [DiceBoxModule::class])
 class RefereeModuleTest {
+    private val player1 = mock(Player::class.java)
+    private val player2 = mock(Player::class.java)
+
     @GameScope
     @Provides
     fun provideReferee(
         board: Board,
         diceBox: DiceBox,
-        player1: Player,
-        player2: Player,
         diceDistributor: DiceDistributor
     ): RefereeImpl {
         return RefereeImpl(board, diceBox, player1, player2, diceDistributor)
-
     }
+
+    @GameScope
+    @Provides
+    fun provideBoard(): Board {
+        return mock(Board::class.java)
+    }
+
+    @GameScope
+    @Provides
+    fun provideDiceDistributor(): DiceDistributor {
+        return mock(DiceDistributor::class.java)
+    }
+
+    @GameScope
+    @Provides
+    @Named("normalPlayer")
+    fun providePlayer1(): Player {
+        return player1
+    }
+
+    @GameScope
+    @Provides
+    @Named("reversePlayer")
+    fun providePlayer2(): Player {
+        return player2
+    }
+
 }
