@@ -16,20 +16,20 @@ interface BoardComponentTest {
 @GameScope
 @Component(modules = [TurnaroundModuleTest::class])
 interface TurnaroundComponentTest {
-    fun inject(turnaroundTest: TurnaroundTest)
+    fun inject(turnaroundTest: DiceDistributorTest)
 }
 
 @Module(includes = [DiceBoxModule::class])
 class TurnaroundModuleTest {
     @Provides
-    fun provideTurnaround(diceBox: DiceBox): TurnaroundImpl {
-        return TurnaroundImpl(diceBox)
+    fun provideTurnaround(diceBox: DiceBox): DiceDistributorImpl {
+        return DiceDistributorImpl(diceBox)
     }
 }
 
 @GameScope
 @Component(modules = [PlayerModuleTest::class])
-interface PlayerComponentTest{
+interface PlayerComponentTest {
     fun inject(playerTest: PlayerTest)
 }
 
@@ -44,9 +44,31 @@ class PlayerModuleTest {
 
     @GameScope
     @Provides
-    fun provideTurnaround(): TurnaroundImpl {
-        val mockTurnaroundImpl = mock(TurnaroundImpl::class.java)
+    fun provideTurnaround(): DiceDistributorImpl {
+        val mockTurnaroundImpl = mock(DiceDistributorImpl::class.java)
         EventBus.getDefault().register(mockTurnaroundImpl)
         return mockTurnaroundImpl
+    }
+}
+
+@GameScope
+@Component(modules = [RefereeModuleTest::class])
+interface RefereeComponentTest {
+    fun inject(refereeTest: RefereeTest)
+}
+
+@Module
+class RefereeModuleTest {
+    @GameScope
+    @Provides
+    fun provideReferee(
+        board: Board,
+        diceBox: DiceBox,
+        player1: Player,
+        player2: Player,
+        diceDistributor: DiceDistributor
+    ): RefereeImpl {
+        return RefereeImpl(board, diceBox, player1, player2, diceDistributor)
+
     }
 }

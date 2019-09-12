@@ -4,7 +4,8 @@ import com.k1apps.backgammon.buisness.event.DiceThrownEvent
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
-open class TurnaroundImpl(private val diceBox: DiceBox) : Turnaround {
+class DiceDistributorImpl(private val diceBox: DiceBox) : DiceDistributor {
+
     private var player1: Player? = null
     private var player2: Player? = null
     private var player1DiceNumber: Byte = -1
@@ -39,7 +40,11 @@ open class TurnaroundImpl(private val diceBox: DiceBox) : Turnaround {
         player2!!.retakeDice()
     }
 
+    override fun start() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }
 
-interface Turnaround {
+interface DiceDistributor {
+    fun start()
 }

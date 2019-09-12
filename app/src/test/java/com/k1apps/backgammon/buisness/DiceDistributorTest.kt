@@ -10,10 +10,10 @@ import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import javax.inject.Inject
 
-class TurnaroundTest {
+class DiceDistributorTest {
 
     @Inject
-    lateinit var turnaround: TurnaroundImpl
+    lateinit var diceDistributorImpl: DiceDistributorImpl
     @Inject
     lateinit var diceBox: DiceBox
 
@@ -31,8 +31,8 @@ class TurnaroundTest {
 
     @Test
     fun when_player1_dice_num_is_6_and_player2_is_2_then_set_dice_box_to_player1_and_retake_dice() {
-        turnaround.onEvent(DiceThrownEvent(player1, 6))
-        turnaround.onEvent(DiceThrownEvent(player2, 2))
+        diceDistributorImpl.onEvent(DiceThrownEvent(player1, 6))
+        diceDistributorImpl.onEvent(DiceThrownEvent(player2, 2))
         verify(player1, times(1)).diceBox = diceBox
         verify(player2, times(0)).diceBox = diceBox
         verify(player1, times(1)).retakeDice()
@@ -42,8 +42,8 @@ class TurnaroundTest {
 
     @Test
     fun when_player1_dice_num_is_1_and_player2_is_4_then_set_dice_box_to_player2_and_retake_dice() {
-        turnaround.onEvent(DiceThrownEvent(player1, 1))
-        turnaround.onEvent(DiceThrownEvent(player2, 4))
+        diceDistributorImpl.onEvent(DiceThrownEvent(player1, 1))
+        diceDistributorImpl.onEvent(DiceThrownEvent(player2, 4))
         verify(player1, times(0)).diceBox = diceBox
         verify(player2, times(1)).diceBox = diceBox
         verify(player1, times(1)).retakeDice()
@@ -51,8 +51,8 @@ class TurnaroundTest {
     }
     @Test
     fun when_player1_dice_num_is_equal_to_player2_then_hold_dice_box_and_dont_retake_dice() {
-        turnaround.onEvent(DiceThrownEvent(player1, 5))
-        turnaround.onEvent(DiceThrownEvent(player2, 5))
+        diceDistributorImpl.onEvent(DiceThrownEvent(player1, 5))
+        diceDistributorImpl.onEvent(DiceThrownEvent(player2, 5))
         verify(player1, times(0)).diceBox = diceBox
         verify(player2, times(0)).diceBox = diceBox
         verify(player1, times(0)).retakeDice()

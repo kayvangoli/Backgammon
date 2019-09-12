@@ -13,7 +13,7 @@ class PlayerTest {
     @Inject
     lateinit var player: Player
     @Inject
-    lateinit var turnaroundImpl: TurnaroundImpl
+    lateinit var diceDistributorImpl: DiceDistributorImpl
 
     @Before
     fun setup() {
@@ -26,7 +26,7 @@ class PlayerTest {
         Mockito.`when`(diceMock.roll()).thenReturn(2)
         player.dice = diceMock
         player.roll()
-        verify(turnaroundImpl, times(1)).onEvent(DiceThrownEvent(player, 2))
+        verify(diceDistributorImpl, times(1)).onEvent(DiceThrownEvent(player, 2))
     }
 
     @Test

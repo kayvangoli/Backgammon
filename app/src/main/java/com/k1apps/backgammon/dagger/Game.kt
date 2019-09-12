@@ -24,15 +24,15 @@ class GameModule {
         diceBox: DiceBox,
         player1: Player,
         player2: Player,
-        turnaround: Turnaround
+        diceDistributor: DiceDistributor
     ): Referee {
-        return RefereeImpl(board, diceBox, player1, player2, turnaround)
+        return RefereeImpl(board, diceBox, player1, player2, diceDistributor)
     }
 
     @Provides
     @GameScope
-    fun provideTurnaround(diceBox: DiceBox): Turnaround {
-        return TurnaroundImpl(diceBox)
+    fun provideDiceDistributor(diceBox: DiceBox): DiceDistributor {
+        return DiceDistributorImpl(diceBox)
     }
 
     @Provides

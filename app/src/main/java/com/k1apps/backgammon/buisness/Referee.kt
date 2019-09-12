@@ -5,10 +5,11 @@ class RefereeImpl(
     private val diceBox: DiceBox,
     private val player1: Player,
     private val player2: Player,
-    private val turnaround: Turnaround
+    private val diceDistributor: DiceDistributor
 ) : Referee {
 
     init {
+        diceDistributor.start()
         board.initBoard()
         player1.pieceList = board.pieceList1
         player2.pieceList = board.pieceList2
