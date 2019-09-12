@@ -4,6 +4,7 @@ import com.k1apps.backgammon.dagger.DaggerRefereeComponentTest
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers
+import org.mockito.Mockito
 import org.mockito.Mockito.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -54,5 +55,12 @@ class RefereeTest {
     fun when_referee_started_then_start_dice_distributor() {
         refereeImpl.start()
         verify(diceDistributor, times(1)).start()
+    }
+
+    @Test
+    fun when_roll_called_then_pass_roll_to_player_if_turn_is_right() {
+//        Mockito.`when`(diceDistributor.whichPlayerHasDice())
+//        refereeImpl.roll(PlayerType.LocalPlayer)
+//        verify()
     }
 }

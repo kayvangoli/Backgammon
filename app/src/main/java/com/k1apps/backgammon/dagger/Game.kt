@@ -32,8 +32,12 @@ class GameModule {
 
     @Provides
     @GameScope
-    fun provideDiceDistributor(diceBox: DiceBox): DiceDistributor {
-        return DiceDistributorImpl(diceBox)
+    fun provideDiceDistributor(
+        @Named("normalPlayer") player1: Player,
+        @Named("reversePlayer") player2: Player,
+        diceBox: DiceBox
+    ): DiceDistributorImpl {
+        return DiceDistributorImpl(player1, player2, diceBox)
     }
 
     @GameScope

@@ -15,17 +15,63 @@ interface BoardComponentTest {
 }
 
 @GameScope
-@Component(modules = [TurnaroundModuleTest::class])
-interface TurnaroundComponentTest {
-    fun inject(turnaroundTest: DiceDistributorTest)
+@Component(modules = [DiceDistributorModuleTest::class])
+interface DiceDistributorComponentTest {
+    fun inject(diceDistributor: DiceDistributorTest)
 }
 
 @Module(includes = [DiceBoxModule::class])
-class TurnaroundModuleTest {
+class DiceDistributorModuleTest {
+    @GameScope
     @Provides
-    fun provideTurnaround(diceBox: DiceBox): DiceDistributorImpl {
-        return DiceDistributorImpl(diceBox)
+    @Named("realPlayer")
+    fun provideDiceDistributor1(
+        @Named("normalPlayer") player1: Player,
+        @Named("reversePlayer") player2: Player,
+        diceBox: DiceBox
+    ): DiceDistributorImpl {
+        return DiceDistributorImpl(player1, player2, diceBox)
     }
+
+    @GameScope
+    @Provides
+    @Named("mockPlayer")
+    fun provideDiceDistributor2(
+        @Named("normalMockPlayer") player1: Player,
+        @Named("reverseMockPlayer") player2: Player,
+        diceBox: DiceBox
+    ): DiceDistributorImpl {
+        return DiceDistributorImpl(player1, player2, diceBox)
+    }
+
+    @GameScope
+    @Provides
+    @Named("normalPlayer")
+    fun providePlayer1(): Player {
+        return PlayerImpl()
+    }
+
+    @GameScope
+    @Provides
+    @Named("reversePlayer")
+    fun providePlayer2(): Player {
+        return PlayerImpl()
+    }
+
+    @GameScope
+    @Provides
+    @Named("normalMockPlayer")
+    fun providePlayer3(): Player {
+        return mock(Player::class.java)
+    }
+
+    @GameScope
+    @Provides
+    @Named("reverseMockPlayer")
+    fun providePlayer4(): Player {
+        return mock(Player::class.java)
+    }
+
 }
 
 @GameScope
