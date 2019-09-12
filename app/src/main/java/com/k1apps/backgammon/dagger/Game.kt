@@ -4,7 +4,6 @@ import com.k1apps.backgammon.buisness.*
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.greenrobot.eventbus.EventBus
 import javax.inject.Scope
 
 @Scope
