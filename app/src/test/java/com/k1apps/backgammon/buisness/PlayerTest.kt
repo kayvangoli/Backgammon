@@ -1,13 +1,21 @@
 package com.k1apps.backgammon.buisness
 
+import com.k1apps.backgammon.Constants.Companion.NORMAL_PIECE_LIST
 import com.k1apps.backgammon.buisness.event.DiceThrownEvent
-import com.k1apps.backgammon.dagger.DaggerPlayerComponentTest
+import com.k1apps.backgammon.dagger.GameScope
+import com.k1apps.backgammon.dagger.PieceListModule
+import dagger.Component
+import dagger.Module
+import dagger.Provides
+import org.greenrobot.eventbus.EventBus
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.*
 import javax.inject.Inject
+import javax.inject.Named
+import kotlin.collections.ArrayList
 
 class PlayerTest {
     @Inject
@@ -37,5 +45,31 @@ class PlayerTest {
         assertTrue(player.dice != null)
         player.retakeDice()
         assertTrue(player.dice == null)
+    }
+}
+
+
+@GameScope
+@Component(modules = [PlayerModuleTest::class, PieceListModule::class])
+interface PlayerComponentTest {
+    fun inject(playerTest: PlayerTest)
+}
+
+
+@Module(includes = [PieceListModule::class])
+class PlayerModuleTest {
+    @GameScope
+    @Provides
+    fun providePlayer(
+        @Named(NORMAL_PIECE_LIST) pieceList: ArrayList<Piece>): Player {
+        return PlayerImpl(PlayerType.LocalPlayer, pieceList)
+    }
+
+    @GameScope
+    @Provides
+    fun provideDiceDistributor(): DiceDistributorImpl {
+        val mockTurnaroundImpl = mock(DiceDistributorImpl::class.java)
+        EventBus.getDefault().register(mockTurnaroundImpl)
+        return mockTurnaroundImpl
     }
 }

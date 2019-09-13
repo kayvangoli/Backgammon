@@ -1,13 +1,66 @@
 package com.k1apps.backgammon.buisness
 
-import com.k1apps.backgammon.dagger.DaggerRefereeComponentTest
+import com.k1apps.backgammon.Constants
+import com.k1apps.backgammon.dagger.DiceBoxModule
+import com.k1apps.backgammon.dagger.GameScope
+import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.junit.Before
 import org.junit.Test
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito
 import org.mockito.Mockito.*
 import javax.inject.Inject
 import javax.inject.Named
+
+
+@GameScope
+@Component(modules = [RefereeModuleTest::class])
+interface RefereeComponentTest {
+    fun inject(refereeTest: RefereeTest)
+}
+
+@Module(includes = [DiceBoxModule::class])
+class RefereeModuleTest {
+
+    @GameScope
+    @Provides
+    fun provideReferee(
+        board: Board,
+        diceBox: DiceBox,
+        @Named(Constants.NORMAL_PLAYER) player1: Player,
+        @Named(Constants.REVERSE_PLAYER) player2: Player,
+        diceDistributor: DiceDistributor
+    ): RefereeImpl {
+        return RefereeImpl(board, diceBox, player1, player2, diceDistributor)
+    }
+
+    @GameScope
+    @Provides
+    fun provideBoard(): Board {
+        return mock(Board::class.java)
+    }
+
+    @GameScope
+    @Provides
+    fun provideDiceDistributor(): DiceDistributor {
+        return mock(DiceDistributor::class.java)
+    }
+
+    @GameScope
+    @Provides
+    @Named(Constants.NORMAL_PLAYER)
+    fun providePlayer1(): Player {
+        return mock(Player::class.java)
+    }
+
+    @GameScope
+    @Provides
+    @Named(Constants.REVERSE_PLAYER)
+    fun providePlayer2(): Player {
+        return mock(Player::class.java)
+    }
+
+}
 
 class RefereeTest {
     @Inject
@@ -37,12 +90,6 @@ class RefereeTest {
         verify(board, times(1)).initBoard()
     }
 
-    @Test
-    fun when_referee_started_then_set_pieces_to_players() {
-        refereeImpl.start()
-        verify(player1, times(1)).pieceList = ArgumentMatchers.any()
-        verify(player2, times(1)).pieceList = ArgumentMatchers.any()
-    }
 
     @Test
     fun when_referee_started_then_set_dices_to_players() {

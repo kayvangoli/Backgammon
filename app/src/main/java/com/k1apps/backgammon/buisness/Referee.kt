@@ -11,8 +11,6 @@ class RefereeImpl(
     override fun start() {
         diceDistributor.start()
         board.initBoard()
-        player1.pieceList = board.pieceList1
-        player2.pieceList = board.pieceList2
         player1.dice = diceBox.dice1
         player2.dice = diceBox.dice2
     }

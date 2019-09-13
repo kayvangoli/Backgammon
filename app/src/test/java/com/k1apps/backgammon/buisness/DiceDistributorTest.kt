@@ -1,7 +1,14 @@
 package com.k1apps.backgammon.buisness
 
+import com.k1apps.backgammon.Constants.Companion.NORMAL_PLAYER
+import com.k1apps.backgammon.Constants.Companion.REVERSE_PLAYER
 import com.k1apps.backgammon.buisness.event.DiceThrownEvent
-import com.k1apps.backgammon.dagger.DaggerDiceDistributorComponentTest
+import com.k1apps.backgammon.dagger.DiceBoxModule
+import com.k1apps.backgammon.dagger.GameModule
+import com.k1apps.backgammon.dagger.GameScope
+import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -11,6 +18,42 @@ import org.mockito.MockitoAnnotations
 import javax.inject.Inject
 import javax.inject.Named
 
+@GameScope
+@Component(modules = [DiceDistributorModuleTest::class, GameModule::class])
+interface DiceDistributorComponentTest {
+    fun inject(diceDistributor: DiceDistributorTest)
+}
+
+@Module(includes = [DiceBoxModule::class, GameModule::class])
+class DiceDistributorModuleTest {
+
+    @GameScope
+    @Provides
+    @Named("mockPlayer")
+    fun provideDiceDistributor2(
+        @Named("normalMockPlayer") player1: Player,
+        @Named("reverseMockPlayer") player2: Player,
+        diceBox: DiceBox
+    ): DiceDistributorImpl {
+        return DiceDistributorImpl(player1, player2, diceBox)
+    }
+
+    @GameScope
+    @Provides
+    @Named("normalMockPlayer")
+    fun providePlayer3(): Player {
+        return mock(Player::class.java)
+    }
+
+    @GameScope
+    @Provides
+    @Named("reverseMockPlayer")
+    fun providePlayer4(): Player {
+        return mock(Player::class.java)
+    }
+
+}
+
 class DiceDistributorTest {
 
     @Inject
@@ -18,7 +61,6 @@ class DiceDistributorTest {
     lateinit var diceDistributorMockPlayer: DiceDistributorImpl
 
     @Inject
-    @field:Named("realPlayer")
     lateinit var diceDistributorRealPlayer: DiceDistributorImpl
 
     @Inject
@@ -33,11 +75,11 @@ class DiceDistributorTest {
     lateinit var mockPlayer2: Player
 
     @Inject
-    @field:Named("normalPlayer")
+    @field:Named(NORMAL_PLAYER)
     lateinit var player1: Player
 
     @Inject
-    @field:Named("reversePlayer")
+    @field:Named(REVERSE_PLAYER)
     lateinit var player2: Player
 
     @Before

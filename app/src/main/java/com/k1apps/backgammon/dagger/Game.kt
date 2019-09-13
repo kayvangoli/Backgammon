@@ -1,5 +1,9 @@
 package com.k1apps.backgammon.dagger
 
+import com.k1apps.backgammon.Constants.Companion.NORMAL_PIECE_LIST
+import com.k1apps.backgammon.Constants.Companion.NORMAL_PLAYER
+import com.k1apps.backgammon.Constants.Companion.REVERSE_PIECE_LIST
+import com.k1apps.backgammon.Constants.Companion.REVERSE_PLAYER
 import com.k1apps.backgammon.buisness.*
 import dagger.Component
 import dagger.Module
@@ -12,19 +16,21 @@ import javax.inject.Scope
 annotation class GameScope
 
 @GameScope
-@Component(modules = [GameModule::class, BoardModule::class, DiceBoxModule::class])
+@Component(
+    modules = [GameModule::class, DiceBoxModule::class, PieceListModule::class]
+)
 interface GameComponent {
 }
 
-@Module(includes = [DiceBoxModule::class])
+@Module(includes = [DiceBoxModule::class, PieceListModule::class])
 class GameModule {
     @Provides
     @GameScope
     fun provideReferee(
         board: Board,
         diceBox: DiceBox,
-        @Named("normalPlayer") player1: Player,
-        @Named("reversePlayer") player2: Player,
+        @Named(NORMAL_PLAYER) player1: Player,
+        @Named(REVERSE_PLAYER) player2: Player,
         diceDistributor: DiceDistributor
     ): Referee {
         return RefereeImpl(board, diceBox, player1, player2, diceDistributor)
@@ -32,9 +38,18 @@ class GameModule {
 
     @Provides
     @GameScope
+    fun provideBoard(
+        @Named(NORMAL_PIECE_LIST) normalPieceList: ArrayList<Piece>,
+        @Named(REVERSE_PIECE_LIST) reversePieceList: ArrayList<Piece>
+    ): Board {
+        return BoardImpl(normalPieceList, reversePieceList)
+    }
+
+    @Provides
+    @GameScope
     fun provideDiceDistributor(
-        @Named("normalPlayer") player1: Player,
-        @Named("reversePlayer") player2: Player,
+        @Named(NORMAL_PLAYER) player1: Player,
+        @Named(REVERSE_PLAYER) player2: Player,
         diceBox: DiceBox
     ): DiceDistributorImpl {
         return DiceDistributorImpl(player1, player2, diceBox)
@@ -42,29 +57,26 @@ class GameModule {
 
     @GameScope
     @Provides
-    @Named("normalPlayer")
-    fun providePlayer1(): Player {
-        return PlayerImpl()
+    @Named(NORMAL_PLAYER)
+    fun providePlayer1(@Named(NORMAL_PIECE_LIST) pieceList: ArrayList<Piece>): Player {
+        return PlayerImpl(PlayerType.LocalPlayer, pieceList)
     }
 
     @GameScope
     @Provides
-    @Named("reversePlayer")
-    fun providePlayer2(): Player {
-        return PlayerImpl()
+    @Named(REVERSE_PLAYER)
+    fun providePlayer2(@Named(REVERSE_PIECE_LIST) pieceList: ArrayList<Piece>): Player {
+        return PlayerImpl(PlayerType.LocalPlayer, pieceList)
     }
 }
 
 @Module
-class BoardModule {
+class PieceListModule {
 
     @Provides
     @GameScope
-    fun provideBoard(): Board {
-        return BoardImpl(getList1(), getList2())
-    }
-
-    private fun getList1(): ArrayList<Piece> {
+    @Named(NORMAL_PIECE_LIST)
+    fun reverseList(): ArrayList<Piece> {
         val arrayList: ArrayList<Piece> = arrayListOf()
         for (item in 0 until 15) {
             arrayList.add(getPieceNormal())
@@ -76,7 +88,10 @@ class BoardModule {
         return PieceImpl(MoveType.Normal)
     }
 
-    private fun getList2(): ArrayList<Piece> {
+    @Provides
+    @GameScope
+    @Named(REVERSE_PIECE_LIST)
+    fun normalList(): ArrayList<Piece> {
         val arrayList: ArrayList<Piece> = arrayListOf()
         for (item in 0 until 15) {
             arrayList.add(getPieceRevers())

@@ -1,10 +1,20 @@
 package com.k1apps.backgammon.buisness
 
-import com.k1apps.backgammon.dagger.DaggerBoardComponentTest
+import com.k1apps.backgammon.dagger.GameModule
+import com.k1apps.backgammon.dagger.GameScope
+import dagger.Component
 import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
 import javax.inject.Inject
+
+
+@GameScope
+@Component(modules = [GameModule::class])
+interface BoardComponentTest {
+    fun inject(boardTest: BoardTest)
+}
+
 
 class BoardTest {
     @Inject
