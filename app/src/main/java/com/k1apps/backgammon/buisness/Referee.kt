@@ -14,9 +14,19 @@ class RefereeImpl(
         player1.dice = diceBox.dice1
         player2.dice = diceBox.dice2
     }
+
+    override fun roll(playerType: PlayerType) {
+        val player = diceDistributor.whichPlayerHasDice()
+        player?.let {
+            if (player.playerType == playerType) {
+                player.roll()
+            }
+        }
+    }
 }
 
 interface Referee {
     fun start()
+    fun roll(playerType: PlayerType)
 }
 

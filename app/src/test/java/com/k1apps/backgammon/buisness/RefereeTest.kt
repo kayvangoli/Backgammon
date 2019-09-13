@@ -105,9 +105,26 @@ class RefereeTest {
     }
 
     @Test
-    fun when_roll_called_then_pass_roll_to_player_if_turn_is_right() {
-//        Mockito.`when`(diceDistributor.whichPlayerHasDice())
-//        refereeImpl.roll(PlayerType.LocalPlayer)
-//        verify()
+    fun when_roll_called_then_pass_roll_to_player_if_turn_is_correct() {
+        `when`(diceDistributor.whichPlayerHasDice()).thenReturn(player1)
+        `when`(player1.playerType).thenReturn(PlayerType.LocalPlayer)
+        refereeImpl.roll(PlayerType.LocalPlayer)
+        verify(player1, times(1)).roll()
+    }
+
+    @Test
+    fun when_roll_called_then_dont_pass_roll_to_player_if_turn_is_incorrect() {
+        `when`(diceDistributor.whichPlayerHasDice()).thenReturn(player1)
+        `when`(player1.playerType).thenReturn(PlayerType.LocalPlayer)
+        refereeImpl.roll(PlayerType.AndroidPlayer)
+        verify(player1, times(0)).roll()
+    }
+
+    @Test
+    fun when_roll_called_and_dice_box_dont_with_any_players_then_dont_pass_roll_to_player_if_turn_is_incorrect() {
+        `when`(diceDistributor.whichPlayerHasDice()).thenReturn(null)
+        refereeImpl.roll(PlayerType.AndroidPlayer)
+        verify(player1, times(0)).roll()
+        verify(player2, times(0)).roll()
     }
 }
