@@ -62,7 +62,7 @@ class PlayerModuleTest {
     @Provides
     fun providePlayer(
         @Named(NORMAL_PIECE_LIST) pieceList: ArrayList<Piece>): Player {
-        return PlayerImpl(PlayerType.LocalPlayer, pieceList)
+        return PlayerImpl(PlayerType.LocalPlayer, pieceList, MoveType.Normal)
     }
 
     @GameScope

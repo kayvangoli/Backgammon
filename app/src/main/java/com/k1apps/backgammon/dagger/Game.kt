@@ -63,14 +63,14 @@ class PlayerModule {
     @Provides
     @Named(NORMAL_PLAYER)
     fun providePlayer1(@Named(NORMAL_PIECE_LIST) pieceList: ArrayList<Piece>): Player {
-        return PlayerImpl(PlayerType.LocalPlayer, pieceList)
+        return PlayerImpl(PlayerType.LocalPlayer, pieceList, MoveType.Normal)
     }
 
     @GameScope
     @Provides
     @Named(REVERSE_PLAYER)
     fun providePlayer2(@Named(REVERSE_PIECE_LIST) pieceList: ArrayList<Piece>): Player {
-        return PlayerImpl(PlayerType.LocalPlayer, pieceList)
+        return PlayerImpl(PlayerType.LocalPlayer, pieceList, MoveType.Revers)
     }
 
 }
