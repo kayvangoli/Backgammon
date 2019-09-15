@@ -17,12 +17,12 @@ annotation class GameScope
 
 @GameScope
 @Component(
-    modules = [GameModule::class, DiceBoxModule::class, PieceListModule::class]
+    modules = [GameModule::class, DiceBoxModule::class, PieceListModule::class, PlayerModule::class]
 )
 interface GameComponent {
 }
 
-@Module(includes = [DiceBoxModule::class, PieceListModule::class])
+@Module(includes = [DiceBoxModule::class, PieceListModule::class, PlayerModule::class])
 class GameModule {
     @Provides
     @GameScope
@@ -55,6 +55,10 @@ class GameModule {
         return DiceDistributorImpl(player1, player2, diceBox)
     }
 
+}
+
+@Module
+class PlayerModule {
     @GameScope
     @Provides
     @Named(NORMAL_PLAYER)
@@ -68,6 +72,7 @@ class GameModule {
     fun providePlayer2(@Named(REVERSE_PIECE_LIST) pieceList: ArrayList<Piece>): Player {
         return PlayerImpl(PlayerType.LocalPlayer, pieceList)
     }
+
 }
 
 @Module
