@@ -2,12 +2,19 @@ package com.k1apps.backgammon.buisness
 
 import kotlin.random.Random
 
-class DiceImpl: Dice {
+class DiceImpl : Dice {
+    override var enabled: Boolean = false
+    override var number: Byte? = null
+
     override fun roll(): Byte {
-        return Random.nextInt(1, 7).toByte()
+        enabled = false
+        number = Random.nextInt(1, 7).toByte()
+        return number!!
     }
 }
 
-interface Dice{
+interface Dice {
+    var enabled: Boolean
+    var number: Byte?
     fun roll(): Byte
 }
