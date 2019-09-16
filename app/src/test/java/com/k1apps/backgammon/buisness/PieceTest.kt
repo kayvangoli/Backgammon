@@ -158,8 +158,8 @@ class PieceTest {
 
     @Test
     fun when_pieceAfterMove_for_each_piece_type_called_then_return_piece_with_different_address() {
-        assertTrue(pieceNormal.pieceAfterMove(2) != pieceNormal)
-        assertTrue(pieceReverse.pieceAfterMove(2) != pieceReverse)
+        assertTrue(pieceNormal.pieceAfterMove(2) !== pieceNormal)
+        assertTrue(pieceReverse.pieceAfterMove(2) !== pieceReverse)
     }
 
     @Test
