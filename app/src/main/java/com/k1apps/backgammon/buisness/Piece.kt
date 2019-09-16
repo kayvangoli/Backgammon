@@ -15,8 +15,14 @@ class PieceImpl(private val moveType: MoveType): Piece {
     private fun reversLocation(location: Int): Int {
         return abs(location - 25)
     }
+
+    override fun pieceAfterMove(number: Byte): Piece {
+        return this
+    }
 }
 
 interface Piece {
+    fun pieceAfterMove(number: Byte): Piece
+
     var location: Int
 }

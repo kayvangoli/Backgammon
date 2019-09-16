@@ -1,6 +1,9 @@
 package com.k1apps.backgammon.buisness
 
 import androidx.collection.ArrayMap
+import com.k1apps.backgammon.buisness.event.CheckListEvent
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import javax.inject.Inject
 
 interface Board {
@@ -14,6 +17,10 @@ class BoardImpl @Inject constructor(
 ) : Board {
 
     private val cells: ArrayMap<Int, ArrayList<Piece>> = ArrayMap()
+
+    init {
+        EventBus.getDefault().register(this)
+    }
 
     override fun initBoard() {
         initLists()
@@ -29,6 +36,11 @@ class BoardImpl @Inject constructor(
         setPiecesToCells(pieceList2.subList(2, 7), 12)
         setPiecesToCells(pieceList2.subList(7, 10), 17)
         setPiecesToCells(pieceList2.subList(10, 15), 19)
+    }
+
+    @Subscribe
+    fun onEvent(event: CheckListEvent) {
+
     }
 
     private fun setPiecesToCells(pieces: MutableList<Piece>, location: Int) {

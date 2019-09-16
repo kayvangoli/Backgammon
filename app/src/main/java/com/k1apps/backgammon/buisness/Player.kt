@@ -4,6 +4,7 @@ import com.k1apps.backgammon.Constants.Companion.END_NORMAL_HOME_RANGE
 import com.k1apps.backgammon.Constants.Companion.END_REVERSE_HOME_RANGE
 import com.k1apps.backgammon.Constants.Companion.START_NORMAL_HOME_RANGE
 import com.k1apps.backgammon.Constants.Companion.START_REVERSE_HOME_RANGE
+import com.k1apps.backgammon.buisness.event.CheckListEvent
 import com.k1apps.backgammon.buisness.event.DiceThrownEvent
 import org.greenrobot.eventbus.EventBus
 import java.util.ArrayList
@@ -25,6 +26,15 @@ class PlayerImpl(
     override fun roll() {
         when {
             dice != null -> EventBus.getDefault().post(DiceThrownEvent(this, dice!!.roll()))
+            diceBox != null -> {
+                diceBox!!.roll()
+                val expectPieceList = arrayListOf<Piece>()
+                for (piece in pieceList) {
+                    expectPieceList.add(piece.pieceAfterMove(diceBox!!.dice1.number!!))
+                    expectPieceList.add(piece.pieceAfterMove(diceBox!!.dice2.number!!))
+                }
+                EventBus.getDefault().post(CheckListEvent(homeCellIndexRange, expectPieceList))
+            }
         }
     }
 

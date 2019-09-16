@@ -121,7 +121,7 @@ class RefereeTest {
     }
 
     @Test
-    fun when_roll_called_and_dice_box_dont_with_any_players_then_dont_pass_roll_to_player_if_turn_is_incorrect() {
+    fun when_roll_called_and_dice_box_dont_with_any_players_then_dont_pass_roll_to_player() {
         `when`(diceDistributor.whichPlayerHasDice()).thenReturn(null)
         refereeImpl.roll(PlayerType.AndroidPlayer)
         verify(player1, times(0)).roll()
