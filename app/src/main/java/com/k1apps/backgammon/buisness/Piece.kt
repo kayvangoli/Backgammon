@@ -45,11 +45,16 @@ class PieceImpl(private val moveType: MoveType) : Piece {
 
     override fun equals(other: Any?): Boolean {
         if (other is PieceImpl) {
-            return other.moveType == moveType &&
-                    other.state == state &&
-                    other.location == location
+            return other.hashCode() == hashCode()
         }
         return false
+    }
+
+    override fun hashCode(): Int {
+        var result = moveType.hashCode()
+        result = 31 * result + state.hashCode()
+        result = 31 * result + location
+        return result
     }
 }
 
