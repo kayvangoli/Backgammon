@@ -30,8 +30,8 @@ class PlayerImpl(
                 diceBox!!.roll()
                 val expectPieceList = arrayListOf<Piece>()
                 for (piece in pieceList) {
-                    expectPieceList.add(piece.pieceAfterMove(diceBox!!.dice1.number!!))
-                    expectPieceList.add(piece.pieceAfterMove(diceBox!!.dice2.number!!))
+                    piece.pieceAfterMove(diceBox!!.dice1.number!!)?.let { expectPieceList.add(it) }
+                    piece.pieceAfterMove(diceBox!!.dice2.number!!)?.let { expectPieceList.add(it) }
                 }
                 EventBus.getDefault().post(CheckListEvent(homeCellIndexRange, expectPieceList))
             }

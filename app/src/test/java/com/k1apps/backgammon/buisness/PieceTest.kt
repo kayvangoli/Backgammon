@@ -63,7 +63,7 @@ class PieceTest {
     fun when_pieceAfterMove_for_reverse_piece_type_with_number_1_called_and_piece_is_dead_then_return_dead_piece_with_location_1() {
         pieceReverse.state = PieceState.DEAD
         val pieceAfterMove = pieceReverse.pieceAfterMove(1)
-        assertTrue(pieceAfterMove.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
         assertTrue(pieceAfterMove.location == 1)
     }
 
@@ -71,7 +71,7 @@ class PieceTest {
     fun when_pieceAfterMove_for_reverse_piece_type_with_number_2_called_and_piece_is_dead_then_return_dead_piece_with_location_2() {
         pieceReverse.state = PieceState.DEAD
         val pieceAfterMove = pieceReverse.pieceAfterMove(2)
-        assertTrue(pieceAfterMove.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
         assertTrue(pieceAfterMove.location == 2)
     }
 
@@ -79,7 +79,7 @@ class PieceTest {
     fun when_pieceAfterMove_for_reverse_piece_type_with_number_3_called_and_piece_is_dead_then_return_dead_piece_with_location_3() {
         pieceReverse.state = PieceState.DEAD
         val pieceAfterMove = pieceReverse.pieceAfterMove(3)
-        assertTrue(pieceAfterMove.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
         assertTrue(pieceAfterMove.location == 3)
     }
 
@@ -87,7 +87,7 @@ class PieceTest {
     fun when_pieceAfterMove_for_reverse_piece_type_with_number_4_called_and_piece_is_dead_then_return_dead_piece_with_location_4() {
         pieceReverse.state = PieceState.DEAD
         val pieceAfterMove = pieceReverse.pieceAfterMove(4)
-        assertTrue(pieceAfterMove.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
         assertTrue(pieceAfterMove.location == 4)
     }
 
@@ -95,7 +95,7 @@ class PieceTest {
     fun when_pieceAfterMove_for_reverse_piece_type_with_number_5_called_and_piece_is_dead_then_return_dead_piece_with_location_5() {
         pieceReverse.state = PieceState.DEAD
         val pieceAfterMove = pieceReverse.pieceAfterMove(5)
-        assertTrue(pieceAfterMove.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
         assertTrue(pieceAfterMove.location == 5)
     }
 
@@ -103,7 +103,7 @@ class PieceTest {
     fun when_pieceAfterMove_for_reverse_piece_type_with_number_6_called_and_piece_is_dead_then_return_dead_piece_with_location_6() {
         pieceReverse.state = PieceState.DEAD
         val pieceAfterMove = pieceReverse.pieceAfterMove(6)
-        assertTrue(pieceAfterMove.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
         assertTrue("location is ${pieceAfterMove.location}", pieceAfterMove.location == 6)
     }
 
@@ -111,7 +111,7 @@ class PieceTest {
     fun when_pieceAfterMove_for_normal_piece_type_with_number_1_called_and_piece_is_dead_then_return_dead_piece_with_location_24() {
         pieceNormal.state = PieceState.DEAD
         val pieceAfterMove = pieceNormal.pieceAfterMove(1)
-        assertTrue(pieceAfterMove.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
         assertTrue(pieceAfterMove.location == 24)
     }
 
@@ -119,7 +119,7 @@ class PieceTest {
     fun when_pieceAfterMove_for_normal_piece_type_with_number_2_called_and_piece_is_dead_then_return_dead_piece_with_location_23() {
         pieceNormal.state = PieceState.DEAD
         val pieceAfterMove = pieceNormal.pieceAfterMove(2)
-        assertTrue(pieceAfterMove.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
         assertTrue(pieceAfterMove.location == 23)
     }
 
@@ -127,7 +127,7 @@ class PieceTest {
     fun when_pieceAfterMove_for_normal_piece_type_with_number_3_called_and_piece_is_dead_then_return_dead_piece_with_location_22() {
         pieceNormal.state = PieceState.DEAD
         val pieceAfterMove = pieceNormal.pieceAfterMove(3)
-        assertTrue(pieceAfterMove.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
         assertTrue(pieceAfterMove.location == 22)
     }
 
@@ -135,7 +135,7 @@ class PieceTest {
     fun when_pieceAfterMove_for_normal_piece_type_with_number_4_called_and_piece_is_dead_then_return_dead_piece_with_location_21() {
         pieceNormal.state = PieceState.DEAD
         val pieceAfterMove = pieceNormal.pieceAfterMove(4)
-        assertTrue(pieceAfterMove.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
         assertTrue(pieceAfterMove.location == 21)
     }
 
@@ -143,7 +143,7 @@ class PieceTest {
     fun when_pieceAfterMove_for_normal_piece_type_with_number_5_called_and_piece_is_dead_then_return_dead_piece_with_location_20() {
         pieceNormal.state = PieceState.DEAD
         val pieceAfterMove = pieceNormal.pieceAfterMove(5)
-        assertTrue(pieceAfterMove.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
         assertTrue(pieceAfterMove.location == 20)
     }
 
@@ -151,7 +151,7 @@ class PieceTest {
     fun when_pieceAfterMove_for_normal_piece_type_with_number_6_called_and_piece_is_dead_then_return_dead_piece_with_location_19() {
         pieceNormal.state = PieceState.DEAD
         val pieceAfterMove = pieceNormal.pieceAfterMove(6)
-        assertTrue(pieceAfterMove.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
         assertTrue(pieceAfterMove.location == 19)
     }
 
@@ -163,15 +163,15 @@ class PieceTest {
     }
 
     @Test
-    fun when_pieceAfterMove_for_each_piece_type_won_called_then_return_piece_exactly_like_main_piece() {
+    fun when_pieceAfterMove_for_each_piece_type_won_called_then_return_null() {
         (1..7).forEach { index ->
             pieceNormal.state = PieceState.WON
             val normalAfterMove = pieceNormal.pieceAfterMove(index.toByte())
-            assertTrue(normalAfterMove == pieceNormal)
+            assertTrue(normalAfterMove == null)
 
             pieceReverse.state = PieceState.WON
             val reverseAfterMove = pieceReverse.pieceAfterMove(index.toByte())
-            assertTrue(reverseAfterMove == pieceReverse)
+            assertTrue(reverseAfterMove == null)
         }
     }
 }

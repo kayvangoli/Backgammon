@@ -18,7 +18,7 @@ class PieceImpl(private val moveType: MoveType) : Piece {
         return abs(location - 25)
     }
 
-    override fun pieceAfterMove(number: Byte): Piece {
+    override fun pieceAfterMove(number: Byte): Piece? {
         assert(number in 1..7)
         val piece = PieceImpl(moveType)
         piece.state = state
@@ -27,9 +27,11 @@ class PieceImpl(private val moveType: MoveType) : Piece {
                 val gotoEndNumber = reversLocation(number.toInt())
                 piece.location = gotoEndNumber
             }
-            PieceState.IN_GAME -> TODO()
+            PieceState.IN_GAME -> {
+
+            }
             PieceState.WON -> {
-                piece.location = getCorrectLocation(location)
+                return null
             }
         }
         return piece
@@ -59,7 +61,7 @@ class PieceImpl(private val moveType: MoveType) : Piece {
 }
 
 interface Piece {
-    fun pieceAfterMove(number: Byte): Piece
+    fun pieceAfterMove(number: Byte): Piece?
     var state: PieceState
     var location: Int
 }
