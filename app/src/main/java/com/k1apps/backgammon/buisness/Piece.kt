@@ -1,21 +1,16 @@
 package com.k1apps.backgammon.buisness
 
-import kotlin.math.abs
+import com.k1apps.backgammon.Utils.reverseLocation
 
 class PieceImpl(private val moveType: MoveType) : Piece {
 
     override var state: PieceState = PieceState.IN_GAME
 
     override var location: Int = -1
-        set(value) {
-            if (value > 24 || value < 1) {
-                return
-            }
-            field = getCorrectLocation(value)
+    set(value) {
+        if (value in 1..24) {
+            field = value
         }
-
-    private fun reversLocation(location: Int): Int {
-        return abs(location - 25)
     }
 
     override fun pieceAfterMove(number: Byte): Piece? {
@@ -24,11 +19,24 @@ class PieceImpl(private val moveType: MoveType) : Piece {
         piece.state = state
         when (state) {
             PieceState.DEAD -> {
-                val gotoEndNumber = reversLocation(number.toInt())
+                var gotoEndNumber = number.toInt()
+                if (moveType == MoveType.Normal) {
+                    gotoEndNumber = reverseLocation(number.toInt())
+                }
                 piece.location = gotoEndNumber
             }
             PieceState.IN_GAME -> {
-
+                if (canMoveWithNumber(number)) {
+                    val location: Int
+                    if (moveType == MoveType.Revers) {
+                        location = this.location + number
+                    } else {
+                        location = this.location - number
+                    }
+                    piece.location = location
+                } else {
+                    return null
+                }
             }
             PieceState.WON -> {
                 return null
@@ -37,11 +45,11 @@ class PieceImpl(private val moveType: MoveType) : Piece {
         return piece
     }
 
-    private fun getCorrectLocation(value: Int): Int {
-        return if (moveType == MoveType.Revers) {
-            reversLocation(value)
+    private fun canMoveWithNumber(number: Byte): Boolean {
+        if (moveType == MoveType.Normal) {
+            return location - number > 0
         } else {
-            value
+            return location + number < 25
         }
     }
 

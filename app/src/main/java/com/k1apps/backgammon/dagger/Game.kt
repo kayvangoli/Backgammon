@@ -1,9 +1,9 @@
 package com.k1apps.backgammon.dagger
 
-import com.k1apps.backgammon.Constants.Companion.NORMAL_PIECE_LIST
-import com.k1apps.backgammon.Constants.Companion.NORMAL_PLAYER
-import com.k1apps.backgammon.Constants.Companion.REVERSE_PIECE_LIST
-import com.k1apps.backgammon.Constants.Companion.REVERSE_PLAYER
+import com.k1apps.backgammon.Constants.NORMAL_PIECE_LIST
+import com.k1apps.backgammon.Constants.NORMAL_PLAYER
+import com.k1apps.backgammon.Constants.REVERSE_PIECE_LIST
+import com.k1apps.backgammon.Constants.REVERSE_PLAYER
 import com.k1apps.backgammon.buisness.*
 import dagger.Component
 import dagger.Module

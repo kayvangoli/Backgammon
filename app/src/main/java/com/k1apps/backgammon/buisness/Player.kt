@@ -1,9 +1,9 @@
 package com.k1apps.backgammon.buisness
 
-import com.k1apps.backgammon.Constants.Companion.END_NORMAL_HOME_RANGE
-import com.k1apps.backgammon.Constants.Companion.END_REVERSE_HOME_RANGE
-import com.k1apps.backgammon.Constants.Companion.START_NORMAL_HOME_RANGE
-import com.k1apps.backgammon.Constants.Companion.START_REVERSE_HOME_RANGE
+import com.k1apps.backgammon.Constants.END_NORMAL_HOME_RANGE
+import com.k1apps.backgammon.Constants.END_REVERSE_HOME_RANGE
+import com.k1apps.backgammon.Constants.START_NORMAL_HOME_RANGE
+import com.k1apps.backgammon.Constants.START_REVERSE_HOME_RANGE
 import com.k1apps.backgammon.buisness.event.CheckListEvent
 import com.k1apps.backgammon.buisness.event.DiceThrownEvent
 import org.greenrobot.eventbus.EventBus

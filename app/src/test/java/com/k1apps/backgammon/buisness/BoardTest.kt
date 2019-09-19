@@ -1,7 +1,7 @@
 package com.k1apps.backgammon.buisness
 
-import com.k1apps.backgammon.Constants.Companion.NORMAL_PLAYER
-import com.k1apps.backgammon.Constants.Companion.REVERSE_PLAYER
+import com.k1apps.backgammon.Constants.NORMAL_PLAYER
+import com.k1apps.backgammon.Constants.REVERSE_PLAYER
 import com.k1apps.backgammon.dagger.*
 import dagger.Component
 import junit.framework.TestCase.assertTrue

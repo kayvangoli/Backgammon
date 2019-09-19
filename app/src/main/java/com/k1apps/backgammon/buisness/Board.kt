@@ -1,6 +1,7 @@
 package com.k1apps.backgammon.buisness
 
 import androidx.collection.ArrayMap
+import com.k1apps.backgammon.Utils.reverseLocation
 import com.k1apps.backgammon.buisness.event.CheckListEvent
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -32,10 +33,10 @@ class BoardImpl @Inject constructor(
         setPiecesToCells(pieceList1.subList(7, 10), 17)
         setPiecesToCells(pieceList1.subList(10, 15), 19)
 
-        setPiecesToCells(pieceList2.subList(0, 2), 1)
-        setPiecesToCells(pieceList2.subList(2, 7), 12)
-        setPiecesToCells(pieceList2.subList(7, 10), 17)
-        setPiecesToCells(pieceList2.subList(10, 15), 19)
+        setPiecesToCells(pieceList2.subList(0, 2), reverseLocation(1))
+        setPiecesToCells(pieceList2.subList(2, 7), reverseLocation(12))
+        setPiecesToCells(pieceList2.subList(7, 10), reverseLocation(17))
+        setPiecesToCells(pieceList2.subList(10, 15), reverseLocation(19))
     }
 
     @Subscribe

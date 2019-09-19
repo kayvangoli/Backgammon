@@ -9,7 +9,6 @@ import org.junit.Before
 import org.junit.Test
 import javax.inject.Inject
 import javax.inject.Named
-import kotlin.math.abs
 
 class PieceTest {
     @Inject
@@ -33,29 +32,24 @@ class PieceTest {
         pieceNormal.location = 0
         assertTrue(pieceNormal.location == 6)
 
-        pieceReverse.location = 1
+        pieceReverse.location = 6
         pieceReverse.location = 28
-        assertTrue(pieceReverse.location == 24)
+        assertTrue(pieceReverse.location == 6)
         pieceReverse.location = 0
-        assertTrue(pieceReverse.location == 24)
+        assertTrue(pieceReverse.location == 6)
     }
 
-    @Test
-    fun when_piece_reverse_set_location_1_to_24_then_location_must_be_24_to_1() {
-        for (index in 1..24) {
-            pieceReverse.location = index
-            assertTrue(
-                "piece location is: ${pieceReverse.location}",
-                pieceReverse.location == abs(index - 25)
-            )
-        }
-    }
 
     @Test
-    fun when_piece_normal_set_location_1_to_24_then_location_must_be_1_to_24() {
+    fun when_piece_set_location_1_to_24_then_location_must_be_1_to_24() {
         for (index in 1..24) {
             pieceNormal.location = index
             assertTrue("piece location is: ${pieceNormal.location}", pieceNormal.location == index)
+        }
+
+        for (index in 1..24) {
+            pieceReverse.location = index
+            assertTrue("piece location is: ${pieceReverse.location}", pieceReverse.location == index)
         }
     }
 
@@ -174,6 +168,87 @@ class PieceTest {
             assertTrue(reverseAfterMove == null)
         }
     }
+
+    @Test
+    fun when_pieceAfterMove_for_normal_type_in_game_state_with_location_18_called_and_dice_is_4_then_return_piece_with_location_14() {
+        pieceNormal.state = PieceState.IN_GAME
+        pieceNormal.location = 18
+        val normalAfterMove = pieceNormal.pieceAfterMove(4)
+        assertTrue("pieceLocation after move is ${normalAfterMove!!.location}", normalAfterMove.location == 14)
+    }
+    @Test
+    fun when_pieceAfterMove_for_reverse_type_in_game_state_with_location_18_called_and_dice_is_4_then_return_piece_with_location_22() {
+        pieceReverse.state = PieceState.IN_GAME
+        pieceReverse.location = 18
+        val reverseAfterMove = pieceReverse.pieceAfterMove(4)
+        assertTrue("pieceLocation after move is ${reverseAfterMove!!.location}", reverseAfterMove.location == 22)
+    }
+
+    @Test
+    fun when_pieceAfterMove_for_normal_and_in_game_with_location_in_home_range_and_number_is_6_then_return_null() {
+        pieceNormal.state = PieceState.IN_GAME
+        pieceNormal.location = 5
+        val normalAfterMove = pieceNormal.pieceAfterMove(6)
+        assertTrue(normalAfterMove == null)
+    }
+
+    @Test
+    fun when_pieceAfterMove_for_normal_and_in_game_with_location_is_6_number_is_5_then_return_piece_with_location_1() {
+        pieceNormal.state = PieceState.IN_GAME
+        pieceNormal.location = 6
+        val normalAfterMove = pieceNormal.pieceAfterMove(5)
+        assertTrue("pieceLocation after move is ${normalAfterMove!!.location}", normalAfterMove.location == 1)
+    }
+
+    @Test
+    fun when_pieceAfterMove_for_normal_and_in_game_with_location_is_5_number_is_5_then_return_null() {
+        pieceNormal.state = PieceState.IN_GAME
+        pieceNormal.location = 5
+        val normalAfterMove = pieceNormal.pieceAfterMove(5)
+        assertTrue(normalAfterMove == null)
+    }
+
+    @Test
+    fun when_pieceAfterMove_for_normal_and_in_game_with_location_is_1_number_is_1_then_return_null() {
+        pieceNormal.state = PieceState.IN_GAME
+        pieceNormal.location = 1
+        val normalAfterMove = pieceNormal.pieceAfterMove(1)
+        assertTrue(normalAfterMove == null)
+    }
+
+    @Test
+    fun when_pieceAfterMove_for_reverse_and_in_game_with_location_in_home_range_and_number_is_6_then_return_null() {
+        pieceReverse.state = PieceState.IN_GAME
+        pieceReverse.location = 19
+        val reverseAfterMove = pieceReverse.pieceAfterMove(6)
+        assertTrue(reverseAfterMove == null)
+    }
+
+
+    @Test
+    fun when_pieceAfterMove_for_reverse_and_in_game_with_location_is_19_number_is_5_then_return_piece_with_location_24() {
+        pieceReverse.state = PieceState.IN_GAME
+        pieceReverse.location = 19
+        val reverseAfterMove = pieceReverse.pieceAfterMove(5)
+        assertTrue("pieceLocation after move is ${reverseAfterMove!!.location}", reverseAfterMove.location == 24)
+    }
+
+    @Test
+    fun when_pieceAfterMove_for_reverse_and_in_game_with_location_is_20_number_is_5_then_return_null() {
+        pieceReverse.state = PieceState.IN_GAME
+        pieceReverse.location = 20
+        val reverseAfterMove = pieceReverse.pieceAfterMove(5)
+        assertTrue(reverseAfterMove == null)
+    }
+
+    @Test
+    fun when_pieceAfterMove_for_reverse_and_in_game_with_location_is_24_number_is_1_then_return_null() {
+        pieceReverse.state = PieceState.IN_GAME
+        pieceReverse.location = 24
+        val reverseAfterMove = pieceReverse.pieceAfterMove(1)
+        assertTrue(reverseAfterMove == null)
+    }
+
 }
 
 @GameScope

@@ -1,8 +1,8 @@
 package com.k1apps.backgammon.buisness
 
-import com.k1apps.backgammon.Constants.Companion.END_NORMAL_HOME_RANGE
-import com.k1apps.backgammon.Constants.Companion.NORMAL_PIECE_LIST
-import com.k1apps.backgammon.Constants.Companion.START_NORMAL_HOME_RANGE
+import com.k1apps.backgammon.Constants.END_NORMAL_HOME_RANGE
+import com.k1apps.backgammon.Constants.NORMAL_PIECE_LIST
+import com.k1apps.backgammon.Constants.START_NORMAL_HOME_RANGE
 import com.k1apps.backgammon.buisness.event.CheckListEvent
 import com.k1apps.backgammon.buisness.event.DiceThrownEvent
 import com.k1apps.backgammon.dagger.GameScope
