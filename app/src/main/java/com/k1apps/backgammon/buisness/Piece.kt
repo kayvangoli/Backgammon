@@ -1,5 +1,6 @@
 package com.k1apps.backgammon.buisness
 
+import com.k1apps.backgammon.Constants.BOARD_LOCATION_RANGE
 import com.k1apps.backgammon.Utils.reverseLocation
 
 class PieceImpl(private val moveType: MoveType) : Piece {
@@ -7,11 +8,11 @@ class PieceImpl(private val moveType: MoveType) : Piece {
     override var state: PieceState = PieceState.IN_GAME
 
     override var location: Int = -1
-    set(value) {
-        if (value in 1..24) {
-            field = value
+        set(value) {
+            if (value in BOARD_LOCATION_RANGE) {
+                field = value
+            }
         }
-    }
 
     override fun pieceAfterMove(number: Byte): Piece? {
         assert(number in 1..7)
@@ -26,16 +27,15 @@ class PieceImpl(private val moveType: MoveType) : Piece {
                 piece.location = gotoEndNumber
             }
             PieceState.IN_GAME -> {
-                if (canMoveWithNumber(number)) {
-                    val location: Int
-                    if (moveType == MoveType.Revers) {
-                        location = this.location + number
-                    } else {
-                        location = this.location - number
-                    }
-                    piece.location = location
+                if (moveType == MoveType.Revers) {
+                    piece.location = this.location + number
                 } else {
-                    return null
+                    piece.location = this.location - number
+                }
+                return if (piece.location in BOARD_LOCATION_RANGE) {
+                    piece
+                } else {
+                    null
                 }
             }
             PieceState.WON -> {
@@ -43,14 +43,6 @@ class PieceImpl(private val moveType: MoveType) : Piece {
             }
         }
         return piece
-    }
-
-    private fun canMoveWithNumber(number: Byte): Boolean {
-        if (moveType == MoveType.Normal) {
-            return location - number > 0
-        } else {
-            return location + number < 25
-        }
     }
 
     override fun equals(other: Any?): Boolean {

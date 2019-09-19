@@ -1,5 +1,6 @@
 package com.k1apps.backgammon.buisness
 
+import com.k1apps.backgammon.Constants.BOARD_LOCATION_RANGE
 import com.k1apps.backgammon.dagger.GameScope
 import dagger.Component
 import dagger.Module
@@ -42,12 +43,12 @@ class PieceTest {
 
     @Test
     fun when_piece_set_location_1_to_24_then_location_must_be_1_to_24() {
-        for (index in 1..24) {
+        for (index in BOARD_LOCATION_RANGE) {
             pieceNormal.location = index
             assertTrue("piece location is: ${pieceNormal.location}", pieceNormal.location == index)
         }
 
-        for (index in 1..24) {
+        for (index in BOARD_LOCATION_RANGE) {
             pieceReverse.location = index
             assertTrue("piece location is: ${pieceReverse.location}", pieceReverse.location == index)
         }

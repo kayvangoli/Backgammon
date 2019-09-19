@@ -11,4 +11,5 @@ object Constants {
     const val END_NORMAL_HOME_RANGE = 6
     const val START_REVERSE_HOME_RANGE = 19
     const val END_REVERSE_HOME_RANGE = 24
+    val BOARD_LOCATION_RANGE = 1..24
 }
