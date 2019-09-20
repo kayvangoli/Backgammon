@@ -8,4 +8,5 @@ object Constants {
     val NORMAL_HOME_RANGE = 1..6
     val REVERSE_HOME_RANGE = 19..24
     val BOARD_LOCATION_RANGE = 1..24
+    val DICE_RANGE = 1..6
 }

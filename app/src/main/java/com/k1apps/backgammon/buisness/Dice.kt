@@ -4,7 +4,6 @@ import kotlin.random.Random
 
 class DiceImpl : Dice {
     override var enabled: Boolean = false
-        private set
     override var number: Byte? = null
         private set
 
@@ -24,7 +23,7 @@ class DiceImpl : Dice {
 }
 
 interface Dice {
-    val enabled: Boolean
+    var enabled: Boolean
     val number: Byte?
     fun roll(): Byte
 }
