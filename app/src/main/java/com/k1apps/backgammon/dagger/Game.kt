@@ -113,11 +113,15 @@ class PieceListModule {
 class DiceBoxModule {
     @Provides
     @GameScope
-    fun provideDiceBox(): DiceBox {
-        return DiceBoxImpl(getDice(), getDice())
+    fun provideDiceBox(
+        dice1: Dice,
+        dice2: Dice
+    ): DiceBox {
+        return DiceBoxImpl(dice1, dice2)
     }
 
-    private fun getDice(): Dice {
+    @Provides
+    fun provideDice(): Dice {
         return DiceImpl()
     }
 }
