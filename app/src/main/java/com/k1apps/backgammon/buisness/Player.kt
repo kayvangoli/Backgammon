@@ -1,9 +1,7 @@
 package com.k1apps.backgammon.buisness
 
-import com.k1apps.backgammon.Constants.END_NORMAL_HOME_RANGE
-import com.k1apps.backgammon.Constants.END_REVERSE_HOME_RANGE
-import com.k1apps.backgammon.Constants.START_NORMAL_HOME_RANGE
-import com.k1apps.backgammon.Constants.START_REVERSE_HOME_RANGE
+import com.k1apps.backgammon.Constants.NORMAL_HOME_RANGE
+import com.k1apps.backgammon.Constants.REVERSE_HOME_RANGE
 import com.k1apps.backgammon.buisness.event.CheckListEvent
 import com.k1apps.backgammon.buisness.event.DiceThrownEvent
 import org.greenrobot.eventbus.EventBus
@@ -16,10 +14,10 @@ class PlayerImpl(
 ) : Player {
     override var dice: Dice? = null
     override var diceBox: DiceBox? = null
-    override val homeCellIndexRange: Pair<Int, Int> = if (moveType == MoveType.Normal) {
-        Pair(START_NORMAL_HOME_RANGE, END_NORMAL_HOME_RANGE)
+    override val homeCellIndexRange: IntRange = if (moveType == MoveType.Normal) {
+        NORMAL_HOME_RANGE
     } else {
-        Pair(START_REVERSE_HOME_RANGE, END_REVERSE_HOME_RANGE)
+        REVERSE_HOME_RANGE
     }
 
 
@@ -44,7 +42,7 @@ class PlayerImpl(
 }
 
 interface Player {
-    val homeCellIndexRange: Pair<Int, Int>
+    val homeCellIndexRange: IntRange
     val pieceList: ArrayList<Piece>
     var diceBox: DiceBox?
     var dice: Dice?

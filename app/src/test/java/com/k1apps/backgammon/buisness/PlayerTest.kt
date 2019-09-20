@@ -1,8 +1,7 @@
 package com.k1apps.backgammon.buisness
 
-import com.k1apps.backgammon.Constants.END_NORMAL_HOME_RANGE
+import com.k1apps.backgammon.Constants.NORMAL_HOME_RANGE
 import com.k1apps.backgammon.Constants.NORMAL_PIECE_LIST
-import com.k1apps.backgammon.Constants.START_NORMAL_HOME_RANGE
 import com.k1apps.backgammon.buisness.event.CheckListEvent
 import com.k1apps.backgammon.buisness.event.DiceThrownEvent
 import com.k1apps.backgammon.dagger.GameScope
@@ -14,13 +13,11 @@ import org.greenrobot.eventbus.EventBus
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Captor
 import org.mockito.Mockito
 import org.mockito.Mockito.*
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.collections.ArrayList
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers
 
 
@@ -36,9 +33,6 @@ class PlayerTest {
     @field:Named("checkListEvent")
     @Inject
     lateinit var checkListEvent: BoardImpl
-
-    @Captor
-    var expectPieceList: ArgumentCaptor<ArrayList<Piece>>? = null
 
     @Before
     fun setup() {
@@ -105,7 +99,7 @@ class PlayerTest {
             verify(it, times(1)).pieceAfterMove(3)
         }
         verify(checkListEvent, times(1)).onEvent(
-            CheckListEvent(Pair(START_NORMAL_HOME_RANGE, END_NORMAL_HOME_RANGE), list)
+            CheckListEvent(NORMAL_HOME_RANGE, list)
         )
     }
 }
