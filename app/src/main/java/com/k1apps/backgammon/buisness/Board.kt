@@ -2,15 +2,13 @@ package com.k1apps.backgammon.buisness
 
 import androidx.collection.ArrayMap
 import com.k1apps.backgammon.Utils.reverseLocation
-import com.k1apps.backgammon.buisness.event.CheckListEvent
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
 import javax.inject.Inject
 
 interface Board {
     val pieceList1: ArrayList<Piece>
     val pieceList2: ArrayList<Piece>
     fun initBoard()
+    fun canMovePiece(homeCellIndexRange: IntRange, piece: Piece, number: Byte): Boolean
 }
 
 class BoardImpl @Inject constructor(
@@ -18,10 +16,6 @@ class BoardImpl @Inject constructor(
 ) : Board {
 
     private val cells: ArrayMap<Int, ArrayList<Piece>> = ArrayMap()
-
-    init {
-        EventBus.getDefault().register(this)
-    }
 
     override fun initBoard() {
         initLists()
@@ -39,16 +33,16 @@ class BoardImpl @Inject constructor(
         setPiecesToCells(pieceList2.subList(10, 15), reverseLocation(19))
     }
 
-    @Subscribe
-    fun onEvent(event: CheckListEvent) {
-
-    }
-
     private fun setPiecesToCells(pieces: MutableList<Piece>, location: Int) {
         for (piece in pieces) {
             piece.location = location
             setPieceToCell(piece)
         }
+    }
+
+    override fun canMovePiece(homeCellIndexRange: IntRange, piece: Piece, number: Byte): Boolean {
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return false
     }
 
     private fun setPieceToCell(piece: Piece) {

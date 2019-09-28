@@ -2,8 +2,8 @@ package com.k1apps.backgammon.buisness
 
 import com.k1apps.backgammon.Constants.NORMAL_HOME_RANGE
 import com.k1apps.backgammon.Constants.NORMAL_PIECE_LIST
-import com.k1apps.backgammon.buisness.event.CheckListEvent
 import com.k1apps.backgammon.buisness.event.DiceThrownEvent
+import com.k1apps.backgammon.dagger.BoardModule
 import com.k1apps.backgammon.dagger.GameScope
 import com.k1apps.backgammon.dagger.PieceListModule
 import dagger.Component
@@ -30,9 +30,9 @@ class PlayerTest {
     @Inject
     lateinit var diceDistributorImpl: DiceDistributorImpl
 
-    @field:Named("checkListEvent")
     @Inject
-    lateinit var checkListEvent: BoardImpl
+    @field:Named("mockBoard")
+    lateinit var board: Board
 
     @Before
     fun setup() {
@@ -81,54 +81,62 @@ class PlayerTest {
         }
     }
 
+    // TODO: 9/28/19 Kayvan: this test is incomplete
     @Test
-    fun when_roll_called_with_dice_box_then_check_pieces_for_move_and_raise_check_list_event() {
-        val diceBoxMock = DiceBoxImpl(mock(Dice::class.java), mock(Dice::class.java))
+    fun when_roll_called_with_dice_box_then_check_pieces_for_move() {
+        val diceBoxMock = mock(DiceBox::class.java)
+        `when`(diceBoxMock.dice1).thenReturn(mock(Dice::class.java))
+        `when`(diceBoxMock.dice2).thenReturn(mock(Dice::class.java))
         `when`(diceBoxMock.dice1.number).thenReturn(2)
         `when`(diceBoxMock.dice2.number).thenReturn(3)
         playerMockedList.diceBox = diceBoxMock
-        val list: ArrayList<Piece> = arrayListOf()
-        playerMockedList.pieceList.forEach  { piece ->
+        playerMockedList.pieceList.forEach { piece ->
             `when`(piece.pieceAfterMove(ArgumentMatchers.anyByte())).thenReturn(piece)
-            list.add(piece)
-            list.add(piece)
+            `when`(
+                board.canMovePiece(
+                    NORMAL_HOME_RANGE,
+                    piece,
+                    2
+                )
+            ).thenReturn(true)
         }
         playerMockedList.roll()
+        verify(diceBoxMock, times(15)).canUseDiceWith(2)
+//        verify(diceBoxMock, times(1)).canUseDiceWith(3)
         playerMockedList.pieceList.forEach {
             verify(it, times(1)).pieceAfterMove(2)
             verify(it, times(1)).pieceAfterMove(3)
         }
-        verify(checkListEvent, times(1)).onEvent(
-            CheckListEvent(NORMAL_HOME_RANGE, list)
-        )
     }
 }
 
 
 @GameScope
-@Component(modules = [PlayerModuleTest::class, PieceListModule::class])
+@Component(modules = [PlayerModuleTest::class, PieceListModule::class, BoardModule::class])
 interface PlayerComponentTest {
     fun inject(playerTest: PlayerTest)
 }
 
 
-@Module(includes = [PieceListModule::class])
+@Module(includes = [PieceListModule::class, BoardModule::class])
 class PlayerModuleTest {
     @GameScope
     @Provides
     fun providePlayer(
-        @Named(NORMAL_PIECE_LIST) pieceList: ArrayList<Piece>
+        @Named(NORMAL_PIECE_LIST) pieceList: ArrayList<Piece>,
+        board: Board
     ): Player {
-        return PlayerImpl(PlayerType.LocalPlayer, pieceList, MoveType.Normal)
+        return PlayerImpl(PlayerType.LocalPlayer, pieceList, MoveType.Normal, board)
     }
 
     @GameScope
     @Provides
     @Named("playerWithMockedList")
     fun providePlayerWithMockedList(
-        @Named("mockedPieceList") pieceList: ArrayList<Piece>
+        @Named("mockedPieceList") pieceList: ArrayList<Piece>,
+        @Named("mockBoard") board: Board
     ): Player {
-        return PlayerImpl(PlayerType.LocalPlayer, pieceList, MoveType.Normal)
+        return PlayerImpl(PlayerType.LocalPlayer, pieceList, MoveType.Normal, board)
     }
 
     @GameScope
@@ -145,11 +153,9 @@ class PlayerModuleTest {
 
     @GameScope
     @Provides
-    @Named("checkListEvent")
-    fun provideCheckListEvent(): BoardImpl {
-        val mockBoard = mock(BoardImpl::class.java)
-        EventBus.getDefault().register(mockBoard)
-        return mockBoard
+    @Named("mockBoard")
+    fun provideBoardMock(): Board {
+        return mock(Board::class.java)
     }
 
     @GameScope

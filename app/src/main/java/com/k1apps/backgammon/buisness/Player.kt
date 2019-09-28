@@ -10,7 +10,8 @@ import java.util.ArrayList
 class PlayerImpl(
     override val playerType: PlayerType = PlayerType.LocalPlayer,
     override val pieceList: ArrayList<Piece>,
-    moveType: MoveType
+    moveType: MoveType,
+    private val board: Board
 ) : Player {
     override var dice: Dice? = null
     override var diceBox: DiceBox? = null
@@ -26,12 +27,20 @@ class PlayerImpl(
             dice != null -> EventBus.getDefault().post(DiceThrownEvent(this, dice!!.roll()))
             diceBox != null -> {
                 diceBox!!.roll()
-                val expectPieceList = arrayListOf<Piece>()
                 for (piece in pieceList) {
-                    piece.pieceAfterMove(diceBox!!.dice1.number!!)?.let { expectPieceList.add(it) }
-                    piece.pieceAfterMove(diceBox!!.dice2.number!!)?.let { expectPieceList.add(it) }
+                    val number1 = diceBox!!.dice1.number!!
+                    val number2 = diceBox!!.dice2.number!!
+                    piece.pieceAfterMove(number1)?.let {
+                        if (board.canMovePiece(homeCellIndexRange, it, number1)) {
+                            diceBox!!.canUseDiceWith(number1)
+                        }
+                    }
+                    piece.pieceAfterMove(number2)?.let {
+                        if (board.canMovePiece(homeCellIndexRange, it, number2)) {
+                            diceBox!!.canUseDiceWith(number2)
+                        }
+                    }
                 }
-                EventBus.getDefault().post(CheckListEvent(homeCellIndexRange, expectPieceList))
             }
         }
     }

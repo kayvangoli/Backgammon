@@ -17,12 +17,16 @@ annotation class GameScope
 
 @GameScope
 @Component(
-    modules = [GameModule::class, DiceBoxModule::class, PieceListModule::class, PlayerModule::class]
+    modules = [GameModule::class, DiceBoxModule::class, PieceListModule::class,
+        PlayerModule::class, BoardModule::class]
 )
 interface GameComponent {
 }
 
-@Module(includes = [DiceBoxModule::class, PieceListModule::class, PlayerModule::class])
+@Module(
+    includes = [DiceBoxModule::class, PieceListModule::class, PlayerModule::class,
+        BoardModule::class]
+)
 class GameModule {
     @Provides
     @GameScope
@@ -38,15 +42,6 @@ class GameModule {
 
     @Provides
     @GameScope
-    fun provideBoard(
-        @Named(NORMAL_PIECE_LIST) normalPieceList: ArrayList<Piece>,
-        @Named(REVERSE_PIECE_LIST) reversePieceList: ArrayList<Piece>
-    ): Board {
-        return BoardImpl(normalPieceList, reversePieceList)
-    }
-
-    @Provides
-    @GameScope
     fun provideDiceDistributor(
         @Named(NORMAL_PLAYER) player1: Player,
         @Named(REVERSE_PLAYER) player2: Player,
@@ -58,19 +53,38 @@ class GameModule {
 }
 
 @Module
+class BoardModule {
+    @Provides
+    @GameScope
+    fun provideBoard(
+        @Named(NORMAL_PIECE_LIST) normalPieceList: ArrayList<Piece>,
+        @Named(REVERSE_PIECE_LIST) reversePieceList: ArrayList<Piece>
+    ): Board {
+        return BoardImpl(normalPieceList, reversePieceList)
+    }
+
+}
+
+@Module
 class PlayerModule {
     @GameScope
     @Provides
     @Named(NORMAL_PLAYER)
-    fun providePlayer1(@Named(NORMAL_PIECE_LIST) pieceList: ArrayList<Piece>): Player {
-        return PlayerImpl(PlayerType.LocalPlayer, pieceList, MoveType.Normal)
+    fun providePlayer1(
+        @Named(NORMAL_PIECE_LIST) pieceList: ArrayList<Piece>,
+        board: Board
+    ): Player {
+        return PlayerImpl(PlayerType.LocalPlayer, pieceList, MoveType.Normal, board)
     }
 
     @GameScope
     @Provides
     @Named(REVERSE_PLAYER)
-    fun providePlayer2(@Named(REVERSE_PIECE_LIST) pieceList: ArrayList<Piece>): Player {
-        return PlayerImpl(PlayerType.LocalPlayer, pieceList, MoveType.Revers)
+    fun providePlayer2(
+        @Named(REVERSE_PIECE_LIST) pieceList: ArrayList<Piece>,
+        board: Board
+    ): Player {
+        return PlayerImpl(PlayerType.LocalPlayer, pieceList, MoveType.Revers, board)
     }
 
 }
