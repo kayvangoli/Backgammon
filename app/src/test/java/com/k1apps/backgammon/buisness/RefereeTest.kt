@@ -106,15 +106,18 @@ class RefereeTest {
 
     @Test
     fun when_roll_called_then_pass_roll_to_player_if_turn_is_correct() {
-        `when`(diceDistributor.whichPlayerHasDice()).thenReturn(player1)
+        `when`(diceDistributor.whichPlayerHasDice()).thenReturn(Pair(player1, null))
         `when`(player1.playerType).thenReturn(PlayerType.LocalPlayer)
         refereeImpl.roll(PlayerType.LocalPlayer)
         verify(player1, times(1)).roll()
     }
 
+    // TODO: 9/28/19 Kayvan: add more test for pass roll when both players has dice
+
+
     @Test
     fun when_roll_called_then_dont_pass_roll_to_player_if_turn_is_incorrect() {
-        `when`(diceDistributor.whichPlayerHasDice()).thenReturn(player1)
+        `when`(diceDistributor.whichPlayerHasDice()).thenReturn(Pair(player1, null))
         `when`(player1.playerType).thenReturn(PlayerType.LocalPlayer)
         refereeImpl.roll(PlayerType.AndroidPlayer)
         verify(player1, times(0)).roll()

@@ -2,7 +2,6 @@ package com.k1apps.backgammon.buisness
 
 import com.k1apps.backgammon.Constants.NORMAL_HOME_RANGE
 import com.k1apps.backgammon.Constants.REVERSE_HOME_RANGE
-import com.k1apps.backgammon.buisness.event.CheckListEvent
 import com.k1apps.backgammon.buisness.event.DiceThrownEvent
 import org.greenrobot.eventbus.EventBus
 import java.util.ArrayList

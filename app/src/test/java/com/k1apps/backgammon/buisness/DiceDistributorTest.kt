@@ -122,13 +122,24 @@ class DiceDistributorTest {
     fun when_player1_has_dice_box_then_return_player1_on_whichPlayerHasDiceBox() {
         diceDistributorRealPlayer.onEvent(DiceThrownEvent(player1, 6))
         diceDistributorRealPlayer.onEvent(DiceThrownEvent(player2, 5))
-        assertTrue(diceDistributorRealPlayer.whichPlayerHasDice() == player1)
+        assertTrue(diceDistributorRealPlayer.whichPlayerHasDice()?.first == player1)
     }
 
     @Test
     fun when_player2_has_dice_box_then_return_player2_on_whichPlayerHasDiceBox() {
         diceDistributorRealPlayer.onEvent(DiceThrownEvent(player1, 5))
         diceDistributorRealPlayer.onEvent(DiceThrownEvent(player2, 6))
-        assertTrue(diceDistributorRealPlayer.whichPlayerHasDice() == player2)
+        assertTrue(diceDistributorRealPlayer.whichPlayerHasDice()?.first == player2)
+    }
+
+    @Test
+    fun when_wichPlayerHasDice_called_and_both_player_has_dice_then_return_both_players() {
+        `when`(mockPlayer1.dice).thenReturn(mock(Dice::class.java))
+        `when`(mockPlayer2.dice).thenReturn(mock(Dice::class.java))
+        val whichPlayerHasDice = diceDistributorMockPlayer.whichPlayerHasDice()
+        verify(mockPlayer1, times(1)).dice
+        verify(mockPlayer2, times(1)).dice
+        assertTrue(whichPlayerHasDice!!.first == mockPlayer1)
+        assertTrue(whichPlayerHasDice.second == mockPlayer2)
     }
 }

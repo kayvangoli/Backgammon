@@ -16,12 +16,15 @@ class DiceDistributorImpl(
         EventBus.getDefault().register(this)
     }
 
-    override fun whichPlayerHasDice(): Player? {
+    override fun whichPlayerHasDice(): Pair<Player, Player?>? {
         if (player1.diceBox != null) {
-            return player1
+            return Pair(player1, null)
         }
         if (player2.diceBox != null) {
-            return player2
+            return Pair(player2, null)
+        }
+        if (player1.dice != null && player2.dice != null) {
+            return Pair(player1, player2)
         }
         return null
     }
@@ -57,5 +60,5 @@ class DiceDistributorImpl(
 
 interface DiceDistributor {
     fun start()
-    fun whichPlayerHasDice(): Player?
+    fun whichPlayerHasDice(): Pair<Player, Player?>?
 }
