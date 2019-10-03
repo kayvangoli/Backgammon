@@ -40,7 +40,7 @@ class PlayerTest {
     }
 
     @Test
-    fun when_roll_called_with_dice_then_roll_dice_callback_invoked() {
+    fun when_roll_called_with_dice_then_roll_dice_and_post_dice_thrown_event_callback_invoked() {
         val diceMock: Dice = mock(Dice::class.java)
         Mockito.`when`(diceMock.roll()).thenReturn(2)
         player.dice = diceMock
@@ -81,7 +81,6 @@ class PlayerTest {
         }
     }
 
-    // TODO: 9/28/19 Kayvan: this test is incomplete
     @Test
     fun when_roll_called_with_dice_box_then_check_pieces_for_move() {
         val diceBoxMock = mock(DiceBox::class.java)
@@ -99,10 +98,17 @@ class PlayerTest {
                     2
                 )
             ).thenReturn(true)
+            `when`(
+                board.canMovePiece(
+                    NORMAL_HOME_RANGE,
+                    piece,
+                    3
+                )
+            ).thenReturn(true)
         }
         playerMockedList.roll()
         verify(diceBoxMock, times(15)).canUseDiceWith(2)
-//        verify(diceBoxMock, times(1)).canUseDiceWith(3)
+        verify(diceBoxMock, times(15)).canUseDiceWith(3)
         playerMockedList.pieceList.forEach {
             verify(it, times(1)).pieceAfterMove(2)
             verify(it, times(1)).pieceAfterMove(3)

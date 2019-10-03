@@ -21,7 +21,7 @@ class RefereeImpl(
             pair.second?.let {
                 if (playerType == pair.first.playerType) {
                     pair.first.roll()
-                } else {
+                } else if (playerType == it.playerType) {
                     pair.second!!.roll()
                 }
                 return
