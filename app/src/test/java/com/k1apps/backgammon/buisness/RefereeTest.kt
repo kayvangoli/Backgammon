@@ -112,7 +112,45 @@ class RefereeTest {
         verify(player1, times(1)).roll()
     }
 
-    // TODO: 9/28/19 Kayvan: add more test for pass roll when both players has dice
+    @Test
+    fun when_dice_distributor_return_two_player_and_player1_type_is_correct_then_pass_roll_to_player1() {
+        `when`(diceDistributor.whichPlayerHasDice()).thenReturn(Pair(player1, player2))
+        `when`(player1.playerType).thenReturn(PlayerType.AndroidPlayer)
+        `when`(player2.playerType).thenReturn(PlayerType.LocalPlayer)
+        refereeImpl.roll(PlayerType.AndroidPlayer)
+        verify(player1, times(1)).roll()
+        verify(player2, times(0)).roll()
+    }
+
+    @Test
+    fun when_dice_distributor_return_two_player_and_player2_type_is_correct_then_pass_roll_to_player2() {
+        `when`(diceDistributor.whichPlayerHasDice()).thenReturn(Pair(player1, player2))
+        `when`(player1.playerType).thenReturn(PlayerType.AndroidPlayer)
+        `when`(player2.playerType).thenReturn(PlayerType.LocalPlayer)
+        refereeImpl.roll(PlayerType.LocalPlayer)
+        verify(player2, times(1)).roll()
+        verify(player1, times(0)).roll()
+    }
+
+    @Test
+    fun when_dice_distributor_return_two_player_and_both_of_two_players_type_is_correct_then_pass_roll_to_player1() {
+        `when`(diceDistributor.whichPlayerHasDice()).thenReturn(Pair(player1, player2))
+        `when`(player1.playerType).thenReturn(PlayerType.LocalPlayer)
+        `when`(player2.playerType).thenReturn(PlayerType.LocalPlayer)
+        refereeImpl.roll(PlayerType.LocalPlayer)
+        verify(player2, times(0)).roll()
+        verify(player1, times(1)).roll()
+    }
+
+    @Test
+    fun when_dice_distributor_return_two_player_and_both_of_two_players_type_is_incorrect_then_pass_roll_to_no_any_players() {
+        `when`(diceDistributor.whichPlayerHasDice()).thenReturn(Pair(player1, player2))
+        `when`(player1.playerType).thenReturn(PlayerType.LocalPlayer)
+        `when`(player2.playerType).thenReturn(PlayerType.LocalPlayer)
+        refereeImpl.roll(PlayerType.AndroidPlayer)
+        verify(player1, times(0)).roll()
+        verify(player2, times(0)).roll()
+    }
 
 
     @Test
