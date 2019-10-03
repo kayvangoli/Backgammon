@@ -51,7 +51,7 @@ class PlayerTest {
     @Test
     fun when_retakeDice_called_then_dice_should_be_null() {
         val diceMock: Dice = mock(Dice::class.java)
-        Mockito.`when`(diceMock.roll()).thenReturn(2)
+        `when`(diceMock.roll()).thenReturn(2)
         player.dice = diceMock
         assertTrue(player.dice != null)
         player.retakeDice()

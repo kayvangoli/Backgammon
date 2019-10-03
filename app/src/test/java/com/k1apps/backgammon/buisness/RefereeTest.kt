@@ -1,6 +1,7 @@
 package com.k1apps.backgammon.buisness
 
-import com.k1apps.backgammon.Constants
+import com.k1apps.backgammon.Constants.NORMAL_PLAYER
+import com.k1apps.backgammon.Constants.REVERSE_PLAYER
 import com.k1apps.backgammon.dagger.DiceBoxModule
 import com.k1apps.backgammon.dagger.GameScope
 import dagger.Component
@@ -26,12 +27,9 @@ class RefereeModuleTest {
     @Provides
     fun provideReferee(
         board: Board,
-        diceBox: DiceBox,
-        @Named(Constants.NORMAL_PLAYER) player1: Player,
-        @Named(Constants.REVERSE_PLAYER) player2: Player,
         diceDistributor: DiceDistributor
     ): RefereeImpl {
-        return RefereeImpl(board, diceBox, player1, player2, diceDistributor)
+        return RefereeImpl(board, diceDistributor)
     }
 
     @GameScope
@@ -48,14 +46,14 @@ class RefereeModuleTest {
 
     @GameScope
     @Provides
-    @Named(Constants.NORMAL_PLAYER)
+    @Named(NORMAL_PLAYER)
     fun providePlayer1(): Player {
         return mock(Player::class.java)
     }
 
     @GameScope
     @Provides
-    @Named(Constants.REVERSE_PLAYER)
+    @Named(REVERSE_PLAYER)
     fun providePlayer2(): Player {
         return mock(Player::class.java)
     }
@@ -68,10 +66,10 @@ class RefereeTest {
     @Inject
     lateinit var board: Board
     @Inject
-    @field:Named("normalPlayer")
+    @field:Named(NORMAL_PLAYER)
     lateinit var player1: Player
     @Inject
-    @field:Named("reversePlayer")
+    @field:Named(REVERSE_PLAYER)
     lateinit var player2: Player
     @Inject
     lateinit var diceDistributor: DiceDistributor
@@ -92,10 +90,9 @@ class RefereeTest {
 
 
     @Test
-    fun when_referee_started_then_set_dices_to_players() {
+    fun when_referee_started_then_dice_distributor_should_started() {
         refereeImpl.start()
-        verify(player1, times(1)).dice = diceBox.dice1
-        verify(player2, times(1)).dice = diceBox.dice2
+        verify(diceDistributor, times(1)).start()
     }
 
     @Test

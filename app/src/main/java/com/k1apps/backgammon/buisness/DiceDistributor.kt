@@ -55,6 +55,8 @@ class DiceDistributorImpl(
 
     override fun start() {
         player1DiceNumber = -1
+        player1.dice = diceBox.dice1
+        player2.dice = diceBox.dice2
     }
 }
 

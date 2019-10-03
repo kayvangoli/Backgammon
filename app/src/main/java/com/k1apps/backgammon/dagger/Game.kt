@@ -32,12 +32,9 @@ class GameModule {
     @GameScope
     fun provideReferee(
         board: Board,
-        diceBox: DiceBox,
-        @Named(NORMAL_PLAYER) player1: Player,
-        @Named(REVERSE_PLAYER) player2: Player,
         diceDistributor: DiceDistributor
     ): Referee {
-        return RefereeImpl(board, diceBox, player1, player2, diceDistributor)
+        return RefereeImpl(board, diceDistributor)
     }
 
     @Provides
