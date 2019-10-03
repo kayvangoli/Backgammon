@@ -84,7 +84,13 @@ class DiceDistributorTest {
     @Before
     fun setup() {
         DaggerDiceDistributorComponentTest.create().inject(this)
-        MockitoAnnotations.initMocks(this)
+    }
+
+    @Test
+    fun when_dice_distributor_started_then_each_player_must_have_dice() {
+        diceDistributorMockPlayer.start()
+        verify(mockPlayer1, times(1)).dice = diceBox.dice1
+        verify(mockPlayer2, times(1)).dice = diceBox.dice2
     }
 
     @Test
@@ -133,7 +139,7 @@ class DiceDistributorTest {
     }
 
     @Test
-    fun when_wichPlayerHasDice_called_and_both_player_has_dice_then_return_both_players() {
+    fun when_whichPlayerHasDice_called_and_both_player_has_dice_then_return_both_players() {
         `when`(mockPlayer1.dice).thenReturn(mock(Dice::class.java))
         `when`(mockPlayer2.dice).thenReturn(mock(Dice::class.java))
         val whichPlayerHasDice = diceDistributorMockPlayer.whichPlayerHasDice()
