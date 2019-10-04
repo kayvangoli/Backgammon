@@ -1,86 +1,24 @@
 package com.k1apps.backgammon.buisness
 
-import com.k1apps.backgammon.Constants.NORMAL_PLAYER
-import com.k1apps.backgammon.Constants.REVERSE_PLAYER
-import com.k1apps.backgammon.dagger.DiceBoxModule
-import com.k1apps.backgammon.dagger.GameScope
-import dagger.Component
-import dagger.Module
-import dagger.Provides
-import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.InjectMocks
+import org.mockito.Mock
 import org.mockito.Mockito.*
-import javax.inject.Inject
-import javax.inject.Named
+import org.mockito.junit.MockitoJUnitRunner
 
-
-@GameScope
-@Component(modules = [RefereeModuleTest::class])
-interface RefereeComponentTest {
-    fun inject(refereeTest: RefereeTest)
-}
-
-@Module(includes = [DiceBoxModule::class])
-class RefereeModuleTest {
-
-    @GameScope
-    @Provides
-    fun provideReferee(
-        board: Board,
-        diceDistributor: DiceDistributor
-    ): RefereeImpl {
-        return RefereeImpl(board, diceDistributor)
-    }
-
-    @GameScope
-    @Provides
-    fun provideBoard(): Board {
-        return mock(Board::class.java)
-    }
-
-    @GameScope
-    @Provides
-    fun provideDiceDistributor(): DiceDistributor {
-        return mock(DiceDistributor::class.java)
-    }
-
-    @GameScope
-    @Provides
-    @Named(NORMAL_PLAYER)
-    fun providePlayer1(): Player {
-        return mock(Player::class.java)
-    }
-
-    @GameScope
-    @Provides
-    @Named(REVERSE_PLAYER)
-    fun providePlayer2(): Player {
-        return mock(Player::class.java)
-    }
-
-}
-
+@RunWith(MockitoJUnitRunner::class)
 class RefereeTest {
-    @Inject
-    lateinit var refereeImpl: RefereeImpl
-    @Inject
+    @Mock
     lateinit var board: Board
-    @Inject
-    @field:Named(NORMAL_PLAYER)
+    @Mock
     lateinit var player1: Player
-    @Inject
-    @field:Named(REVERSE_PLAYER)
+    @Mock
     lateinit var player2: Player
-    @Inject
+    @Mock
     lateinit var diceDistributor: DiceDistributor
-    @Inject
-    lateinit var diceBox: DiceBox
-
-
-    @Before
-    fun setup() {
-        DaggerRefereeComponentTest.create().inject(this)
-    }
+    @InjectMocks
+    lateinit var refereeImpl: RefereeImpl
 
     @Test
     fun when_referee_started_then_board_should_be_init_called() {
@@ -113,7 +51,6 @@ class RefereeTest {
     fun when_dice_distributor_return_two_player_and_player1_type_is_correct_then_pass_roll_to_player1() {
         `when`(diceDistributor.whichPlayerHasDice()).thenReturn(Pair(player1, player2))
         `when`(player1.playerType).thenReturn(PlayerType.AndroidPlayer)
-        `when`(player2.playerType).thenReturn(PlayerType.LocalPlayer)
         refereeImpl.roll(PlayerType.AndroidPlayer)
         verify(player1, times(1)).roll()
         verify(player2, times(0)).roll()
@@ -133,7 +70,6 @@ class RefereeTest {
     fun when_dice_distributor_return_two_player_and_both_of_two_players_type_is_correct_then_pass_roll_to_player1() {
         `when`(diceDistributor.whichPlayerHasDice()).thenReturn(Pair(player1, player2))
         `when`(player1.playerType).thenReturn(PlayerType.LocalPlayer)
-        `when`(player2.playerType).thenReturn(PlayerType.LocalPlayer)
         refereeImpl.roll(PlayerType.LocalPlayer)
         verify(player2, times(0)).roll()
         verify(player1, times(1)).roll()
