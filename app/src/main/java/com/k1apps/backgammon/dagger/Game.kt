@@ -1,9 +1,7 @@
 package com.k1apps.backgammon.dagger
 
-import com.k1apps.backgammon.Constants.NORMAL_PIECE
 import com.k1apps.backgammon.Constants.NORMAL_PIECE_LIST
 import com.k1apps.backgammon.Constants.NORMAL_PLAYER
-import com.k1apps.backgammon.Constants.REVERSE_PIECE
 import com.k1apps.backgammon.Constants.REVERSE_PIECE_LIST
 import com.k1apps.backgammon.Constants.REVERSE_PLAYER
 import com.k1apps.backgammon.buisness.*
@@ -35,11 +33,11 @@ class GameModule {
 }
 
 @Module(includes = [PlayerModule::class, DiceBoxModule::class])
-class DiceDistributorModule {
+open class DiceDistributorModule {
 
     @GameScope
     @Provides
-    fun provideDiceDistributor(
+    open fun provideDiceDistributor(
         @Named(NORMAL_PLAYER) player1: Player,
         @Named(REVERSE_PLAYER) player2: Player,
         diceBox: DiceBox
@@ -49,10 +47,10 @@ class DiceDistributorModule {
 }
 
 @Module
-class BoardModule {
+open class BoardModule {
     @Provides
     @GameScope
-    fun provideBoard(
+    open fun provideBoard(
         @Named(NORMAL_PIECE_LIST) normalPieceList: ArrayList<Piece>,
         @Named(REVERSE_PIECE_LIST) reversePieceList: ArrayList<Piece>
     ): Board {
@@ -85,18 +83,17 @@ open class PlayerModule {
 
 }
 
-@Module(includes = [PieceModule::class])
-class PieceListModule {
+
+@Module
+open class PieceListModule {
 
     @Provides
     @GameScope
     @Named(NORMAL_PIECE_LIST)
-    fun reverseList(@Named(NORMAL_PIECE) piece: Piece): ArrayList<Piece> {
-        var copiedPiece = piece
+    open fun reverseList(): ArrayList<Piece> {
         val arrayList: ArrayList<Piece> = arrayListOf()
         for (item in 0 until 15) {
-            arrayList.add(copiedPiece)
-            copiedPiece = piece.copy()
+            arrayList.add(PieceFactory.createNormalPiece())
         }
         return arrayList
     }
@@ -104,31 +101,12 @@ class PieceListModule {
     @Provides
     @GameScope
     @Named(REVERSE_PIECE_LIST)
-    fun normalList(@Named(REVERSE_PIECE) piece: Piece): ArrayList<Piece> {
-        var copiedPiece = piece
+    open fun normalList(): ArrayList<Piece> {
         val arrayList: ArrayList<Piece> = arrayListOf()
         for (item in 0 until 15) {
-            arrayList.add(copiedPiece)
-            copiedPiece = piece.copy()
+            arrayList.add(PieceFactory.createReversePiece())
         }
         return arrayList
-    }
-
-}
-
-@Module
-open class PieceModule {
-
-    @Named(REVERSE_PIECE)
-    @Provides
-    open fun provideReversePiece(): Piece {
-        return PieceImpl(MoveType.Revers)
-    }
-
-    @Named(NORMAL_PIECE)
-    @Provides
-    open fun provideNormalPiece(): Piece {
-        return PieceImpl(MoveType.Normal)
     }
 
 }

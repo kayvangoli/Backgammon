@@ -15,7 +15,6 @@ class PieceImpl(private val moveType: MoveType) : Piece {
         }
 
     override fun pieceAfterMove(number: Byte): Piece? {
-        assert(number in 1..7)
         val piece = PieceImpl(moveType)
         piece.state = state
         when (state) {

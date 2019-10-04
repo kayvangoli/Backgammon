@@ -1,57 +1,53 @@
 package com.k1apps.backgammon.buisness
 
 import com.k1apps.backgammon.Constants.NORMAL_HOME_RANGE
-import com.k1apps.backgammon.Constants.NORMAL_PIECE_LIST
+import com.k1apps.backgammon.Constants.NORMAL_PLAYER
 import com.k1apps.backgammon.buisness.event.DiceThrownEvent
-import com.k1apps.backgammon.dagger.BoardModule
-import com.k1apps.backgammon.dagger.GameScope
-import com.k1apps.backgammon.dagger.PieceListModule
+import com.k1apps.backgammon.dagger.*
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import org.greenrobot.eventbus.EventBus
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito
+import org.junit.runner.RunWith
 import org.mockito.Mockito.*
 import javax.inject.Inject
-import javax.inject.Named
-import kotlin.collections.ArrayList
 import org.mockito.ArgumentMatchers
+import org.mockito.Mock
+import org.mockito.junit.MockitoJUnitRunner
+import javax.inject.Named
 
-
+@RunWith(MockitoJUnitRunner::class)
 class PlayerTest {
-    @Inject
-    lateinit var player: Player
-    @Inject
-    @field:Named("playerWithMockedList")
-    lateinit var playerMockedList: Player
-    @Inject
-    lateinit var diceDistributorImpl: DiceDistributorImpl
 
     @Inject
-    @field:Named("mockBoard")
+    @field:Named(NORMAL_PLAYER)
+    lateinit var player: Player
+
+    @Mock
+    lateinit var diceDistributor: DiceDistributorImpl
+    @Inject
     lateinit var board: Board
 
     @Before
     fun setup() {
-        DaggerPlayerComponentTest.create().inject(this)
+        DaggerPlayerComponentTest.builder().setPieceListModule(SpyPieceListModule())
+            .setBoardModule(SpyBoardModule()).build().inject(this)
+        EventBus.getDefault().register(diceDistributor)
     }
 
     @Test
     fun when_roll_called_with_dice_then_roll_dice_and_post_dice_thrown_event_callback_invoked() {
         val diceMock: Dice = mock(Dice::class.java)
-        Mockito.`when`(diceMock.roll()).thenReturn(2)
+        `when`(diceMock.roll()).thenReturn(2)
         player.dice = diceMock
         player.roll()
-        verify(diceDistributorImpl, times(1)).onEvent(DiceThrownEvent(player, 2))
+        verify(diceDistributor, times(1)).onEvent(DiceThrownEvent(player, 2))
     }
 
     @Test
     fun when_retakeDice_called_then_dice_should_be_null() {
         val diceMock: Dice = mock(Dice::class.java)
-        `when`(diceMock.roll()).thenReturn(2)
         player.dice = diceMock
         assertTrue(player.dice != null)
         player.retakeDice()
@@ -61,21 +57,21 @@ class PlayerTest {
     @Test
     fun when_roll_called_with_dice_box_then_roll_dice_box() {
         val diceBoxMock: DiceBox = DiceBoxImpl(mock(Dice::class.java), mock(Dice::class.java))
-        playerMockedList.diceBox = diceBoxMock
-        `when`((playerMockedList.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
-        `when`((playerMockedList.diceBox as DiceBoxImpl).dice2.number).thenReturn(5)
-        playerMockedList.roll()
-        verify(playerMockedList.diceBox!!.dice1, times(1)).roll()
-        verify(playerMockedList.diceBox!!.dice2, times(1)).roll()
+        player.diceBox = diceBoxMock
+        `when`((player.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
+        `when`((player.diceBox as DiceBoxImpl).dice2.number).thenReturn(5)
+        player.roll()
+        verify(player.diceBox!!.dice1, times(1)).roll()
+        verify(player.diceBox!!.dice2, times(1)).roll()
     }
 
     @Test
     fun when_roll_called_with_dice_box_then_check_dices_by_all_piece_list() {
-        playerMockedList.diceBox = DiceBoxImpl(mock(Dice::class.java), mock(Dice::class.java))
-        `when`((playerMockedList.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
-        `when`((playerMockedList.diceBox as DiceBoxImpl).dice2.number).thenReturn(5)
-        playerMockedList.roll()
-        for (piece in playerMockedList.pieceList) {
+        player.diceBox = DiceBoxImpl(mock(Dice::class.java), mock(Dice::class.java))
+        `when`((player.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
+        `when`((player.diceBox as DiceBoxImpl).dice2.number).thenReturn(5)
+        player.roll()
+        for (piece in player.pieceList) {
             verify(piece, times(1)).pieceAfterMove(6)
             verify(piece, times(1)).pieceAfterMove(5)
         }
@@ -88,8 +84,8 @@ class PlayerTest {
         `when`(diceBoxMock.dice2).thenReturn(mock(Dice::class.java))
         `when`(diceBoxMock.dice1.number).thenReturn(2)
         `when`(diceBoxMock.dice2.number).thenReturn(3)
-        playerMockedList.diceBox = diceBoxMock
-        playerMockedList.pieceList.forEach { piece ->
+        player.diceBox = diceBoxMock
+        player.pieceList.forEach { piece ->
             `when`(piece.pieceAfterMove(ArgumentMatchers.anyByte())).thenReturn(piece)
             `when`(
                 board.canMovePiece(
@@ -106,10 +102,10 @@ class PlayerTest {
                 )
             ).thenReturn(true)
         }
-        playerMockedList.roll()
+        player.roll()
         verify(diceBoxMock, times(15)).canUseDiceWith(2)
         verify(diceBoxMock, times(15)).canUseDiceWith(3)
-        playerMockedList.pieceList.forEach {
+        player.pieceList.forEach {
             verify(it, times(1)).pieceAfterMove(2)
             verify(it, times(1)).pieceAfterMove(3)
         }
@@ -118,57 +114,43 @@ class PlayerTest {
 
 
 @GameScope
-@Component(modules = [PlayerModuleTest::class, PieceListModule::class, BoardModule::class])
+@Component(modules = [PlayerModule::class, PieceListModule::class, BoardModule::class])
 interface PlayerComponentTest {
+
+    @Component.Builder
+    interface Builder {
+        fun setPieceListModule(pieceListModule: PieceListModule): Builder
+        fun setBoardModule(boardModule: BoardModule): Builder
+        fun build(): PlayerComponentTest
+    }
+
     fun inject(playerTest: PlayerTest)
 }
 
-
-@Module(includes = [PieceListModule::class, BoardModule::class])
-class PlayerModuleTest {
-    @GameScope
-    @Provides
-    fun providePlayer(
-        @Named(NORMAL_PIECE_LIST) pieceList: ArrayList<Piece>,
-        board: Board
-    ): Player {
-        return PlayerImpl(PlayerType.LocalPlayer, pieceList, MoveType.Normal, board)
-    }
-
-    @GameScope
-    @Provides
-    @Named("playerWithMockedList")
-    fun providePlayerWithMockedList(
-        @Named("mockedPieceList") pieceList: ArrayList<Piece>,
-        @Named("mockBoard") board: Board
-    ): Player {
-        return PlayerImpl(PlayerType.LocalPlayer, pieceList, MoveType.Normal, board)
-    }
-
-    @GameScope
-    @Provides
-    @Named("mockedPieceList")
-    fun provideMockedList(): ArrayList<Piece> {
-        val mockPieceList = arrayListOf<Piece>()
-        for (i in 0 until 15) {
-            val mockPiece = mock(Piece::class.java)
-            mockPieceList.add(mockPiece)
+class SpyPieceListModule : PieceListModule() {
+    override fun reverseList(): ArrayList<Piece> {
+        val pieceList = arrayListOf<Piece>()
+        super.reverseList().forEach {
+            pieceList.add(spy(it))
         }
-        return mockPieceList
+        return pieceList
     }
 
-    @GameScope
-    @Provides
-    @Named("mockBoard")
-    fun provideBoardMock(): Board {
-        return mock(Board::class.java)
-    }
+    override fun normalList(): ArrayList<Piece> {
+        val pieceList = arrayListOf<Piece>()
+        super.reverseList().forEach {
+            pieceList.add(spy(it))
+        }
+        return pieceList
 
-    @GameScope
-    @Provides
-    fun provideDiceDistributor(): DiceDistributorImpl {
-        val mockTurnaroundImpl = mock(DiceDistributorImpl::class.java)
-        EventBus.getDefault().register(mockTurnaroundImpl)
-        return mockTurnaroundImpl
+    }
+}
+
+class SpyBoardModule : BoardModule() {
+    override fun provideBoard(
+        normalPieceList: ArrayList<Piece>,
+        reversePieceList: ArrayList<Piece>
+    ): Board {
+        return spy(super.provideBoard(normalPieceList, reversePieceList))
     }
 }

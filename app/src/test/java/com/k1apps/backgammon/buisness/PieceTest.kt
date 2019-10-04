@@ -3,8 +3,9 @@ package com.k1apps.backgammon.buisness
 import com.k1apps.backgammon.Constants.BOARD_LOCATION_RANGE
 import com.k1apps.backgammon.Constants.NORMAL_PIECE
 import com.k1apps.backgammon.Constants.REVERSE_PIECE
-import com.k1apps.backgammon.dagger.PieceModule
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -25,7 +26,7 @@ class PieceTest {
 
     @Before
     fun setup() {
-        DaggerPieceComponentTest.builder().setPieceModule(PieceModuleTest()).build().inject(this)
+        DaggerPieceComponentTest.create().inject(this)
     }
 
     @Test
@@ -278,23 +279,22 @@ class PieceTest {
 
 }
 
-@Component(modules = [PieceModule::class])
+@Component(modules = [SpyPieceModuleTest::class])
 interface PieceComponentTest {
     fun inject(pieceTest: PieceTest)
-
-    @Component.Builder
-    interface Builder {
-        fun setPieceModule(pieceModule: PieceModule): Builder
-        fun build(): PieceComponentTest
-    }
 }
 
-class PieceModuleTest : PieceModule() {
-    override fun provideReversePiece(): Piece {
-        return spy(super.provideReversePiece())
+@Module
+open class SpyPieceModuleTest {
+    @Provides
+    @Named(REVERSE_PIECE)
+    fun provideReversePiece(): Piece {
+        return spy(PieceFactory.createReversePiece())
     }
 
-    override fun provideNormalPiece(): Piece {
-        return spy(super.provideNormalPiece())
+    @Provides
+    @Named(NORMAL_PIECE)
+    fun provideNormalPiece(): Piece {
+        return spy(PieceFactory.createNormalPiece())
     }
 }
