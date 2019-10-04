@@ -58,12 +58,20 @@ class PieceImpl(private val moveType: MoveType) : Piece {
         result = 31 * result + location
         return result
     }
+
+    override fun copy(): Piece {
+        val cp = PieceImpl(moveType)
+        cp.location = location
+        cp.state = state
+        return cp
+    }
 }
 
 interface Piece {
     fun pieceAfterMove(number: Byte): Piece?
     var state: PieceState
     var location: Int
+    fun copy(): Piece
 }
 
 enum class PieceState {

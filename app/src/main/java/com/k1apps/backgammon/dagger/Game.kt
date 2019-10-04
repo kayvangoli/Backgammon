@@ -1,7 +1,9 @@
 package com.k1apps.backgammon.dagger
 
+import com.k1apps.backgammon.Constants.NORMAL_PIECE
 import com.k1apps.backgammon.Constants.NORMAL_PIECE_LIST
 import com.k1apps.backgammon.Constants.NORMAL_PLAYER
+import com.k1apps.backgammon.Constants.REVERSE_PIECE
 import com.k1apps.backgammon.Constants.REVERSE_PIECE_LIST
 import com.k1apps.backgammon.Constants.REVERSE_PLAYER
 import com.k1apps.backgammon.buisness.*
@@ -86,38 +88,52 @@ class PlayerModule {
 
 }
 
-@Module
+@Module(includes = [PieceModule::class])
 class PieceListModule {
 
     @Provides
     @GameScope
     @Named(NORMAL_PIECE_LIST)
-    fun reverseList(): ArrayList<Piece> {
+    fun reverseList(@Named(NORMAL_PIECE) piece: Piece): ArrayList<Piece> {
+        var copiedPiece = piece
         val arrayList: ArrayList<Piece> = arrayListOf()
         for (item in 0 until 15) {
-            arrayList.add(getPieceNormal())
+            arrayList.add(copiedPiece)
+            copiedPiece = piece.copy()
         }
         return arrayList
-    }
-
-    private fun getPieceNormal(): Piece {
-        return PieceImpl(MoveType.Normal)
     }
 
     @Provides
     @GameScope
     @Named(REVERSE_PIECE_LIST)
-    fun normalList(): ArrayList<Piece> {
+    fun normalList(@Named(REVERSE_PIECE) piece: Piece): ArrayList<Piece> {
+        var copiedPiece = piece
         val arrayList: ArrayList<Piece> = arrayListOf()
         for (item in 0 until 15) {
-            arrayList.add(getPieceRevers())
+            arrayList.add(copiedPiece)
+            copiedPiece = piece.copy()
         }
         return arrayList
     }
 
-    private fun getPieceRevers(): Piece {
+}
+
+@Module
+open class PieceModule {
+
+    @Named(REVERSE_PIECE)
+    @Provides
+    open fun provideReversePiece(): Piece {
         return PieceImpl(MoveType.Revers)
     }
+
+    @Named(NORMAL_PIECE)
+    @Provides
+    open fun provideNormalPiece(): Piece {
+        return PieceImpl(MoveType.Normal)
+    }
+
 }
 
 @Module
