@@ -1,28 +1,30 @@
 package com.k1apps.backgammon.buisness
 
 import com.k1apps.backgammon.Constants.BOARD_LOCATION_RANGE
-import com.k1apps.backgammon.dagger.GameScope
+import com.k1apps.backgammon.Constants.NORMAL_PIECE
+import com.k1apps.backgammon.Constants.REVERSE_PIECE
+import com.k1apps.backgammon.dagger.PieceModule
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.mockito.Mockito.spy
 import javax.inject.Inject
 import javax.inject.Named
 
 class PieceTest {
+
     @Inject
-    @field:Named("normal")
+    @field:Named(NORMAL_PIECE)
     lateinit var pieceNormal: Piece
 
     @Inject
-    @field:Named("reverse")
+    @field:Named(REVERSE_PIECE)
     lateinit var pieceReverse: Piece
 
     @Before
     fun setup() {
-        DaggerPieceComponentTest.create().inject(this)
+        DaggerPieceComponentTest.builder().setPieceModule(PieceModuleTest()).build().inject(this)
     }
 
     @Test
@@ -50,7 +52,10 @@ class PieceTest {
 
         for (index in BOARD_LOCATION_RANGE) {
             pieceReverse.location = index
-            assertTrue("piece location is: ${pieceReverse.location}", pieceReverse.location == index)
+            assertTrue(
+                "piece location is: ${pieceReverse.location}",
+                pieceReverse.location == index
+            )
         }
     }
 
@@ -175,14 +180,21 @@ class PieceTest {
         pieceNormal.state = PieceState.IN_GAME
         pieceNormal.location = 18
         val normalAfterMove = pieceNormal.pieceAfterMove(4)
-        assertTrue("pieceLocation after move is ${normalAfterMove!!.location}", normalAfterMove.location == 14)
+        assertTrue(
+            "pieceLocation after move is ${normalAfterMove!!.location}",
+            normalAfterMove.location == 14
+        )
     }
+
     @Test
     fun when_pieceAfterMove_for_reverse_type_in_game_state_with_location_18_called_and_dice_is_4_then_return_piece_with_location_22() {
         pieceReverse.state = PieceState.IN_GAME
         pieceReverse.location = 18
         val reverseAfterMove = pieceReverse.pieceAfterMove(4)
-        assertTrue("pieceLocation after move is ${reverseAfterMove!!.location}", reverseAfterMove.location == 22)
+        assertTrue(
+            "pieceLocation after move is ${reverseAfterMove!!.location}",
+            reverseAfterMove.location == 22
+        )
     }
 
     @Test
@@ -198,7 +210,10 @@ class PieceTest {
         pieceNormal.state = PieceState.IN_GAME
         pieceNormal.location = 6
         val normalAfterMove = pieceNormal.pieceAfterMove(5)
-        assertTrue("pieceLocation after move is ${normalAfterMove!!.location}", normalAfterMove.location == 1)
+        assertTrue(
+            "pieceLocation after move is ${normalAfterMove!!.location}",
+            normalAfterMove.location == 1
+        )
     }
 
     @Test
@@ -231,7 +246,10 @@ class PieceTest {
         pieceReverse.state = PieceState.IN_GAME
         pieceReverse.location = 19
         val reverseAfterMove = pieceReverse.pieceAfterMove(5)
-        assertTrue("pieceLocation after move is ${reverseAfterMove!!.location}", reverseAfterMove.location == 24)
+        assertTrue(
+            "pieceLocation after move is ${reverseAfterMove!!.location}",
+            reverseAfterMove.location == 24
+        )
     }
 
     @Test
@@ -252,25 +270,23 @@ class PieceTest {
 
 }
 
-@GameScope
-@Component(modules = [PieceModuleTest::class])
+@Component(modules = [PieceModule::class])
 interface PieceComponentTest {
     fun inject(pieceTest: PieceTest)
+
+    @Component.Builder
+    interface Builder {
+        fun setPieceModule(pieceModule: PieceModule): Builder
+        fun build(): PieceComponentTest
+    }
 }
 
-@Module
-class PieceModuleTest {
-    @GameScope
-    @Provides
-    @Named("reverse")
-    fun providePiece1(): Piece {
-        return PieceImpl(MoveType.Revers)
+class PieceModuleTest : PieceModule() {
+    override fun provideReversePiece(): Piece {
+        return spy(super.provideReversePiece())
     }
 
-    @GameScope
-    @Provides
-    @Named("normal")
-    fun providePiece2(): Piece {
-        return PieceImpl(MoveType.Normal)
+    override fun provideNormalPiece(): Piece {
+        return spy(super.provideNormalPiece())
     }
 }
