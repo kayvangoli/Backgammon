@@ -10,8 +10,6 @@ class DiceBoxImpl(override val dice1: Dice, override val dice2: Dice) : DiceBox 
         private set
 
     override fun roll() {
-        dice1.enabled = false
-        dice2.enabled = false
         if (dice1.number == dice2.number) {
             dice3 = DiceFactory.createDice(dice2)
             dice4 = DiceFactory.createDice(dice2)

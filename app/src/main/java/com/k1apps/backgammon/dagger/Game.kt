@@ -121,7 +121,7 @@ class PieceListModule {
 }
 
 @Module
-class DiceBoxModule {
+open class DiceBoxModule {
     @Provides
     @GameScope
     fun provideDiceBox(
@@ -132,7 +132,7 @@ class DiceBoxModule {
     }
 
     @Provides
-    fun provideDice(): Dice {
+    open fun provideDice(): Dice {
         return DiceImpl()
     }
 }
