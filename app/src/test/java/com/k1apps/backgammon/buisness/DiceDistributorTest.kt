@@ -3,75 +3,46 @@ package com.k1apps.backgammon.buisness
 import com.k1apps.backgammon.Constants.NORMAL_PLAYER
 import com.k1apps.backgammon.Constants.REVERSE_PLAYER
 import com.k1apps.backgammon.buisness.event.DiceThrownEvent
-import com.k1apps.backgammon.dagger.DiceBoxModule
-import com.k1apps.backgammon.dagger.GameModule
+import com.k1apps.backgammon.dagger.DiceDistributorModule
 import com.k1apps.backgammon.dagger.GameScope
+import com.k1apps.backgammon.dagger.PlayerModule
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.*
-import org.mockito.MockitoAnnotations
 import javax.inject.Inject
 import javax.inject.Named
 
 @GameScope
-@Component(modules = [DiceDistributorModuleTest::class, GameModule::class])
+@Component(modules = [DiceDistributorModule::class, PlayerModule::class])
 interface DiceDistributorComponentTest {
-    fun inject(diceDistributor: DiceDistributorTest)
+    @Component.Builder
+    interface Builder {
+        fun setPlayerModule(playerModule: PlayerModule): Builder
+        fun build(): DiceDistributorComponentTest
+    }
+
+    fun inject(diceDistributorTest: DiceDistributorTest)
 }
 
-@Module(includes = [DiceBoxModule::class, GameModule::class])
-class DiceDistributorModuleTest {
-
-    @GameScope
-    @Provides
-    @Named("mockPlayer")
-    fun provideDiceDistributor2(
-        @Named("normalMockPlayer") player1: Player,
-        @Named("reverseMockPlayer") player2: Player,
-        diceBox: DiceBox
-    ): DiceDistributorImpl {
-        return DiceDistributorImpl(player1, player2, diceBox)
+class SpyPlayerModule : PlayerModule() {
+    override fun providePlayer1(pieceList: ArrayList<Piece>, board: Board): Player {
+        return spy(super.providePlayer1(pieceList, board))
     }
 
-    @GameScope
-    @Provides
-    @Named("normalMockPlayer")
-    fun providePlayer3(): Player {
-        return mock(Player::class.java)
+    override fun providePlayer2(pieceList: ArrayList<Piece>, board: Board): Player {
+        return spy(super.providePlayer2(pieceList, board))
     }
-
-    @GameScope
-    @Provides
-    @Named("reverseMockPlayer")
-    fun providePlayer4(): Player {
-        return mock(Player::class.java)
-    }
-
 }
 
 class DiceDistributorTest {
 
     @Inject
-    @field:Named("mockPlayer")
-    lateinit var diceDistributorMockPlayer: DiceDistributorImpl
-
-    @Inject
-    lateinit var diceDistributorRealPlayer: DiceDistributorImpl
+    lateinit var diceDistributor: DiceDistributor
 
     @Inject
     lateinit var diceBox: DiceBox
-
-    @Inject
-    @field:Named("normalMockPlayer")
-    lateinit var mockPlayer1: Player
-
-    @Inject
-    @field:Named("reverseMockPlayer")
-    lateinit var mockPlayer2: Player
 
     @Inject
     @field:Named(NORMAL_PLAYER)
@@ -83,69 +54,70 @@ class DiceDistributorTest {
 
     @Before
     fun setup() {
-        DaggerDiceDistributorComponentTest.create().inject(this)
+        DaggerDiceDistributorComponentTest.builder().setPlayerModule(SpyPlayerModule())
+            .build().inject(this)
     }
 
     @Test
     fun when_dice_distributor_started_then_each_player_must_have_dice() {
-        diceDistributorMockPlayer.start()
-        verify(mockPlayer1, times(1)).dice = diceBox.dice1
-        verify(mockPlayer2, times(1)).dice = diceBox.dice2
+        diceDistributor.start()
+        verify(player1, times(1)).dice = diceBox.dice1
+        verify(player2, times(1)).dice = diceBox.dice2
     }
 
     @Test
     fun when_player1_dice_num_is_6_and_player2_is_2_then_set_dice_box_to_player1_and_retake_dice() {
-        diceDistributorMockPlayer.onEvent(DiceThrownEvent(mockPlayer1, 6))
-        diceDistributorMockPlayer.onEvent(DiceThrownEvent(mockPlayer2, 2))
-        verify(mockPlayer1, times(1)).diceBox = diceBox
-        verify(mockPlayer2, times(0)).diceBox = diceBox
-        verify(mockPlayer1, times(1)).retakeDice()
-        verify(mockPlayer2, times(1)).retakeDice()
+        diceDistributor.onEvent(DiceThrownEvent(player1, 6))
+        diceDistributor.onEvent(DiceThrownEvent(player2, 2))
+        verify(player1, times(1)).diceBox = diceBox
+        verify(player2, times(0)).diceBox = diceBox
+        verify(player1, times(1)).retakeDice()
+        verify(player2, times(1)).retakeDice()
 
     }
 
     @Test
     fun when_player1_dice_num_is_1_and_player2_is_4_then_set_dice_box_to_player2_and_retake_dice() {
-        diceDistributorMockPlayer.onEvent(DiceThrownEvent(mockPlayer1, 1))
-        diceDistributorMockPlayer.onEvent(DiceThrownEvent(mockPlayer2, 4))
-        verify(mockPlayer1, times(0)).diceBox = diceBox
-        verify(mockPlayer2, times(1)).diceBox = diceBox
-        verify(mockPlayer1, times(1)).retakeDice()
-        verify(mockPlayer2, times(1)).retakeDice()
+        diceDistributor.onEvent(DiceThrownEvent(player1, 1))
+        diceDistributor.onEvent(DiceThrownEvent(player2, 4))
+        verify(player1, times(0)).diceBox = diceBox
+        verify(player2, times(1)).diceBox = diceBox
+        verify(player1, times(1)).retakeDice()
+        verify(player2, times(1)).retakeDice()
     }
 
     @Test
     fun when_player1_dice_num_is_equal_to_player2_then_hold_dice_box_and_dont_retake_dice() {
-        diceDistributorMockPlayer.onEvent(DiceThrownEvent(mockPlayer1, 5))
-        diceDistributorMockPlayer.onEvent(DiceThrownEvent(mockPlayer2, 5))
-        verify(mockPlayer1, times(0)).diceBox = diceBox
-        verify(mockPlayer2, times(0)).diceBox = diceBox
-        verify(mockPlayer1, times(0)).retakeDice()
-        verify(mockPlayer2, times(0)).retakeDice()
+        diceDistributor.onEvent(DiceThrownEvent(player1, 5))
+        diceDistributor.onEvent(DiceThrownEvent(player2, 5))
+        verify(player1, times(0)).diceBox = diceBox
+        verify(player2, times(0)).diceBox = diceBox
+        verify(player1, times(0)).retakeDice()
+        verify(player2, times(0)).retakeDice()
     }
 
     @Test
     fun when_player1_has_dice_box_then_return_player1_on_whichPlayerHasDiceBox() {
-        diceDistributorRealPlayer.onEvent(DiceThrownEvent(player1, 6))
-        diceDistributorRealPlayer.onEvent(DiceThrownEvent(player2, 5))
-        assertTrue(diceDistributorRealPlayer.whichPlayerHasDice()?.first == player1)
+        diceDistributor.onEvent(DiceThrownEvent(player1, 6))
+        diceDistributor.onEvent(DiceThrownEvent(player2, 5))
+        assertTrue(diceDistributor.whichPlayerHasDice()?.first == player1)
     }
 
     @Test
     fun when_player2_has_dice_box_then_return_player2_on_whichPlayerHasDiceBox() {
-        diceDistributorRealPlayer.onEvent(DiceThrownEvent(player1, 5))
-        diceDistributorRealPlayer.onEvent(DiceThrownEvent(player2, 6))
-        assertTrue(diceDistributorRealPlayer.whichPlayerHasDice()?.first == player2)
+        diceDistributor.onEvent(DiceThrownEvent(player1, 5))
+        diceDistributor.onEvent(DiceThrownEvent(player2, 6))
+        assertTrue(diceDistributor.whichPlayerHasDice()?.first == player2)
     }
 
     @Test
     fun when_whichPlayerHasDice_called_and_both_player_has_dice_then_return_both_players() {
-        `when`(mockPlayer1.dice).thenReturn(mock(Dice::class.java))
-        `when`(mockPlayer2.dice).thenReturn(mock(Dice::class.java))
-        val whichPlayerHasDice = diceDistributorMockPlayer.whichPlayerHasDice()
-        verify(mockPlayer1, times(1)).dice
-        verify(mockPlayer2, times(1)).dice
-        assertTrue(whichPlayerHasDice!!.first == mockPlayer1)
-        assertTrue(whichPlayerHasDice.second == mockPlayer2)
+        `when`(player1.dice).thenReturn(mock(Dice::class.java))
+        `when`(player2.dice).thenReturn(mock(Dice::class.java))
+        val whichPlayerHasDice = diceDistributor.whichPlayerHasDice()
+        verify(player1, times(1)).dice
+        verify(player2, times(1)).dice
+        assertTrue(whichPlayerHasDice!!.first == player1)
+        assertTrue(whichPlayerHasDice.second == player2)
     }
 }

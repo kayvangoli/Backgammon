@@ -18,17 +18,11 @@ import javax.inject.Scope
 annotation class GameScope
 
 @GameScope
-@Component(
-    modules = [GameModule::class, DiceBoxModule::class, PieceListModule::class,
-        PlayerModule::class, BoardModule::class]
-)
+@Component(modules = [GameModule::class])
 interface GameComponent {
 }
 
-@Module(
-    includes = [DiceBoxModule::class, PieceListModule::class, PlayerModule::class,
-        BoardModule::class]
-)
+@Module(includes = [BoardModule::class, DiceDistributorModule::class])
 class GameModule {
     @Provides
     @GameScope
@@ -38,17 +32,20 @@ class GameModule {
     ): Referee {
         return RefereeImpl(board, diceDistributor)
     }
+}
 
-    @Provides
+@Module(includes = [PlayerModule::class, DiceBoxModule::class])
+class DiceDistributorModule {
+
     @GameScope
+    @Provides
     fun provideDiceDistributor(
         @Named(NORMAL_PLAYER) player1: Player,
         @Named(REVERSE_PLAYER) player2: Player,
         diceBox: DiceBox
-    ): DiceDistributorImpl {
+    ): DiceDistributor {
         return DiceDistributorImpl(player1, player2, diceBox)
     }
-
 }
 
 @Module
@@ -64,12 +61,12 @@ class BoardModule {
 
 }
 
-@Module
-class PlayerModule {
+@Module(includes = [PieceListModule::class, BoardModule::class])
+open class PlayerModule {
     @GameScope
     @Provides
     @Named(NORMAL_PLAYER)
-    fun providePlayer1(
+    open fun providePlayer1(
         @Named(NORMAL_PIECE_LIST) pieceList: ArrayList<Piece>,
         board: Board
     ): Player {
@@ -79,7 +76,7 @@ class PlayerModule {
     @GameScope
     @Provides
     @Named(REVERSE_PLAYER)
-    fun providePlayer2(
+    open fun providePlayer2(
         @Named(REVERSE_PIECE_LIST) pieceList: ArrayList<Piece>,
         board: Board
     ): Player {
