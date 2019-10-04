@@ -45,17 +45,11 @@ class PieceImpl(private val moveType: MoveType) : Piece {
         return piece
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (other is PieceImpl) {
-            return other.hashCode() == hashCode()
-        }
-        return false
-    }
 
     override fun hashCode(): Int {
-        var result = moveType.hashCode()
-        result = 31 * result + state.hashCode()
-        result = 31 * result + location
+        var result = this.moveType.hashCode()
+        result = 31 * result + this.state.hashCode()
+        result = 31 * result + this.location
         return result
     }
 
@@ -64,6 +58,19 @@ class PieceImpl(private val moveType: MoveType) : Piece {
         cp.location = location
         cp.state = state
         return cp
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as PieceImpl
+
+        if (moveType != other.moveType) return false
+        if (state != other.state) return false
+        if (location != other.location) return false
+
+        return true
     }
 }
 

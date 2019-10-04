@@ -5,6 +5,7 @@ import com.k1apps.backgammon.Constants.NORMAL_PIECE
 import com.k1apps.backgammon.Constants.REVERSE_PIECE
 import com.k1apps.backgammon.dagger.PieceModule
 import dagger.Component
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -266,6 +267,13 @@ class PieceTest {
         pieceReverse.location = 24
         val reverseAfterMove = pieceReverse.pieceAfterMove(1)
         assertTrue(reverseAfterMove == null)
+    }
+
+    @Test
+    fun when_copy_called_then_new_piece_values_must_equal_to_current_piece_but_not_same() {
+        val newPiece = pieceNormal.copy()
+        assertTrue(newPiece == pieceNormal)
+        assertFalse(newPiece === pieceNormal)
     }
 
 }
