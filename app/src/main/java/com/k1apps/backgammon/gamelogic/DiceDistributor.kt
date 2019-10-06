@@ -1,5 +1,6 @@
 package com.k1apps.backgammon.gamelogic
 
+import com.k1apps.backgammon.gamelogic.event.DiceBoxThrownEvent
 import com.k1apps.backgammon.gamelogic.event.DiceThrownEvent
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -31,9 +32,9 @@ class DiceDistributorImpl(
 
     @Synchronized
     @Subscribe
-    override fun onEvent(diceThrownEvent: DiceThrownEvent) {
-        diceThrownEvent.player.retakeDice()
-        if (getOpponent(diceThrownEvent.player).dice == null) {
+    override fun onEvent(event: DiceThrownEvent) {
+        event.player.retakeDice()
+        if (getOpponent(event.player).dice == null) {
             with(diceBox) {
                 when {
                     dice1.number!! > dice2.number!! -> {
@@ -46,6 +47,11 @@ class DiceDistributorImpl(
                 }
             }
         }
+    }
+
+    @Subscribe
+    override fun onEvent(event: DiceBoxThrownEvent) {
+        event.player.useDiceBox()
     }
 
     private fun getOpponent(player: Player): Player {
@@ -70,5 +76,6 @@ class DiceDistributorImpl(
 interface DiceDistributor {
     fun start()
     fun whichPlayerHasDice(): Pair<Player, Player?>?
-    fun onEvent(diceThrownEvent: DiceThrownEvent)
+    fun onEvent(event: DiceThrownEvent)
+    fun onEvent(event: DiceBoxThrownEvent)
 }
