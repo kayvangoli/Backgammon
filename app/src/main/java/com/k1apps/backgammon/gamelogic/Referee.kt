@@ -13,16 +13,16 @@ class RefereeImpl(
     override fun roll(playerType: PlayerType) {
         val pair = diceDistributor.whichPlayerHasDice()
         pair?.let {
-            pair.second?.let {
-                if (playerType == pair.first.playerType) {
-                    pair.first.roll()
-                } else if (playerType == it.playerType) {
-                    pair.second!!.roll()
+            it.second?.let { second ->
+                if (playerType == it.first.playerType) {
+                    it.first.roll()
+                } else if (playerType == second.playerType) {
+                    second.roll()
                 }
-                return
-            }
-            if (pair.first.playerType == playerType) {
-                pair.first.roll()
+            } ?: run {
+                if (it.first.playerType == playerType) {
+                    it.first.roll()
+                }
             }
         }
     }
