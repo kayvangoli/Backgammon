@@ -32,29 +32,36 @@ class DiceDistributorImpl(
     @Synchronized
     @Subscribe
     override fun onEvent(diceThrownEvent: DiceThrownEvent) {
-        if (player1 == diceThrownEvent.player) {
-            player1DiceNumber = diceThrownEvent.number
-        } else {
-            when {
-                diceThrownEvent.number < player1DiceNumber -> {
-                    player1.diceBox = diceBox
-                    retakeDices()
-                }
-                diceThrownEvent.number > player1DiceNumber -> {
-                    player2.diceBox = diceBox
-                    retakeDices()
+        diceThrownEvent.player.retakeDice()
+        if (getOpponent(diceThrownEvent.player).dice == null) {
+            with(diceBox) {
+                when {
+                    dice1.number!! > dice2.number!! -> {
+                        player1.diceBox = diceBox
+                    }
+                    dice1.number!! < dice2.number!!-> {
+                        player2.diceBox = diceBox
+                    }
+                    else -> setDiceToPlayers()
                 }
             }
         }
     }
 
-    private fun retakeDices() {
-        player1.retakeDice()
-        player2.retakeDice()
+    private fun getOpponent(player: Player): Player {
+        if (player == player1) {
+            return player2
+        } else {
+            return player1
+        }
     }
 
     override fun start() {
         player1DiceNumber = -1
+        setDiceToPlayers()
+    }
+
+    private fun setDiceToPlayers() {
         player1.dice = diceBox.dice1
         player2.dice = diceBox.dice2
     }

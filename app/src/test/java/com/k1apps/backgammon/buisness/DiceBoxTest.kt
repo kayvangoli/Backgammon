@@ -17,7 +17,7 @@ class DiceBoxTest {
 
     @Before
     fun setup() {
-        DaggerDiceBoxComponentTest.builder().diceBoxModule(DiceBoxModuleTest()).build().inject(this)
+        DaggerDiceBoxComponentTest.builder().diceBoxModule(SpyDiceBoxModuleTest()).build().inject(this)
     }
 
     @Test
@@ -147,7 +147,7 @@ interface DiceBoxComponentTest {
     fun inject(diceBoxTest: DiceBoxTest)
 }
 
-class DiceBoxModuleTest : DiceBoxModule() {
+class SpyDiceBoxModuleTest : DiceBoxModule() {
     override fun provideDice(): Dice {
         return spy(super.provideDice())
     }

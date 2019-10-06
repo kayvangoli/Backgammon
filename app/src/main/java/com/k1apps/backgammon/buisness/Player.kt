@@ -23,7 +23,10 @@ class PlayerImpl(
 
     override fun roll() {
         when {
-            dice != null -> EventBus.getDefault().post(DiceThrownEvent(this, dice!!.roll()))
+            dice != null -> {
+                dice!!.roll()
+                EventBus.getDefault().post(DiceThrownEvent(this))
+            }
             diceBox != null -> {
                 diceBox!!.roll()
                 for (piece in pieceList) {

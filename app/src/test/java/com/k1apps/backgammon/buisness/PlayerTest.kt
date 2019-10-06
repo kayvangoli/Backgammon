@@ -42,7 +42,7 @@ class PlayerTest {
         `when`(diceMock.roll()).thenReturn(2)
         player.dice = diceMock
         player.roll()
-        verify(diceDistributor, times(1)).onEvent(DiceThrownEvent(player, 2))
+        verify(diceDistributor, times(1)).onEvent(DiceThrownEvent(player))
     }
 
     @Test

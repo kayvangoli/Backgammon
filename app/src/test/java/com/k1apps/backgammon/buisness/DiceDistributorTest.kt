@@ -3,6 +3,7 @@ package com.k1apps.backgammon.buisness
 import com.k1apps.backgammon.Constants.NORMAL_PLAYER
 import com.k1apps.backgammon.Constants.REVERSE_PLAYER
 import com.k1apps.backgammon.buisness.event.DiceThrownEvent
+import com.k1apps.backgammon.dagger.DiceBoxModule
 import com.k1apps.backgammon.dagger.DiceDistributorModule
 import com.k1apps.backgammon.dagger.GameScope
 import com.k1apps.backgammon.dagger.PlayerModule
@@ -19,6 +20,7 @@ import javax.inject.Named
 interface DiceDistributorComponentTest {
     @Component.Builder
     interface Builder {
+        fun setDiceBox(diceBoxModule: DiceBoxModule) : Builder
         fun setPlayerModule(playerModule: PlayerModule): Builder
         fun build(): DiceDistributorComponentTest
     }
@@ -54,7 +56,9 @@ class DiceDistributorTest {
 
     @Before
     fun setup() {
-        DaggerDiceDistributorComponentTest.builder().setPlayerModule(SpyPlayerModule())
+        DaggerDiceDistributorComponentTest.builder()
+            .setPlayerModule(SpyPlayerModule())
+            .setDiceBox(SpyDiceBoxModuleTest())
             .build().inject(this)
     }
 
@@ -67,8 +71,11 @@ class DiceDistributorTest {
 
     @Test
     fun when_player1_dice_num_is_6_and_player2_is_2_then_set_dice_box_to_player1_and_retake_dice() {
-        diceDistributor.onEvent(DiceThrownEvent(player1, 6))
-        diceDistributor.onEvent(DiceThrownEvent(player2, 2))
+        diceDistributor.start()
+        `when`(diceBox.dice1.number).thenReturn(6)
+        `when`(diceBox.dice2.number).thenReturn(2)
+        diceDistributor.onEvent(DiceThrownEvent(player1))
+        diceDistributor.onEvent(DiceThrownEvent(player2))
         verify(player1, times(1)).diceBox = diceBox
         verify(player2, times(0)).diceBox = diceBox
         verify(player1, times(1)).retakeDice()
@@ -78,8 +85,11 @@ class DiceDistributorTest {
 
     @Test
     fun when_player1_dice_num_is_1_and_player2_is_4_then_set_dice_box_to_player2_and_retake_dice() {
-        diceDistributor.onEvent(DiceThrownEvent(player1, 1))
-        diceDistributor.onEvent(DiceThrownEvent(player2, 4))
+        diceDistributor.start()
+        `when`(diceBox.dice1.number).thenReturn(1)
+        `when`(diceBox.dice2.number).thenReturn(4)
+        diceDistributor.onEvent(DiceThrownEvent(player2))
+        diceDistributor.onEvent(DiceThrownEvent(player1))
         verify(player1, times(0)).diceBox = diceBox
         verify(player2, times(1)).diceBox = diceBox
         verify(player1, times(1)).retakeDice()
@@ -87,26 +97,26 @@ class DiceDistributorTest {
     }
 
     @Test
-    fun when_player1_dice_num_is_equal_to_player2_then_hold_dice_box_and_dont_retake_dice() {
-        diceDistributor.onEvent(DiceThrownEvent(player1, 5))
-        diceDistributor.onEvent(DiceThrownEvent(player2, 5))
-        verify(player1, times(0)).diceBox = diceBox
-        verify(player2, times(0)).diceBox = diceBox
-        verify(player1, times(0)).retakeDice()
-        verify(player2, times(0)).retakeDice()
+    fun when_player1_dice_num_is_equal_to_player2_then_retake_dices_and_restart_roll_dices() {
+        `when`(diceBox.dice1.number).thenReturn(2)
+        `when`(diceBox.dice2.number).thenReturn(2)
+        diceDistributor.onEvent(DiceThrownEvent(player1))
+        diceDistributor.onEvent(DiceThrownEvent(player2))
+        verify(player1, times(1)).dice = diceBox.dice1
+        verify(player2, times(1)).dice = diceBox.dice2
+        verify(player1, times(1)).retakeDice()
+        verify(player2, times(1)).retakeDice()
     }
 
     @Test
     fun when_player1_has_dice_box_then_return_player1_on_whichPlayerHasDiceBox() {
-        diceDistributor.onEvent(DiceThrownEvent(player1, 6))
-        diceDistributor.onEvent(DiceThrownEvent(player2, 5))
+        player1.diceBox = diceBox
         assertTrue(diceDistributor.whichPlayerHasDice()?.first == player1)
     }
 
     @Test
     fun when_player2_has_dice_box_then_return_player2_on_whichPlayerHasDiceBox() {
-        diceDistributor.onEvent(DiceThrownEvent(player1, 5))
-        diceDistributor.onEvent(DiceThrownEvent(player2, 6))
+        player2.diceBox = diceBox
         assertTrue(diceDistributor.whichPlayerHasDice()?.first == player2)
     }
 
