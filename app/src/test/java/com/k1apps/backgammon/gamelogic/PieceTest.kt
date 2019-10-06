@@ -1,4 +1,4 @@
-package com.k1apps.backgammon.buisness
+package com.k1apps.backgammon.gamelogic
 
 import com.k1apps.backgammon.Constants.BOARD_LOCATION_RANGE
 import com.k1apps.backgammon.Constants.NORMAL_PIECE

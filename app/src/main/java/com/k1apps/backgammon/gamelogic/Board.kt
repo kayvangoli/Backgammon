@@ -1,4 +1,4 @@
-package com.k1apps.backgammon.buisness
+package com.k1apps.backgammon.gamelogic
 
 import androidx.collection.ArrayMap
 import com.k1apps.backgammon.Utils.reverseLocation

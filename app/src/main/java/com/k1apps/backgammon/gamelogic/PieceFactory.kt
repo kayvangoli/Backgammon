@@ -1,4 +1,4 @@
-package com.k1apps.backgammon.buisness
+package com.k1apps.backgammon.gamelogic
 
 object PieceFactory {
     fun createReversePiece(): Piece {

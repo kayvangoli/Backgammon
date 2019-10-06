@@ -1,4 +1,4 @@
-package com.k1apps.backgammon.buisness
+package com.k1apps.backgammon.gamelogic
 
 object DiceFactory {
     fun createDice(dice: Dice): Dice {

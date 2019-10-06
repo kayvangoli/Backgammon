@@ -1,4 +1,4 @@
-package com.k1apps.backgammon.buisness
+package com.k1apps.backgammon.gamelogic
 
 import com.k1apps.backgammon.Constants.DICE_RANGE
 

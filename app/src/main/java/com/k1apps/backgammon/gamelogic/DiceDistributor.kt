@@ -1,6 +1,6 @@
-package com.k1apps.backgammon.buisness
+package com.k1apps.backgammon.gamelogic
 
-import com.k1apps.backgammon.buisness.event.DiceThrownEvent
+import com.k1apps.backgammon.gamelogic.event.DiceThrownEvent
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
