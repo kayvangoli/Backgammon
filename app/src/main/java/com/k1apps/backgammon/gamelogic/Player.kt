@@ -40,6 +40,26 @@ class PlayerImpl(
     override fun retakeDiceBox() {
         diceBox = null
     }
+
+    override fun updateDicesStateInDiceBox() {
+        diceBox!!
+        diceBox?.let { diceBox ->
+            for (piece in pieceList) {
+                val number1 = diceBox.dice1.number!!
+                val number2 = diceBox.dice2.number!!
+                piece.pieceAfterMove(number1)?.let {
+                    if (board.canMovePiece(homeCellIndexRange, it, number1)) {
+                        diceBox.updateDiceStateWith(number1)
+                    }
+                }
+                piece.pieceAfterMove(number2)?.let {
+                    if (board.canMovePiece(homeCellIndexRange, it, number2)) {
+                        diceBox.updateDiceStateWith(number2)
+                    }
+                }
+            }
+        }
+    }
 }
 
 interface Player {
@@ -51,6 +71,7 @@ interface Player {
     fun roll()
     fun retakeDice()
     fun retakeDiceBox()
+    fun updateDicesStateInDiceBox()
 }
 
 enum class PlayerType {

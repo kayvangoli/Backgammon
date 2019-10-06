@@ -20,7 +20,7 @@ class DiceBoxImpl(override val dice1: Dice, override val dice2: Dice) : DiceBox 
         Pair(dice1.roll(), dice2.roll())
     }
 
-    override fun canUseDiceWith(number: Byte) {
+    override fun updateDiceStateWith(number: Byte) {
         assert(number in DICE_RANGE)
         if (dice1.enabled.not() && dice1.number == number) {
             dice1.enabled = true
@@ -40,6 +40,6 @@ interface DiceBox {
     val dice2: Dice
     val dice3: Dice?
     val dice4: Dice?
-    fun canUseDiceWith(number: Byte)
+    fun updateDiceStateWith(number: Byte)
 }
 

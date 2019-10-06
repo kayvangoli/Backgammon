@@ -65,7 +65,7 @@ class DiceBoxTest {
     @Test
     fun when_can_use_dice_called_with_4_and_dice1_number_is_4_then_dice_with_number_4_should_be_enabled() {
         `when`(diceBox.dice1.number).thenReturn(4)
-        diceBox.canUseDiceWith(4)
+        diceBox.updateDiceStateWith(4)
         verify(diceBox.dice1, times(1)).enabled = true
     }
 
@@ -74,7 +74,7 @@ class DiceBoxTest {
         `when`(diceBox.dice1.number).thenReturn(4)
         `when`(diceBox.dice1.enabled).thenReturn(true)
         `when`(diceBox.dice2.number).thenReturn(4)
-        diceBox.canUseDiceWith(4)
+        diceBox.updateDiceStateWith(4)
         verify(diceBox.dice2, times(1)).enabled = true
     }
 
@@ -83,7 +83,7 @@ class DiceBoxTest {
         `when`(diceBox.dice1.number).thenReturn(5)
         `when`(diceBox.dice1.enabled).thenReturn(false)
         `when`(diceBox.dice2.number).thenReturn(4)
-        diceBox.canUseDiceWith(4)
+        diceBox.updateDiceStateWith(4)
         verify(diceBox.dice2, times(1)).enabled = true
     }
 
@@ -93,7 +93,7 @@ class DiceBoxTest {
         `when`(diceBox.dice1.enabled).thenReturn(false)
         `when`(diceBox.dice2.number).thenReturn(4)
         `when`(diceBox.dice2.enabled).thenReturn(false)
-        diceBox.canUseDiceWith(4)
+        diceBox.updateDiceStateWith(4)
         verify(diceBox.dice1, times(1)).enabled = true
         verify(diceBox.dice2, times(0)).enabled = true
         verify(diceBox.dice2, times(0)).enabled = false
@@ -105,7 +105,7 @@ class DiceBoxTest {
         `when`(diceBox.dice1.enabled).thenReturn(false)
         `when`(diceBox.dice2.number).thenReturn(5)
         `when`(diceBox.dice2.enabled).thenReturn(false)
-        diceBox.canUseDiceWith(4)
+        diceBox.updateDiceStateWith(4)
         verify(diceBox.dice1, times(0)).enabled = true
         verify(diceBox.dice1, times(0)).enabled = false
         verify(diceBox.dice2, times(0)).enabled = true
@@ -119,7 +119,7 @@ class DiceBoxTest {
         `when`(diceBox.dice1.enabled).thenReturn(true)
         `when`(diceBox.dice2.enabled).thenReturn(true)
         diceBox.roll()
-        diceBox.canUseDiceWith(4)
+        diceBox.updateDiceStateWith(4)
         assertTrue(diceBox.dice3!!.enabled)
     }
 
@@ -131,7 +131,7 @@ class DiceBoxTest {
         `when`(diceBox.dice2.enabled).thenReturn(true)
         diceBox.roll()
         diceBox.dice3!!.enabled = true
-        diceBox.canUseDiceWith(4)
+        diceBox.updateDiceStateWith(4)
         assertTrue(diceBox.dice4!!.enabled)
     }
 }

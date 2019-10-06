@@ -74,11 +74,11 @@ class PlayerTest {
     }
 
     @Test
-    fun when_roll_called_with_dice_box_then_check_dices_by_all_piece_list() {
+    fun when_updateDicesStateInDiceBox_called_with_dice_box_then_check_dices_by_all_piece_list() {
         player.diceBox = DiceBoxImpl(mock(Dice::class.java), mock(Dice::class.java))
         `when`((player.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
         `when`((player.diceBox as DiceBoxImpl).dice2.number).thenReturn(5)
-        player.roll()
+        player.updateDicesStateInDiceBox()
         for (piece in player.pieceList) {
             verify(piece, times(1)).pieceAfterMove(6)
             verify(piece, times(1)).pieceAfterMove(5)
@@ -86,7 +86,7 @@ class PlayerTest {
     }
 
     @Test
-    fun when_roll_called_with_dice_box_then_check_pieces_for_move() {
+    fun when_updateDicesStateInDiceBox_called_then_check_pieces_for_move() {
         val diceBoxMock = mock(DiceBox::class.java)
         `when`(diceBoxMock.dice1).thenReturn(mock(Dice::class.java))
         `when`(diceBoxMock.dice2).thenReturn(mock(Dice::class.java))
@@ -99,20 +99,20 @@ class PlayerTest {
                 board.canMovePiece(
                     NORMAL_HOME_RANGE,
                     piece,
-                    2
+                    diceBoxMock.dice1.number!!
                 )
             ).thenReturn(true)
             `when`(
                 board.canMovePiece(
                     NORMAL_HOME_RANGE,
                     piece,
-                    3
+                    diceBoxMock.dice2.number!!
                 )
             ).thenReturn(true)
         }
-        player.roll()
-        verify(diceBoxMock, times(15)).canUseDiceWith(2)
-        verify(diceBoxMock, times(15)).canUseDiceWith(3)
+        player.updateDicesStateInDiceBox()
+        verify(diceBoxMock, times(15)).updateDiceStateWith(2)
+        verify(diceBoxMock, times(15)).updateDiceStateWith(3)
         player.pieceList.forEach {
             verify(it, times(1)).pieceAfterMove(2)
             verify(it, times(1)).pieceAfterMove(3)
