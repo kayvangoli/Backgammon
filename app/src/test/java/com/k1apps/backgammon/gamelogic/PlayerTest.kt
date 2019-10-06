@@ -55,6 +55,14 @@ class PlayerTest {
     }
 
     @Test
+    fun when_retakeDiceBox_called_then_diceBox_should_be_null() {
+        player.diceBox = mock(DiceBox::class.java)
+        assertTrue(player.diceBox != null)
+        player.retakeDiceBox()
+        assertTrue(player.diceBox == null)
+    }
+
+    @Test
     fun when_roll_called_with_dice_box_then_roll_dice_box() {
         val diceBoxMock: DiceBox = DiceBoxImpl(mock(Dice::class.java), mock(Dice::class.java))
         player.diceBox = diceBoxMock

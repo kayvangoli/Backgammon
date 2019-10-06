@@ -21,7 +21,6 @@ class PlayerImpl(
         REVERSE_HOME_RANGE
     }
 
-
     override fun roll() {
         dice?.let {
             it.roll()
@@ -37,6 +36,10 @@ class PlayerImpl(
     override fun retakeDice() {
         dice = null
     }
+
+    override fun retakeDiceBox() {
+        diceBox = null
+    }
 }
 
 interface Player {
@@ -47,6 +50,7 @@ interface Player {
     val playerType: PlayerType
     fun roll()
     fun retakeDice()
+    fun retakeDiceBox()
 }
 
 enum class PlayerType {
