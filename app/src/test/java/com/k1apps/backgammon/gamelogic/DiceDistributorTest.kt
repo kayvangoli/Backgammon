@@ -145,6 +145,8 @@ class DiceDistributorTest {
     @Test
     fun when_dice_box_thrown_and_after_player_updated_dice_box_to_disable_then_retake_dice_box_from_player_set_dice_box_to_opponent() {
         val diceBoxThrownEvent = DiceBoxThrownEvent(player1)
+        `when`(diceBox.dice1.number).thenReturn(4)
+        `when`(diceBox.dice2.number).thenReturn(4)
         player1.diceBox = diceBox
         `when`(diceBox.isEnable()).thenReturn(false)
         diceDistributor.onEvent(diceBoxThrownEvent)

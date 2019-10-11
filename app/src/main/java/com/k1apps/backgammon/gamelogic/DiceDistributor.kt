@@ -67,6 +67,7 @@ class DiceDistributorImpl(
             updateDicesStateInDiceBox()
             if (diceBox!!.isEnable().not()) {
                 // TODO: 10/11/19 Kayvan: View interaction: no move
+                retakeDiceBox()
                 setDiceBox(getOpponent(this))
             }
         }

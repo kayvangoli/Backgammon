@@ -73,13 +73,10 @@ class PlayerTest {
 
     @Test
     fun when_roll_called_with_dice_box_then_roll_dice_box() {
-        val diceBoxMock: DiceBox = DiceBoxImpl(mock(Dice::class.java), mock(Dice::class.java))
+        val diceBoxMock: DiceBox = mock(DiceBox::class.java)
         player.diceBox = diceBoxMock
-        `when`((player.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
-        `when`((player.diceBox as DiceBoxImpl).dice2.number).thenReturn(5)
         player.roll()
-        verify(player.diceBox!!.dice1, times(1)).roll()
-        verify(player.diceBox!!.dice2, times(1)).roll()
+        verify(player.diceBox, times(1))!!.roll()
     }
 
     @Test
