@@ -42,7 +42,6 @@ class PlayerImpl(
     }
 
     override fun updateDicesStateInDiceBox() {
-        diceBox!!
         diceBox?.let { diceBox ->
             for (piece in pieceList) {
                 val number1 = diceBox.dice1.number!!

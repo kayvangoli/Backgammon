@@ -118,6 +118,136 @@ class PlayerTest {
             verify(it, times(1)).pieceAfterMove(3)
         }
     }
+
+    @Test
+    fun when_UpdateDicesStateInDiceBox_called_with_dices_2_and_3_and_player_can_use_2_but_can_not_use_3_then_disable_dice_3_and_enable_dice_2_check_with_board() {
+        val diceBoxMock = mock(DiceBox::class.java)
+        `when`(diceBoxMock.dice1).thenReturn(mock(Dice::class.java))
+        `when`(diceBoxMock.dice2).thenReturn(mock(Dice::class.java))
+        `when`(diceBoxMock.dice1.number).thenReturn(2)
+        `when`(diceBoxMock.dice2.number).thenReturn(3)
+        player.diceBox = diceBoxMock
+        player.pieceList.forEach { piece ->
+            `when`(piece.pieceAfterMove(ArgumentMatchers.anyByte())).thenReturn(piece)
+            `when`(
+                board.canMovePiece(
+                    NORMAL_HOME_RANGE,
+                    piece,
+                    2
+                )
+            ).thenReturn(true)
+            `when`(
+                board.canMovePiece(
+                    NORMAL_HOME_RANGE,
+                    piece,
+                    3
+                )
+            ).thenReturn(false)
+        }
+        player.updateDicesStateInDiceBox()
+        verify(diceBoxMock, atLeastOnce()).updateDiceStateWith(2)
+        verify(diceBoxMock, never()).updateDiceStateWith(3)
+    }
+
+    @Test
+    fun when_UpdateDicesStateInDiceBox_called_with_dices_2_and_3_and_player_can_use_2_but_can_not_use_3_then_disable_dice_3_and_enable_dice_2_check_with_pieces() {
+        val diceBoxMock = mock(DiceBox::class.java)
+        `when`(diceBoxMock.dice1).thenReturn(mock(Dice::class.java))
+        `when`(diceBoxMock.dice2).thenReturn(mock(Dice::class.java))
+        `when`(diceBoxMock.dice1.number).thenReturn(2)
+        `when`(diceBoxMock.dice2.number).thenReturn(3)
+        player.diceBox = diceBoxMock
+        player.pieceList.forEach { piece ->
+            `when`(piece.pieceAfterMove(2)).thenReturn(piece)
+            `when`(piece.pieceAfterMove(3)).thenReturn(null)
+            `when`(
+                board.canMovePiece(
+                    NORMAL_HOME_RANGE,
+                    piece,
+                    2
+                )
+            ).thenReturn(true)
+        }
+        player.updateDicesStateInDiceBox()
+        verify(diceBoxMock, atLeastOnce()).updateDiceStateWith(2)
+        verify(diceBoxMock, never()).updateDiceStateWith(3)
+    }
+
+    @Test
+    fun when_UpdateDicesStateInDiceBox_called_with_dices_2_and_3_and_player_can_use_both_of_the_dices_then_enable_dice_3_and_dice_2() {
+        val diceBoxMock = mock(DiceBox::class.java)
+        `when`(diceBoxMock.dice1).thenReturn(mock(Dice::class.java))
+        `when`(diceBoxMock.dice2).thenReturn(mock(Dice::class.java))
+        `when`(diceBoxMock.dice1.number).thenReturn(2)
+        `when`(diceBoxMock.dice2.number).thenReturn(3)
+        player.diceBox = diceBoxMock
+        player.pieceList.forEach { piece ->
+            `when`(piece.pieceAfterMove(ArgumentMatchers.anyByte())).thenReturn(piece)
+            `when`(
+                board.canMovePiece(
+                    NORMAL_HOME_RANGE,
+                    piece,
+                    2
+                )
+            ).thenReturn(true)
+            `when`(
+                board.canMovePiece(
+                    NORMAL_HOME_RANGE,
+                    piece,
+                    3
+                )
+            ).thenReturn(true)
+        }
+        player.updateDicesStateInDiceBox()
+        verify(diceBoxMock, atLeastOnce()).updateDiceStateWith(2)
+        verify(diceBoxMock, atLeastOnce()).updateDiceStateWith(3)
+    }
+
+    @Test
+    fun when_UpdateDicesStateInDiceBox_called_with_dices_2_and_3_and_player_can_not_use_both_of_the_dices_then_disable_dice_3_and_dice_2_check_with_board() {
+        val diceBoxMock = mock(DiceBox::class.java)
+        `when`(diceBoxMock.dice1).thenReturn(mock(Dice::class.java))
+        `when`(diceBoxMock.dice2).thenReturn(mock(Dice::class.java))
+        `when`(diceBoxMock.dice1.number).thenReturn(2)
+        `when`(diceBoxMock.dice2.number).thenReturn(3)
+        player.diceBox = diceBoxMock
+        player.pieceList.forEach { piece ->
+            `when`(piece.pieceAfterMove(ArgumentMatchers.anyByte())).thenReturn(piece)
+            `when`(
+                board.canMovePiece(
+                    NORMAL_HOME_RANGE,
+                    piece,
+                    2
+                )
+            ).thenReturn(false)
+            `when`(
+                board.canMovePiece(
+                    NORMAL_HOME_RANGE,
+                    piece,
+                    3
+                )
+            ).thenReturn(false)
+        }
+        player.updateDicesStateInDiceBox()
+        verify(diceBoxMock, never()).updateDiceStateWith(2)
+        verify(diceBoxMock, never()).updateDiceStateWith(3)
+    }
+
+    @Test
+    fun when_UpdateDicesStateInDiceBox_called_with_dices_2_and_3_and_player_can_not_use_both_of_the_dices_then_disable_dice_3_and_dice_2_check_with_pieces() {
+        val diceBoxMock = mock(DiceBox::class.java)
+        `when`(diceBoxMock.dice1).thenReturn(mock(Dice::class.java))
+        `when`(diceBoxMock.dice2).thenReturn(mock(Dice::class.java))
+        `when`(diceBoxMock.dice1.number).thenReturn(2)
+        `when`(diceBoxMock.dice2.number).thenReturn(3)
+        player.diceBox = diceBoxMock
+        player.pieceList.forEach { piece ->
+            `when`(piece.pieceAfterMove(ArgumentMatchers.anyByte())).thenReturn(null)
+        }
+        player.updateDicesStateInDiceBox()
+        verify(diceBoxMock, never()).updateDiceStateWith(2)
+        verify(diceBoxMock, never()).updateDiceStateWith(3)
+    }
 }
 
 
