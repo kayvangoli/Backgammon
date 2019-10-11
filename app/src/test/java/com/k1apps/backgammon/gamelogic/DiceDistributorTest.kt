@@ -7,6 +7,7 @@ import com.k1apps.backgammon.dagger.DiceBoxModule
 import com.k1apps.backgammon.dagger.DiceDistributorModule
 import com.k1apps.backgammon.dagger.GameScope
 import com.k1apps.backgammon.dagger.PlayerModule
+import com.k1apps.backgammon.gamelogic.event.DiceBoxThrownEvent
 import dagger.Component
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -130,4 +131,25 @@ class DiceDistributorTest {
         assertTrue(whichPlayerHasDice!!.first == player1)
         assertTrue(whichPlayerHasDice.second == player2)
     }
+
+    @Test
+    fun when_dice_box_thrown_then_invoke_player_update_dice() {
+        val player = mock(Player::class.java)
+        `when`(diceBox.isEnable()).thenReturn(true)
+        `when`(player.diceBox).thenReturn(diceBox)
+        val diceBoxThrownEvent = DiceBoxThrownEvent(player)
+        diceDistributor.onEvent(diceBoxThrownEvent)
+        verify(player, times(1)).updateDicesStateInDiceBox()
+    }
+
+    @Test
+    fun when_dice_box_thrown_and_after_player_updated_dice_box_to_disable_then_retake_dice_box_from_player_set_dice_box_to_opponent() {
+        val diceBoxThrownEvent = DiceBoxThrownEvent(player1)
+        player1.diceBox = diceBox
+        `when`(diceBox.isEnable()).thenReturn(false)
+        diceDistributor.onEvent(diceBoxThrownEvent)
+        verify(player1, times(1)).retakeDiceBox()
+        verify(player2, times(1)).diceBox = diceBox
+    }
+
 }

@@ -32,6 +32,10 @@ class DiceBoxImpl(override val dice1: Dice, override val dice2: Dice) : DiceBox 
             dice4!!.enabled = true
         }
     }
+
+    override fun isEnable(): Boolean {
+        return dice1.enabled || dice2.enabled
+    }
 }
 
 interface DiceBox {
@@ -41,5 +45,6 @@ interface DiceBox {
     val dice3: Dice?
     val dice4: Dice?
     fun updateDiceStateWith(number: Byte)
+    fun isEnable(): Boolean
 }
 

@@ -4,6 +4,7 @@ import com.k1apps.backgammon.Constants.NORMAL_HOME_RANGE
 import com.k1apps.backgammon.Constants.NORMAL_PLAYER
 import com.k1apps.backgammon.gamelogic.event.DiceThrownEvent
 import com.k1apps.backgammon.dagger.*
+import com.k1apps.backgammon.gamelogic.event.DiceBoxThrownEvent
 import dagger.Component
 import org.greenrobot.eventbus.EventBus
 import org.junit.Assert.assertTrue
@@ -43,6 +44,14 @@ class PlayerTest {
         player.dice = diceMock
         player.roll()
         verify(diceDistributor, times(1)).onEvent(DiceThrownEvent(player))
+    }
+
+    @Test
+    fun when_roll_called_with_dice_then_roll_dice_and_post_dice_box_thrown_event_callback_invoked() {
+        val diceBoxMock: DiceBox = DiceBoxImpl(mock(Dice::class.java), mock(Dice::class.java))
+        player.diceBox = diceBoxMock
+        player.roll()
+        verify(diceDistributor, times(1)).onEvent(DiceBoxThrownEvent(player))
     }
 
     @Test
@@ -247,6 +256,18 @@ class PlayerTest {
         player.updateDicesStateInDiceBox()
         verify(diceBoxMock, never()).updateDiceStateWith(2)
         verify(diceBoxMock, never()).updateDiceStateWith(3)
+    }
+
+    @Test
+    fun when_haveDiedPiece_called_and_piece_index_2_is_died_then_return_true() {
+        player.pieceList[2].state = PieceState.DEAD
+        assertTrue(player.haveDiedPiece())
+    }
+
+    @Test
+    fun when_isHomeRangeFill_called_then_invoke_board_isHomeRangeFilled() {
+        player.isHomeRangeFill()
+        verify(board, times(1)).isRangeFilledWithNormalPiece(player.homeCellIndexRange)
     }
 }
 

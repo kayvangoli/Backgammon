@@ -10,7 +10,7 @@ import java.util.ArrayList
 class PlayerImpl(
     override val playerType: PlayerType = PlayerType.LocalPlayer,
     override val pieceList: ArrayList<Piece>,
-    moveType: MoveType,
+    val moveType: MoveType,
     private val board: Board
 ) : Player {
     override var dice: Dice? = null
@@ -59,6 +59,23 @@ class PlayerImpl(
             }
         }
     }
+
+    override fun haveDiedPiece(): Boolean {
+        pieceList.forEach{
+            if (it.state == PieceState.DEAD) {
+                return true
+            }
+        }
+        return false
+    }
+
+    override fun isHomeRangeFill(): Boolean {
+        if (moveType == MoveType.Normal) {
+            return board.isRangeFilledWithNormalPiece(homeCellIndexRange)
+        } else {
+            return board.isRangeFilledWithReversePiece(homeCellIndexRange)
+        }
+    }
 }
 
 interface Player {
@@ -71,6 +88,8 @@ interface Player {
     fun retakeDice()
     fun retakeDiceBox()
     fun updateDicesStateInDiceBox()
+    fun haveDiedPiece(): Boolean
+    fun isHomeRangeFill(): Boolean
 }
 
 enum class PlayerType {

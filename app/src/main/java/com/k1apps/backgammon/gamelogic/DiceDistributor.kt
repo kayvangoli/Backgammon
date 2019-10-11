@@ -36,10 +36,10 @@ class DiceDistributorImpl(
             with(diceBox) {
                 when {
                     dice1.number!! > dice2.number!! -> {
-                        player1.diceBox = diceBox
+                        setDiceBox(player1)
                     }
-                    dice1.number!! < dice2.number!!-> {
-                        player2.diceBox = diceBox
+                    dice1.number!! < dice2.number!! -> {
+                        setDiceBox(player2)
                     }
                     else -> setDiceToPlayers()
                 }
@@ -47,9 +47,29 @@ class DiceDistributorImpl(
         }
     }
 
+    private fun setDiceBox(player: Player) {
+        // TODO: 10/11/19 Kayvan: View Interaction
+        if (player.haveDiedPiece()) {
+            val opponent = getOpponent(player)
+            if (opponent.isHomeRangeFill()) {
+                opponent.diceBox = diceBox
+            } else {
+                player.diceBox = diceBox
+            }
+        } else {
+            player.diceBox = diceBox
+        }
+    }
+
     @Subscribe
     override fun onEvent(event: DiceBoxThrownEvent) {
-        event.player.useDiceBox()
+        with(event.player) {
+            updateDicesStateInDiceBox()
+            if (diceBox!!.isEnable().not()) {
+                // TODO: 10/11/19 Kayvan: View interaction: no move
+                setDiceBox(getOpponent(this))
+            }
+        }
     }
 
     private fun getOpponent(player: Player): Player {
