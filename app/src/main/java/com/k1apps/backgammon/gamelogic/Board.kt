@@ -1,7 +1,6 @@
 package com.k1apps.backgammon.gamelogic
 
 import androidx.collection.ArrayMap
-import com.k1apps.backgammon.Utils.reverseLocation
 import javax.inject.Inject
 
 interface Board {
@@ -9,6 +8,8 @@ interface Board {
     val pieceList2: ArrayList<Piece>
     fun initBoard()
     fun canMovePiece(homeCellIndexRange: IntRange, piece: Piece, number: Byte): Boolean
+    fun isRangeFilledWithNormalPiece(range: IntRange): Boolean
+    fun isRangeFilledWithReversePiece(range: IntRange): Boolean
 }
 
 class BoardImpl @Inject constructor(
@@ -18,31 +19,73 @@ class BoardImpl @Inject constructor(
     private val cells: ArrayMap<Int, ArrayList<Piece>> = ArrayMap()
 
     override fun initBoard() {
+        clearCell()
         initLists()
+        checkList()
+    }
+
+    private fun checkList() {
+        var pieceCount = 0
+        cells.forEach { cell ->
+            if (cell.value.size > 0) {
+                pieceCount += cell.value.size
+                val moveType = cell.value[0].moveType
+                cell.value.forEach {
+                    if (it.moveType != moveType) {
+                        throw CellFilledWithDifferencePieceException()
+                    }
+                }
+            }
+        }
+        if (pieceCount != 30) {
+            throw BoardPieceCountException("Piece count in board is: $pieceCount")
+        }
+    }
+
+    private fun clearCell() {
+        cells.forEach {
+            it.value.clear()
+        }
+        cells.clear()
     }
 
     private fun initLists() {
-        setPiecesToCells(pieceList1.subList(0, 2), 1)
-        setPiecesToCells(pieceList1.subList(2, 7), 12)
-        setPiecesToCells(pieceList1.subList(7, 10), 17)
-        setPiecesToCells(pieceList1.subList(10, 15), 19)
-
-        setPiecesToCells(pieceList2.subList(0, 2), reverseLocation(1))
-        setPiecesToCells(pieceList2.subList(2, 7), reverseLocation(12))
-        setPiecesToCells(pieceList2.subList(7, 10), reverseLocation(17))
-        setPiecesToCells(pieceList2.subList(10, 15), reverseLocation(19))
-    }
-
-    private fun setPiecesToCells(pieces: MutableList<Piece>, location: Int) {
-        for (piece in pieces) {
-            piece.location = location
-            setPieceToCell(piece)
+        pieceList1.forEach {
+            setPieceToCell(it)
+        }
+        pieceList2.forEach {
+            setPieceToCell(it)
         }
     }
 
     override fun canMovePiece(homeCellIndexRange: IntRange, piece: Piece, number: Byte): Boolean {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //check died piece
+        //check remove
+        //check move
         return false
+    }
+
+    override fun isRangeFilledWithNormalPiece(range: IntRange): Boolean {
+        range.forEach { index ->
+            cells[index]?.let {
+                if (it.size <= 1 || it[0].moveType == MoveType.Revers) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    override fun isRangeFilledWithReversePiece(range: IntRange): Boolean {
+        range.forEach { index ->
+            cells[index]?.let {
+                if (it.size <= 1 || it[0].moveType == MoveType.Normal) {
+                    return false
+                }
+            }
+        }
+        return true
     }
 
     private fun setPieceToCell(piece: Piece) {

@@ -3,7 +3,7 @@ package com.k1apps.backgammon.gamelogic
 import com.k1apps.backgammon.Constants.BOARD_LOCATION_RANGE
 import com.k1apps.backgammon.Utils.reverseLocation
 
-class PieceImpl(private val moveType: MoveType) : Piece {
+class PieceImpl(override val moveType: MoveType) : Piece {
 
     override var state: PieceState = PieceState.IN_GAME
 
@@ -77,6 +77,7 @@ interface Piece {
     fun pieceAfterMove(number: Byte): Piece?
     var state: PieceState
     var location: Int
+    val moveType: MoveType
     fun copy(): Piece
 }
 

@@ -90,22 +90,24 @@ open class PieceListModule {
     @Provides
     @GameScope
     @Named(NORMAL_PIECE_LIST)
-    open fun reverseList(): ArrayList<Piece> {
+    open fun provideReverseList(): ArrayList<Piece> {
         val arrayList: ArrayList<Piece> = arrayListOf()
         for (item in 0 until 15) {
             arrayList.add(PieceFactory.createNormalPiece())
         }
+        pieceListArrangementNormal(arrayList)
         return arrayList
     }
 
     @Provides
     @GameScope
     @Named(REVERSE_PIECE_LIST)
-    open fun normalList(): ArrayList<Piece> {
+    open fun provideNormalList(): ArrayList<Piece> {
         val arrayList: ArrayList<Piece> = arrayListOf()
         for (item in 0 until 15) {
             arrayList.add(PieceFactory.createReversePiece())
         }
+        pieceListArrangementReverse(arrayList)
         return arrayList
     }
 

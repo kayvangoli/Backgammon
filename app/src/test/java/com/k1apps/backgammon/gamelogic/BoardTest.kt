@@ -4,6 +4,7 @@ import com.k1apps.backgammon.Constants.NORMAL_PLAYER
 import com.k1apps.backgammon.Constants.REVERSE_PLAYER
 import com.k1apps.backgammon.dagger.*
 import dagger.Component
+import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -111,5 +112,38 @@ class BoardTest {
             "location is: ${board.pieceList2[index].location}",
             board.pieceList2[index].location == location2
         )
+    }
+
+    @Test
+    fun when_isRangeFilledWithNormalPiece_called_with_default_arrangement_pieces_then_return_false() {
+        assertFalse(board.isRangeFilledWithNormalPiece(player1.homeCellIndexRange))
+    }
+    @Test
+    fun when_isRangeFilledWithReversePiece_called_with_default_arrangement_pieces_then_return_false() {
+        assertFalse(board.isRangeFilledWithReversePiece(player2.homeCellIndexRange))
+    }
+
+    @Test
+    fun when_isRangeFilledWithNormalPiece_called_with_filled_range_piece_list_then_return_true() {
+        val arrangements: ArrayList<ArrangementConfig> = arrayListOf()
+        player1.homeCellIndexRange.forEach {
+            arrangements.add(ArrangementConfig(2, it))
+        }
+        pieceListArrangement(board.pieceList1, ArrangementListConfig(arrangements))
+        pieceListArrangementInOneLocation(board.pieceList2, 15)
+        board.initBoard()
+        assertTrue(board.isRangeFilledWithNormalPiece(player1.homeCellIndexRange))
+    }
+
+    @Test
+    fun when_isRangeFilledWithReversePiece_called_with_filled_range_piece_list_then_return_true() {
+        val arrangements: ArrayList<ArrangementConfig> = arrayListOf()
+        player2.homeCellIndexRange.forEach {
+            arrangements.add(ArrangementConfig(2, it))
+        }
+        pieceListArrangement(board.pieceList2, ArrangementListConfig(arrangements))
+        pieceListArrangementInOneLocation(board.pieceList1, 1)
+        board.initBoard()
+        assertTrue(board.isRangeFilledWithReversePiece(player2.homeCellIndexRange))
     }
 }

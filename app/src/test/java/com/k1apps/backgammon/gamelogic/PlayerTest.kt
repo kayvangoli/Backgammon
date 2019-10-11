@@ -287,17 +287,17 @@ interface PlayerComponentTest {
 }
 
 class SpyPieceListModule : PieceListModule() {
-    override fun reverseList(): ArrayList<Piece> {
+    override fun provideReverseList(): ArrayList<Piece> {
         val pieceList = arrayListOf<Piece>()
-        super.reverseList().forEach {
+        super.provideReverseList().forEach {
             pieceList.add(spy(it))
         }
         return pieceList
     }
 
-    override fun normalList(): ArrayList<Piece> {
+    override fun provideNormalList(): ArrayList<Piece> {
         val pieceList = arrayListOf<Piece>()
-        super.reverseList().forEach {
+        super.provideReverseList().forEach {
             pieceList.add(spy(it))
         }
         return pieceList
