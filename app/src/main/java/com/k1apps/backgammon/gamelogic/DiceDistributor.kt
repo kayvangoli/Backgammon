@@ -11,8 +11,6 @@ class DiceDistributorImpl(
     private val diceBox: DiceBox
 ) : DiceDistributor {
 
-    private var player1DiceNumber: Byte = -1
-
     init {
         EventBus.getDefault().register(this)
     }
@@ -55,7 +53,7 @@ class DiceDistributorImpl(
     }
 
     private fun getOpponent(player: Player): Player {
-        if (player == player1) {
+        if (player === player1) {
             return player2
         } else {
             return player1
@@ -63,7 +61,6 @@ class DiceDistributorImpl(
     }
 
     override fun start() {
-        player1DiceNumber = -1
         setDiceToPlayers()
     }
 
