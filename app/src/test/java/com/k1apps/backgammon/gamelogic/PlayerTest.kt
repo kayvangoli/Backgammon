@@ -80,15 +80,42 @@ class PlayerTest {
     }
 
     @Test
-    fun when_updateDicesStateInDiceBox_called_with_dice_box_then_check_dices_by_all_piece_list() {
+    fun when_updateDicesStateInDiceBox_called_with_dices_6_and_5_and_have_dead_piece_and_both_two_cells_are_filled_by_opponent_then_dices_must_be_disable() {
         player.diceBox = DiceBoxImpl(mock(Dice::class.java), mock(Dice::class.java))
         `when`((player.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
         `when`((player.diceBox as DiceBoxImpl).dice2.number).thenReturn(5)
+        player.pieceList[0].state = PieceState.DEAD
+        `when`(board.canMovePiece(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(false)
         player.updateDicesStateInDiceBox()
-        for (piece in player.pieceList) {
-            verify(piece, times(1)).pieceAfterMove(6)
-            verify(piece, times(1)).pieceAfterMove(5)
-        }
+        verify(player.diceBox!!.dice1, never()).enabled = true
+        verify(player.diceBox!!.dice2, never()).enabled = true
+    }
+
+    @Test
+    fun when_updateDicesStateInDiceBox_called_with_dices_6_and_5_and_have_dead_piece_and_cell6_is_filled_by_opponent_then_dice6_must_be_disable_and_dice_5_enable() {
+        player.diceBox = DiceBoxImpl(mock(Dice::class.java), mock(Dice::class.java))
+        `when`((player.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
+        `when`((player.diceBox as DiceBoxImpl).dice2.number).thenReturn(5)
+        val piece = player.pieceList[0]
+        piece.state = PieceState.DEAD
+        `when`(board.canMovePiece(piece, piece.pieceAfterMove(6))).thenReturn(false)
+        `when`(board.canMovePiece(piece, piece.pieceAfterMove(5))).thenReturn(true)
+        player.updateDicesStateInDiceBox()
+        verify(player.diceBox!!.dice1, never()).enabled = true
+        verify(player.diceBox!!.dice2, times(1)).enabled = true
+    }
+
+    @Test
+    fun when_updateDicesStateInDiceBox_called_with_dices_6_and_5_and_have_dead_piece_and_both_of_two_cells_are_empty_then_two_dices_must_be_enable() {
+        player.diceBox = DiceBoxImpl(mock(Dice::class.java), mock(Dice::class.java))
+        `when`((player.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
+        `when`((player.diceBox as DiceBoxImpl).dice2.number).thenReturn(5)
+        val piece = player.pieceList[0]
+        piece.state = PieceState.DEAD
+        `when`(board.canMovePiece(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(true)
+        player.updateDicesStateInDiceBox()
+        verify(player.diceBox!!.dice1, times(1)).enabled = true
+        verify(player.diceBox!!.dice2, times(1)).enabled = true
     }
 
     @Test

@@ -7,7 +7,7 @@ interface Board {
     val pieceList1: ArrayList<Piece>
     val pieceList2: ArrayList<Piece>
     fun initBoard()
-    fun canMovePiece(homeCellIndexRange: IntRange, piece: Piece, number: Byte): Boolean
+    fun canMovePiece(fromPiece: Piece?, toPiece: Piece?): Boolean
     fun isRangeFilledWithNormalPiece(range: IntRange): Boolean
     fun isRangeFilledWithReversePiece(range: IntRange): Boolean
 }
@@ -58,12 +58,11 @@ class BoardImpl @Inject constructor(
         }
     }
 
-    override fun canMovePiece(homeCellIndexRange: IntRange, piece: Piece, number: Byte): Boolean {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        //check died piece
-        //check remove
-        //check move
-        return false
+    override fun canMovePiece(fromPiece: Piece?, toPiece: Piece?): Boolean {
+        if (fromPiece == null || toPiece == null) {
+            return false
+        }
+        return true
     }
 
     override fun isRangeFilledWithNormalPiece(range: IntRange): Boolean {

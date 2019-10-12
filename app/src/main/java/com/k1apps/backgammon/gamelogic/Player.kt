@@ -43,18 +43,22 @@ class PlayerImpl(
 
     override fun updateDicesStateInDiceBox() {
         diceBox?.let { diceBox ->
-            for (piece in pieceList) {
-                val number1 = diceBox.dice1.number!!
-                val number2 = diceBox.dice2.number!!
-                piece.pieceAfterMove(number1)?.let {
-                    if (board.canMovePiece(homeCellIndexRange, it, number1)) {
-                        diceBox.updateDiceStateWith(number1)
-                    }
+            when{
+                haveDiedPiece()-> updateDiceWithDeadPiece(diceBox)
+            }
+        }
+    }
+
+    private fun updateDiceWithDeadPiece(diceBox: DiceBox) {
+        pieceList.forEach {
+            if (it.state == PieceState.DEAD) {
+                val number = diceBox.dice1.number!!
+                if (board.canMovePiece(it, it.pieceAfterMove(number))) {
+                    diceBox.updateDiceStateWith(number)
                 }
-                piece.pieceAfterMove(number2)?.let {
-                    if (board.canMovePiece(homeCellIndexRange, it, number2)) {
-                        diceBox.updateDiceStateWith(number2)
-                    }
+                val number2 = diceBox.dice2.number!!
+                if (board.canMovePiece(it, it.pieceAfterMove(number2))) {
+                    diceBox.updateDiceStateWith(number2)
                 }
             }
         }
