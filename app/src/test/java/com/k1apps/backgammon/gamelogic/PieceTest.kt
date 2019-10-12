@@ -62,98 +62,98 @@ class PieceTest {
     }
 
     @Test
-    fun when_pieceAfterMove_for_reverse_piece_type_with_number_1_called_and_piece_is_dead_then_return_dead_piece_with_location_1() {
+    fun when_pieceAfterMove_for_reverse_piece_type_with_number_1_called_and_piece_is_dead_then_return_inGame_piece_with_location_1() {
         pieceReverse.state = PieceState.DEAD
         val pieceAfterMove = pieceReverse.pieceAfterMove(1)
-        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.IN_GAME)
         assertTrue(pieceAfterMove.location == 1)
     }
 
     @Test
-    fun when_pieceAfterMove_for_reverse_piece_type_with_number_2_called_and_piece_is_dead_then_return_dead_piece_with_location_2() {
+    fun when_pieceAfterMove_for_reverse_piece_type_with_number_2_called_and_piece_is_dead_then_return_inGame_piece_with_location_2() {
         pieceReverse.state = PieceState.DEAD
         val pieceAfterMove = pieceReverse.pieceAfterMove(2)
-        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.IN_GAME)
         assertTrue(pieceAfterMove.location == 2)
     }
 
     @Test
-    fun when_pieceAfterMove_for_reverse_piece_type_with_number_3_called_and_piece_is_dead_then_return_dead_piece_with_location_3() {
+    fun when_pieceAfterMove_for_reverse_piece_type_with_number_3_called_and_piece_is_dead_then_return_inGame_piece_with_location_3() {
         pieceReverse.state = PieceState.DEAD
         val pieceAfterMove = pieceReverse.pieceAfterMove(3)
-        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.IN_GAME)
         assertTrue(pieceAfterMove.location == 3)
     }
 
     @Test
-    fun when_pieceAfterMove_for_reverse_piece_type_with_number_4_called_and_piece_is_dead_then_return_dead_piece_with_location_4() {
+    fun when_pieceAfterMove_for_reverse_piece_type_with_number_4_called_and_piece_is_dead_then_return_inGame_piece_with_location_4() {
         pieceReverse.state = PieceState.DEAD
         val pieceAfterMove = pieceReverse.pieceAfterMove(4)
-        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.IN_GAME)
         assertTrue(pieceAfterMove.location == 4)
     }
 
     @Test
-    fun when_pieceAfterMove_for_reverse_piece_type_with_number_5_called_and_piece_is_dead_then_return_dead_piece_with_location_5() {
+    fun when_pieceAfterMove_for_reverse_piece_type_with_number_5_called_and_piece_is_dead_then_return_inGame_piece_with_location_5() {
         pieceReverse.state = PieceState.DEAD
         val pieceAfterMove = pieceReverse.pieceAfterMove(5)
-        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.IN_GAME)
         assertTrue(pieceAfterMove.location == 5)
     }
 
     @Test
-    fun when_pieceAfterMove_for_reverse_piece_type_with_number_6_called_and_piece_is_dead_then_return_dead_piece_with_location_6() {
+    fun when_pieceAfterMove_for_reverse_piece_type_with_number_6_called_and_piece_is_dead_then_return_inGame_piece_with_location_6() {
         pieceReverse.state = PieceState.DEAD
         val pieceAfterMove = pieceReverse.pieceAfterMove(6)
-        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.IN_GAME)
         assertTrue("location is ${pieceAfterMove.location}", pieceAfterMove.location == 6)
     }
 
     @Test
-    fun when_pieceAfterMove_for_normal_piece_type_with_number_1_called_and_piece_is_dead_then_return_dead_piece_with_location_24() {
+    fun when_pieceAfterMove_for_normal_piece_type_with_number_1_called_and_piece_is_dead_then_return_inGame_piece_with_location_24() {
         pieceNormal.state = PieceState.DEAD
         val pieceAfterMove = pieceNormal.pieceAfterMove(1)
-        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.IN_GAME)
         assertTrue(pieceAfterMove.location == 24)
     }
 
     @Test
-    fun when_pieceAfterMove_for_normal_piece_type_with_number_2_called_and_piece_is_dead_then_return_dead_piece_with_location_23() {
+    fun when_pieceAfterMove_for_normal_piece_type_with_number_2_called_and_piece_is_dead_then_return_inGame_piece_with_location_23() {
         pieceNormal.state = PieceState.DEAD
         val pieceAfterMove = pieceNormal.pieceAfterMove(2)
-        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.IN_GAME)
         assertTrue(pieceAfterMove.location == 23)
     }
 
     @Test
-    fun when_pieceAfterMove_for_normal_piece_type_with_number_3_called_and_piece_is_dead_then_return_dead_piece_with_location_22() {
+    fun when_pieceAfterMove_for_normal_piece_type_with_number_3_called_and_piece_is_dead_then_return_inGame_piece_with_location_22() {
         pieceNormal.state = PieceState.DEAD
         val pieceAfterMove = pieceNormal.pieceAfterMove(3)
-        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.IN_GAME)
         assertTrue(pieceAfterMove.location == 22)
     }
 
     @Test
-    fun when_pieceAfterMove_for_normal_piece_type_with_number_4_called_and_piece_is_dead_then_return_dead_piece_with_location_21() {
+    fun when_pieceAfterMove_for_normal_piece_type_with_number_4_called_and_piece_is_dead_then_return_inGame_piece_with_location_21() {
         pieceNormal.state = PieceState.DEAD
         val pieceAfterMove = pieceNormal.pieceAfterMove(4)
-        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.IN_GAME)
         assertTrue(pieceAfterMove.location == 21)
     }
 
     @Test
-    fun when_pieceAfterMove_for_normal_piece_type_with_number_5_called_and_piece_is_dead_then_return_dead_piece_with_location_20() {
+    fun when_pieceAfterMove_for_normal_piece_type_with_number_5_called_and_piece_is_dead_then_return_inGame_piece_with_location_20() {
         pieceNormal.state = PieceState.DEAD
         val pieceAfterMove = pieceNormal.pieceAfterMove(5)
-        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.IN_GAME)
         assertTrue(pieceAfterMove.location == 20)
     }
 
     @Test
-    fun when_pieceAfterMove_for_normal_piece_type_with_number_6_called_and_piece_is_dead_then_return_dead_piece_with_location_19() {
+    fun when_pieceAfterMove_for_normal_piece_type_with_number_6_called_and_piece_is_dead_then_return_inGame_piece_with_location_19() {
         pieceNormal.state = PieceState.DEAD
         val pieceAfterMove = pieceNormal.pieceAfterMove(6)
-        assertTrue(pieceAfterMove!!.state == PieceState.DEAD)
+        assertTrue(pieceAfterMove!!.state == PieceState.IN_GAME)
         assertTrue(pieceAfterMove.location == 19)
     }
 

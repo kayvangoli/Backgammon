@@ -24,6 +24,7 @@ class PieceImpl(override val moveType: MoveType) : Piece {
                     gotoEndNumber = reverseLocation(number.toInt())
                 }
                 piece.location = gotoEndNumber
+                piece.state = PieceState.IN_GAME
             }
             PieceState.IN_GAME -> {
                 if (moveType == MoveType.Revers) {
