@@ -10,6 +10,7 @@ class DiceBoxImpl(override val dice1: Dice, override val dice2: Dice) : DiceBox 
         private set
 
     override fun roll() {
+        Pair(dice1.roll(), dice2.roll())
         if (dice1.number == dice2.number) {
             dice3 = DiceFactory.createDice(dice2)
             dice4 = DiceFactory.createDice(dice2)
@@ -17,7 +18,6 @@ class DiceBoxImpl(override val dice1: Dice, override val dice2: Dice) : DiceBox 
             dice3 = null
             dice4 = null
         }
-        Pair(dice1.roll(), dice2.roll())
     }
 
     override fun updateDiceStateWith(number: Byte) {
@@ -34,7 +34,14 @@ class DiceBoxImpl(override val dice1: Dice, override val dice2: Dice) : DiceBox 
     }
 
     override fun isEnable(): Boolean {
-        return dice1.enabled || dice2.enabled
+        var enable = dice1.enabled || dice2.enabled
+        dice3?.let {
+            enable = it.enabled
+        }
+        dice4?.let {
+            enable = it.enabled
+        }
+        return enable
     }
 
     override fun enable() {
@@ -42,6 +49,23 @@ class DiceBoxImpl(override val dice1: Dice, override val dice2: Dice) : DiceBox 
         dice2.enabled = true
         dice3?.enabled = true
         dice4?.enabled = true
+    }
+
+    override fun getAllNumbers(): List<Byte> {
+        val list = arrayListOf<Byte>()
+        dice1.number?.let {
+            list.add(it)
+        }
+        dice2.number?.let {
+            list.add(it)
+        }
+        dice3?.number?.let {
+            list.add(it)
+        }
+        dice4?.number?.let {
+            list.add(it)
+        }
+        return list
     }
 }
 
@@ -54,5 +78,6 @@ interface DiceBox {
     fun updateDiceStateWith(number: Byte)
     fun isEnable(): Boolean
     fun enable()
+    fun getAllNumbers(): List<Byte>
 }
 

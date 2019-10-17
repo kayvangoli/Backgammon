@@ -16,7 +16,6 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import javax.inject.Named
-import kotlin.random.Random
 
 @RunWith(MockitoJUnitRunner::class)
 class PlayerTest {
@@ -29,11 +28,15 @@ class PlayerTest {
     lateinit var diceDistributor: DiceDistributorImpl
     @Inject
     lateinit var board: Board
+    @Inject
+    lateinit var diceBox: DiceBox
 
     @Before
     fun setup() {
         DaggerPlayerComponentTest.builder().setPieceListModule(SpyPieceListModule())
-            .setBoardModule(SpyBoardModule()).build().inject(this)
+            .setBoardModule(SpyBoardModule())
+            .setDiceBoxModule(SpyDiceBoxModuleTest())
+            .build().inject(this)
         EventBus.getDefault().register(diceDistributor)
     }
 
@@ -48,16 +51,14 @@ class PlayerTest {
 
     @Test
     fun when_roll_called_with_dice_then_roll_dice_and_post_dice_box_thrown_event_callback_invoked() {
-        val diceBoxMock: DiceBox = DiceBoxImpl(mock(Dice::class.java), mock(Dice::class.java))
-        player.diceBox = diceBoxMock
+        player.diceBox = diceBox
         player.roll()
         verify(diceDistributor, times(1)).onEvent(DiceBoxThrownEvent(player))
     }
 
     @Test
     fun when_retakeDice_called_then_dice_should_be_null() {
-        val diceMock: Dice = mock(Dice::class.java)
-        player.dice = diceMock
+        player.dice = diceBox.dice1
         assertTrue(player.dice != null)
         player.retakeDice()
         assertTrue(player.dice == null)
@@ -65,7 +66,7 @@ class PlayerTest {
 
     @Test
     fun when_retakeDiceBox_called_then_diceBox_should_be_null() {
-        player.diceBox = mock(DiceBox::class.java)
+        player.diceBox = diceBox
         assertTrue(player.diceBox != null)
         player.retakeDiceBox()
         assertTrue(player.diceBox == null)
@@ -73,15 +74,14 @@ class PlayerTest {
 
     @Test
     fun when_roll_called_with_dice_box_then_roll_dice_box() {
-        val diceBoxMock: DiceBox = mock(DiceBox::class.java)
-        player.diceBox = diceBoxMock
+        player.diceBox = diceBox
         player.roll()
         verify(player.diceBox, times(1))!!.roll()
     }
 
     @Test
     fun when_updateDicesStateInDiceBox_called_with_dices_6_and_5_and_have_dead_piece_and_both_two_cells_are_filled_by_opponent_then_dices_must_be_disable() {
-        player.diceBox = DiceBoxImpl(mock(Dice::class.java), mock(Dice::class.java))
+        player.diceBox = diceBox
         `when`((player.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
         `when`((player.diceBox as DiceBoxImpl).dice2.number).thenReturn(5)
         player.pieceList[0].state = PieceState.DEAD
@@ -93,7 +93,7 @@ class PlayerTest {
 
     @Test
     fun when_updateDicesStateInDiceBox_called_with_dices_6_and_5_and_have_dead_piece_and_cell6_is_filled_by_opponent_then_dice6_must_be_disable_and_dice_5_enable() {
-        player.diceBox = DiceBoxImpl(mock(Dice::class.java), mock(Dice::class.java))
+        player.diceBox = diceBox
         `when`((player.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
         `when`((player.diceBox as DiceBoxImpl).dice2.number).thenReturn(5)
         val piece = player.pieceList[0]
@@ -107,7 +107,7 @@ class PlayerTest {
 
     @Test
     fun when_updateDicesStateInDiceBox_called_with_dices_6_and_5_and_have_dead_piece_and_both_of_two_cells_are_empty_then_two_dices_must_be_enable() {
-        player.diceBox = DiceBoxImpl(mock(Dice::class.java), mock(Dice::class.java))
+        player.diceBox = diceBox
         `when`((player.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
         `when`((player.diceBox as DiceBoxImpl).dice2.number).thenReturn(5)
         val piece = player.pieceList[0]
@@ -120,7 +120,7 @@ class PlayerTest {
 
     @Test
     fun when_updateDicesStateInDiceBox_called_with_dices_6_and_5_and_have_2_dead_piece_and_just_cell6_is_empty_then_dice1_must_be_enable_and_dice2_disable() {
-        player.diceBox = DiceBoxImpl(mock(Dice::class.java), mock(Dice::class.java))
+        player.diceBox = diceBox
         `when`((player.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
         `when`((player.diceBox as DiceBoxImpl).dice2.number).thenReturn(5)
         val piece = player.pieceList[0]
@@ -138,7 +138,7 @@ class PlayerTest {
 
     @Test
     fun when_updateDicesStateInDiceBox_called_with_dices_6_and_6_and_have_4_dead_piece_and_cell6_is_full_then_never_call_updateDicesStateWith6() {
-        player.diceBox = spy(DiceBoxImpl(spy(DiceImpl(Random)), spy(DiceImpl(Random))))
+        player.diceBox = diceBox
         `when`((player.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
         `when`((player.diceBox as DiceBoxImpl).dice2.number).thenReturn(6)
         val piece = player.pieceList[0]
@@ -156,7 +156,7 @@ class PlayerTest {
 
     @Test
     fun when_updateDicesStateInDiceBox_called_with_dices_6_and_6_and_have_4_dead_piece_and_cell6_is_empty_then_at_least_4_time_call_updateDicesStateWith6() {
-        player.diceBox = spy(DiceBoxImpl(spy(DiceImpl(Random)), spy(DiceImpl(Random))))
+        player.diceBox = diceBox
         `when`(player.diceBox!!.dice1.number).thenReturn(6)
         `when`(player.diceBox!!.dice2.number).thenReturn(6)
         val piece = player.pieceList[0]
@@ -174,7 +174,7 @@ class PlayerTest {
 
     @Test
     fun when_updateDiceStateInDiceBox_called_and_player_can_remove_piece_then_all_dices_must_be_enable(){
-        player.diceBox = spy(DiceBoxImpl(spy(DiceImpl(Random)), spy(DiceImpl(Random))))
+        player.diceBox = diceBox
         player.pieceList.forEach {
             it.location = 1
         }
@@ -197,13 +197,15 @@ class PlayerTest {
 
 
 @GameScope
-@Component(modules = [PlayerModule::class, PieceListModule::class, BoardModule::class])
+@Component(modules = [PlayerModule::class, PieceListModule::class,
+    BoardModule::class, DiceBoxModule::class])
 interface PlayerComponentTest {
 
     @Component.Builder
     interface Builder {
         fun setPieceListModule(pieceListModule: PieceListModule): Builder
         fun setBoardModule(boardModule: BoardModule): Builder
+        fun setDiceBoxModule(spyDiceBoxModuleTest: DiceBoxModule): Builder
         fun build(): PlayerComponentTest
     }
 

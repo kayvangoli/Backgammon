@@ -15,10 +15,13 @@ class DiceBoxTest {
 
     @Inject
     lateinit var diceBox: DiceBox
+    @Inject
+    lateinit var random: Random
 
     @Before
     fun setup() {
-        DaggerDiceBoxComponentTest.builder().diceBoxModule(SpyDiceBoxModuleTest()).build().inject(this)
+        DaggerDiceBoxComponentTest.builder().diceBoxModule(SpyDiceBoxModuleTest()).build()
+            .inject(this)
     }
 
     @Test
@@ -135,6 +138,29 @@ class DiceBoxTest {
         diceBox.updateDiceStateWith(4)
         assertTrue(diceBox.dice4!!.enabled)
     }
+
+    @Test
+    fun when_getAllNumbers_called_and_dices_are_pairs_with_number5_then_return_list_with_four_numbers5() {
+        `when`(random.nextInt(1, 7)).thenReturn(5)
+        diceBox.roll()
+        val allNumbers = diceBox.getAllNumbers()
+        assertTrue(allNumbers.size == 4)
+        allNumbers.forEach {
+            assertTrue(it == 5.toByte())
+        }
+
+    }
+
+    @Test
+    fun when_getAllNumbers_called_and_dices_are_4_and_5_then_return_list_with_two_numbers_4_and_5() {
+        `when`(random.nextInt(1, 7)).thenReturn(4).thenReturn(5)
+        diceBox.roll()
+        val allNumbers = diceBox.getAllNumbers()
+        assertTrue(allNumbers.size == 2)
+        assertTrue(allNumbers[0]== 4.toByte())
+        assertTrue(allNumbers[1]== 5.toByte())
+
+    }
 }
 
 @GameScope
@@ -145,10 +171,16 @@ interface DiceBoxComponentTest {
         fun diceBoxModule(module: DiceBoxModule): Builder
         fun build(): DiceBoxComponentTest
     }
+
     fun inject(diceBoxTest: DiceBoxTest)
 }
 
 class SpyDiceBoxModuleTest : DiceBoxModule() {
+
+    override fun provideDiceBox(dice1: Dice, dice2: Dice): DiceBox {
+        return spy(super.provideDiceBox(dice1, dice2))
+    }
+
     override fun provideDice(random: Random): Dice {
         return spy(super.provideDice(random))
     }

@@ -118,7 +118,7 @@ open class PieceListModule {
 open class DiceBoxModule {
     @Provides
     @GameScope
-    fun provideDiceBox(
+    open fun provideDiceBox(
         dice1: Dice,
         dice2: Dice
     ): DiceBox {
