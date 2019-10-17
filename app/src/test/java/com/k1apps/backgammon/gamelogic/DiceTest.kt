@@ -8,12 +8,13 @@ import org.mockito.Mockito.spy
 import org.mockito.Mockito.times
 import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
+import kotlin.random.Random
 
 @RunWith(MockitoJUnitRunner::class)
 class DiceTest {
 
     @Spy
-    var dice: Dice = spy(DiceImpl())
+    var dice: Dice = spy(DiceImpl(Random))
 
     @Test
     fun when_dice_every_time_roll_called_then_dice_should_be_disabled() {

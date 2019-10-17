@@ -6,7 +6,6 @@ import com.k1apps.backgammon.dagger.*
 import com.k1apps.backgammon.gamelogic.event.DiceBoxThrownEvent
 import dagger.Component
 import org.greenrobot.eventbus.EventBus
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -17,6 +16,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import javax.inject.Named
+import kotlin.random.Random
 
 @RunWith(MockitoJUnitRunner::class)
 class PlayerTest {
@@ -138,7 +138,7 @@ class PlayerTest {
 
     @Test
     fun when_updateDicesStateInDiceBox_called_with_dices_6_and_6_and_have_4_dead_piece_and_cell6_is_full_then_never_call_updateDicesStateWith6() {
-        player.diceBox = spy(DiceBoxImpl(spy(DiceImpl()), spy(DiceImpl())))
+        player.diceBox = spy(DiceBoxImpl(spy(DiceImpl(Random)), spy(DiceImpl(Random))))
         `when`((player.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
         `when`((player.diceBox as DiceBoxImpl).dice2.number).thenReturn(6)
         val piece = player.pieceList[0]
@@ -156,7 +156,7 @@ class PlayerTest {
 
     @Test
     fun when_updateDicesStateInDiceBox_called_with_dices_6_and_6_and_have_4_dead_piece_and_cell6_is_empty_then_at_least_4_time_call_updateDicesStateWith6() {
-        player.diceBox = spy(DiceBoxImpl(spy(DiceImpl()), spy(DiceImpl())))
+        player.diceBox = spy(DiceBoxImpl(spy(DiceImpl(Random)), spy(DiceImpl(Random))))
         `when`(player.diceBox!!.dice1.number).thenReturn(6)
         `when`(player.diceBox!!.dice2.number).thenReturn(6)
         val piece = player.pieceList[0]
@@ -174,7 +174,7 @@ class PlayerTest {
 
     @Test
     fun when_updateDiceStateInDiceBox_called_and_player_can_remove_piece_then_all_dices_must_be_enable(){
-        player.diceBox = spy(DiceBoxImpl(spy(DiceImpl()), spy(DiceImpl())))
+        player.diceBox = spy(DiceBoxImpl(spy(DiceImpl(Random)), spy(DiceImpl(Random))))
         player.pieceList.forEach {
             it.location = 1
         }

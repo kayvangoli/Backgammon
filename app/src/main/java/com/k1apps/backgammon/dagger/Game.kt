@@ -10,6 +10,7 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 import javax.inject.Scope
+import kotlin.random.Random
 
 @Scope
 @Retention
@@ -125,7 +126,13 @@ open class DiceBoxModule {
     }
 
     @Provides
-    open fun provideDice(): Dice {
-        return DiceImpl()
+    open fun provideDice(random: Random): Dice {
+        return DiceImpl(random)
+    }
+
+    @Provides
+    @GameScope
+    open fun provideRandom(): Random {
+        return Random
     }
 }

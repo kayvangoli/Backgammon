@@ -9,6 +9,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.*
 import javax.inject.Inject
+import kotlin.random.Random
 
 class DiceBoxTest {
 
@@ -36,7 +37,7 @@ class DiceBoxTest {
     }
 
     @Test
-    fun when_dice_roll_called_and_dices_number_is_pair_then_dice3_and_dice4_should_not_be_null() {
+    fun when_dice_roll_called_and_dices_number_are_pair_then_dice3_and_dice4_should_not_be_null() {
         `when`(diceBox.dice1.number).thenReturn(4)
         `when`(diceBox.dice2.number).thenReturn(4)
         diceBox.roll()
@@ -148,7 +149,11 @@ interface DiceBoxComponentTest {
 }
 
 class SpyDiceBoxModuleTest : DiceBoxModule() {
-    override fun provideDice(): Dice {
-        return spy(super.provideDice())
+    override fun provideDice(random: Random): Dice {
+        return spy(super.provideDice(random))
+    }
+
+    override fun provideRandom(): Random {
+        return spy(super.provideRandom())
     }
 }
