@@ -43,10 +43,19 @@ class PlayerImpl(
 
     override fun updateDicesStateInDiceBox() {
         diceBox?.let { diceBox ->
-            when{
-                haveDiedPiece()-> updateDiceWithDeadPiece(diceBox)
+            when {
+                haveDiedPiece() -> updateDiceWithDeadPiece(diceBox)
+                isInRemovePieceState() -> diceBox.enable()
             }
         }
+    }
+
+    private fun isInRemovePieceState(): Boolean {
+        pieceList.forEach {
+            if (it.state == PieceState.DEAD) return false
+            if (it.state == PieceState.IN_GAME && it.location !in homeCellIndexRange) return false
+        }
+        return true
     }
 
     private fun updateDiceWithDeadPiece(diceBox: DiceBox) {
@@ -65,7 +74,7 @@ class PlayerImpl(
     }
 
     override fun haveDiedPiece(): Boolean {
-        pieceList.forEach{
+        pieceList.forEach {
             if (it.state == PieceState.DEAD) {
                 return true
             }

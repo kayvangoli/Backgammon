@@ -137,8 +137,8 @@ class PlayerTest {
     }
 
     @Test
-    fun when_updateDicesStateInDiceBox_called_with_dices_6_and_6_and_have_4_dead_piece_and_cell6_is_full_then_all_dices_must_be_disable() {
-        player.diceBox = DiceBoxImpl(mock(Dice::class.java), mock(Dice::class.java))
+    fun when_updateDicesStateInDiceBox_called_with_dices_6_and_6_and_have_4_dead_piece_and_cell6_is_full_then_never_call_updateDicesStateWith6() {
+        player.diceBox = spy(DiceBoxImpl(spy(DiceImpl()), spy(DiceImpl())))
         `when`((player.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
         `when`((player.diceBox as DiceBoxImpl).dice2.number).thenReturn(6)
         val piece = player.pieceList[0]
@@ -151,14 +151,11 @@ class PlayerTest {
         piece3.state = PieceState.DEAD
         `when`(board.canMovePiece(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(false)
         player.updateDicesStateInDiceBox()
-        verify(player.diceBox!!.dice1, never()).enabled = true
-        verify(player.diceBox!!.dice2, never()).enabled = true
-        verify(player.diceBox!!.dice3, never())!!.enabled = true
-        verify(player.diceBox!!.dice4, never())!!.enabled = true
+        verify(player.diceBox, never())!!.updateDiceStateWith(6)
     }
 
     @Test
-    fun when_updateDicesStateInDiceBox_called_with_dices_6_and_6_and_have_4_dead_piece_and_cell6_is_empty_then_all_dices_must_be_enable() {
+    fun when_updateDicesStateInDiceBox_called_with_dices_6_and_6_and_have_4_dead_piece_and_cell6_is_empty_then_at_least_4_time_call_updateDicesStateWith6() {
         player.diceBox = spy(DiceBoxImpl(spy(DiceImpl()), spy(DiceImpl())))
         `when`(player.diceBox!!.dice1.number).thenReturn(6)
         `when`(player.diceBox!!.dice2.number).thenReturn(6)
@@ -174,7 +171,16 @@ class PlayerTest {
         player.updateDicesStateInDiceBox()
         verify(player.diceBox, atLeast(4))!!.updateDiceStateWith(6)
     }
-    
+
+    @Test
+    fun when_updateDiceStateInDiceBox_called_and_player_can_remove_piece_then_all_dices_must_be_enable(){
+        player.diceBox = spy(DiceBoxImpl(spy(DiceImpl()), spy(DiceImpl())))
+        player.pieceList.forEach {
+            it.location = 1
+        }
+        player.updateDicesStateInDiceBox()
+        verify(player.diceBox!!, atLeastOnce()).enable()
+    }
 
     @Test
     fun when_haveDiedPiece_called_and_piece_index_2_is_died_then_return_true() {
