@@ -1,12 +1,12 @@
 package com.k1apps.backgammon.gamelogic
 
-import com.k1apps.backgammon.Constants.NORMAL_HOME_RANGE
 import com.k1apps.backgammon.Constants.NORMAL_PLAYER
 import com.k1apps.backgammon.gamelogic.event.DiceThrownEvent
 import com.k1apps.backgammon.dagger.*
 import com.k1apps.backgammon.gamelogic.event.DiceBoxThrownEvent
 import dagger.Component
 import org.greenrobot.eventbus.EventBus
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -119,168 +119,62 @@ class PlayerTest {
     }
 
     @Test
-    fun when_updateDicesStateInDiceBox_called_then_check_pieces_for_move() {
-        val diceBoxMock = mock(DiceBox::class.java)
-        `when`(diceBoxMock.dice1).thenReturn(mock(Dice::class.java))
-        `when`(diceBoxMock.dice2).thenReturn(mock(Dice::class.java))
-        `when`(diceBoxMock.dice1.number).thenReturn(2)
-        `when`(diceBoxMock.dice2.number).thenReturn(3)
-        player.diceBox = diceBoxMock
-        player.pieceList.forEach { piece ->
-            `when`(piece.pieceAfterMove(ArgumentMatchers.anyByte())).thenReturn(piece)
-            `when`(
-                board.canMovePiece(
-                    NORMAL_HOME_RANGE,
-                    piece,
-                    diceBoxMock.dice1.number!!
-                )
-            ).thenReturn(true)
-            `when`(
-                board.canMovePiece(
-                    NORMAL_HOME_RANGE,
-                    piece,
-                    diceBoxMock.dice2.number!!
-                )
-            ).thenReturn(true)
-        }
+    fun when_updateDicesStateInDiceBox_called_with_dices_6_and_5_and_have_2_dead_piece_and_just_cell6_is_empty_then_dice1_must_be_enable_and_dice2_disable() {
+        player.diceBox = DiceBoxImpl(mock(Dice::class.java), mock(Dice::class.java))
+        `when`((player.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
+        `when`((player.diceBox as DiceBoxImpl).dice2.number).thenReturn(5)
+        val piece = player.pieceList[0]
+        val piece1 = player.pieceList[1]
+        piece.state = PieceState.DEAD
+        piece1.state = PieceState.DEAD
+        `when`(board.canMovePiece(piece, piece.pieceAfterMove(6))).thenReturn(true)
+        `when`(board.canMovePiece(piece1, piece1.pieceAfterMove(6))).thenReturn(true)
+        `when`(board.canMovePiece(piece, piece.pieceAfterMove(5))).thenReturn(false)
+        `when`(board.canMovePiece(piece1, piece1.pieceAfterMove(5))).thenReturn(false)
         player.updateDicesStateInDiceBox()
-        verify(diceBoxMock, times(15)).updateDiceStateWith(2)
-        verify(diceBoxMock, times(15)).updateDiceStateWith(3)
-        player.pieceList.forEach {
-            verify(it, times(1)).pieceAfterMove(2)
-            verify(it, times(1)).pieceAfterMove(3)
-        }
+        verify(player.diceBox!!.dice1, atLeastOnce()).enabled = true
+        verify(player.diceBox!!.dice2, never()).enabled = true
     }
 
     @Test
-    fun when_UpdateDicesStateInDiceBox_called_with_dices_2_and_3_and_player_can_use_2_but_can_not_use_3_then_disable_dice_3_and_enable_dice_2_check_with_board() {
-        val diceBoxMock = mock(DiceBox::class.java)
-        `when`(diceBoxMock.dice1).thenReturn(mock(Dice::class.java))
-        `when`(diceBoxMock.dice2).thenReturn(mock(Dice::class.java))
-        `when`(diceBoxMock.dice1.number).thenReturn(2)
-        `when`(diceBoxMock.dice2.number).thenReturn(3)
-        player.diceBox = diceBoxMock
-        player.pieceList.forEach { piece ->
-            `when`(piece.pieceAfterMove(ArgumentMatchers.anyByte())).thenReturn(piece)
-            `when`(
-                board.canMovePiece(
-                    NORMAL_HOME_RANGE,
-                    piece,
-                    2
-                )
-            ).thenReturn(true)
-            `when`(
-                board.canMovePiece(
-                    NORMAL_HOME_RANGE,
-                    piece,
-                    3
-                )
-            ).thenReturn(false)
-        }
+    fun when_updateDicesStateInDiceBox_called_with_dices_6_and_6_and_have_4_dead_piece_and_cell6_is_full_then_all_dices_must_be_disable() {
+        player.diceBox = DiceBoxImpl(mock(Dice::class.java), mock(Dice::class.java))
+        `when`((player.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
+        `when`((player.diceBox as DiceBoxImpl).dice2.number).thenReturn(6)
+        val piece = player.pieceList[0]
+        val piece1 = player.pieceList[1]
+        val piece2 = player.pieceList[1]
+        val piece3 = player.pieceList[1]
+        piece.state = PieceState.DEAD
+        piece1.state = PieceState.DEAD
+        piece2.state = PieceState.DEAD
+        piece3.state = PieceState.DEAD
+        `when`(board.canMovePiece(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(false)
         player.updateDicesStateInDiceBox()
-        verify(diceBoxMock, atLeastOnce()).updateDiceStateWith(2)
-        verify(diceBoxMock, never()).updateDiceStateWith(3)
+        verify(player.diceBox!!.dice1, never()).enabled = true
+        verify(player.diceBox!!.dice2, never()).enabled = true
+        verify(player.diceBox!!.dice3, never())!!.enabled = true
+        verify(player.diceBox!!.dice4, never())!!.enabled = true
     }
 
     @Test
-    fun when_UpdateDicesStateInDiceBox_called_with_dices_2_and_3_and_player_can_use_2_but_can_not_use_3_then_disable_dice_3_and_enable_dice_2_check_with_pieces() {
-        val diceBoxMock = mock(DiceBox::class.java)
-        `when`(diceBoxMock.dice1).thenReturn(mock(Dice::class.java))
-        `when`(diceBoxMock.dice2).thenReturn(mock(Dice::class.java))
-        `when`(diceBoxMock.dice1.number).thenReturn(2)
-        `when`(diceBoxMock.dice2.number).thenReturn(3)
-        player.diceBox = diceBoxMock
-        player.pieceList.forEach { piece ->
-            `when`(piece.pieceAfterMove(2)).thenReturn(piece)
-            `when`(piece.pieceAfterMove(3)).thenReturn(null)
-            `when`(
-                board.canMovePiece(
-                    NORMAL_HOME_RANGE,
-                    piece,
-                    2
-                )
-            ).thenReturn(true)
-        }
+    fun when_updateDicesStateInDiceBox_called_with_dices_6_and_6_and_have_4_dead_piece_and_cell6_is_empty_then_all_dices_must_be_enable() {
+        player.diceBox = spy(DiceBoxImpl(spy(DiceImpl()), spy(DiceImpl())))
+        `when`(player.diceBox!!.dice1.number).thenReturn(6)
+        `when`(player.diceBox!!.dice2.number).thenReturn(6)
+        val piece = player.pieceList[0]
+        val piece1 = player.pieceList[1]
+        val piece2 = player.pieceList[1]
+        val piece3 = player.pieceList[1]
+        piece.state = PieceState.DEAD
+        piece1.state = PieceState.DEAD
+        piece2.state = PieceState.DEAD
+        piece3.state = PieceState.DEAD
+        `when`(board.canMovePiece(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(true)
         player.updateDicesStateInDiceBox()
-        verify(diceBoxMock, atLeastOnce()).updateDiceStateWith(2)
-        verify(diceBoxMock, never()).updateDiceStateWith(3)
+        verify(player.diceBox, atLeast(4))!!.updateDiceStateWith(6)
     }
-
-    @Test
-    fun when_UpdateDicesStateInDiceBox_called_with_dices_2_and_3_and_player_can_use_both_of_the_dices_then_enable_dice_3_and_dice_2() {
-        val diceBoxMock = mock(DiceBox::class.java)
-        `when`(diceBoxMock.dice1).thenReturn(mock(Dice::class.java))
-        `when`(diceBoxMock.dice2).thenReturn(mock(Dice::class.java))
-        `when`(diceBoxMock.dice1.number).thenReturn(2)
-        `when`(diceBoxMock.dice2.number).thenReturn(3)
-        player.diceBox = diceBoxMock
-        player.pieceList.forEach { piece ->
-            `when`(piece.pieceAfterMove(ArgumentMatchers.anyByte())).thenReturn(piece)
-            `when`(
-                board.canMovePiece(
-                    NORMAL_HOME_RANGE,
-                    piece,
-                    2
-                )
-            ).thenReturn(true)
-            `when`(
-                board.canMovePiece(
-                    NORMAL_HOME_RANGE,
-                    piece,
-                    3
-                )
-            ).thenReturn(true)
-        }
-        player.updateDicesStateInDiceBox()
-        verify(diceBoxMock, atLeastOnce()).updateDiceStateWith(2)
-        verify(diceBoxMock, atLeastOnce()).updateDiceStateWith(3)
-    }
-
-    @Test
-    fun when_UpdateDicesStateInDiceBox_called_with_dices_2_and_3_and_player_can_not_use_both_of_the_dices_then_disable_dice_3_and_dice_2_check_with_board() {
-        val diceBoxMock = mock(DiceBox::class.java)
-        `when`(diceBoxMock.dice1).thenReturn(mock(Dice::class.java))
-        `when`(diceBoxMock.dice2).thenReturn(mock(Dice::class.java))
-        `when`(diceBoxMock.dice1.number).thenReturn(2)
-        `when`(diceBoxMock.dice2.number).thenReturn(3)
-        player.diceBox = diceBoxMock
-        player.pieceList.forEach { piece ->
-            `when`(piece.pieceAfterMove(ArgumentMatchers.anyByte())).thenReturn(piece)
-            `when`(
-                board.canMovePiece(
-                    NORMAL_HOME_RANGE,
-                    piece,
-                    2
-                )
-            ).thenReturn(false)
-            `when`(
-                board.canMovePiece(
-                    NORMAL_HOME_RANGE,
-                    piece,
-                    3
-                )
-            ).thenReturn(false)
-        }
-        player.updateDicesStateInDiceBox()
-        verify(diceBoxMock, never()).updateDiceStateWith(2)
-        verify(diceBoxMock, never()).updateDiceStateWith(3)
-    }
-
-    @Test
-    fun when_UpdateDicesStateInDiceBox_called_with_dices_2_and_3_and_player_can_not_use_both_of_the_dices_then_disable_dice_3_and_dice_2_check_with_pieces() {
-        val diceBoxMock = mock(DiceBox::class.java)
-        `when`(diceBoxMock.dice1).thenReturn(mock(Dice::class.java))
-        `when`(diceBoxMock.dice2).thenReturn(mock(Dice::class.java))
-        `when`(diceBoxMock.dice1.number).thenReturn(2)
-        `when`(diceBoxMock.dice2.number).thenReturn(3)
-        player.diceBox = diceBoxMock
-        player.pieceList.forEach { piece ->
-            `when`(piece.pieceAfterMove(ArgumentMatchers.anyByte())).thenReturn(null)
-        }
-        player.updateDicesStateInDiceBox()
-        verify(diceBoxMock, never()).updateDiceStateWith(2)
-        verify(diceBoxMock, never()).updateDiceStateWith(3)
-    }
+    
 
     @Test
     fun when_haveDiedPiece_called_and_piece_index_2_is_died_then_return_true() {
