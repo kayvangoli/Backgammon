@@ -72,10 +72,19 @@ class PieceImpl(override val moveType: MoveType) : Piece {
 
         return true
     }
+
+    override fun locationInMySide(): Int {
+        return if (moveType == MoveType.Revers) {
+            reverseLocation(location)
+        } else {
+            location
+        }
+    }
 }
 
 interface Piece {
     fun pieceAfterMove(number: Byte): Piece?
+    fun locationInMySide(): Int
     var state: PieceState
     var location: Int
     val moveType: MoveType
