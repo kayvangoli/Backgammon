@@ -22,6 +22,21 @@ class PlayerIsInRemovePieceStrategy :
                 }
             }
         }
+        if (diceBox.isEnable()) {
+            return
+        }
+        diceBox.getAllNumbers().forEach { number->
+            var canRemove = true
+            list.forEach pieceLoop@{ piece->
+                if (piece.locationInMySide() > number) {
+                    canRemove = false
+                    return@pieceLoop
+                }
+            }
+            if (canRemove) {
+                diceBox.updateDiceStateWith(number)
+            }
+        }
     }
 
     private fun isInRemovePieceState(homeCellIndexRange: IntRange, pieceList: ArrayList<Piece>)

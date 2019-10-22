@@ -13,6 +13,7 @@ import dagger.Provides
 import org.junit.Before
 
 import org.junit.Test
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -59,6 +60,60 @@ class PlayerIsInRemovePieceStrategyTest {
         playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
         verify(diceBox, atLeastOnce()).updateDiceStateWith(4)
         verify(diceBox, atLeastOnce()).updateDiceStateWith(5)
+    }
+
+    @Test
+    fun when_updateDicesState_called_and_dices_numbers_are_4_4_and_there_are_4_piece_with_location_4_then_diceBox_updateDiceStateWith_4_times_must_be_called() {
+        reversePieceList.forEach {
+            it.location = 24
+        }
+        normalPieceList.forEach {
+            it.location = 4
+        }
+        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
+        playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
+        verify(diceBox, atLeast(4)).updateDiceStateWith(4)
+    }
+
+    @Test
+    fun when_updateDicesState_called_and_dices_numbers_are_4_4_and_all_pieces_locations_is_1_then_diceBox_updateDiceStateWith_atLeast_4_times_must_be_called() {
+        reversePieceList.forEach {
+            it.location = 24
+        }
+        normalPieceList.forEach {
+            it.location = 1
+        }
+        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
+        playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
+        verify(diceBox, atLeast(4)).updateDiceStateWith(4)
+    }
+
+    @Test
+    fun when_updateDicesState_called_and_dices_numbers_are_4_4_and_all_pieces_locations_are_1_except_one_which_is_5_then_diceBox_updateDiceStateWith_never_must_be_called() {
+        reversePieceList.forEach {
+            it.location = 24
+        }
+        normalPieceList.forEach {
+            it.location = 1
+        }
+        normalPieceList[0].location = 5
+        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
+        playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
+        verify(diceBox, never()).updateDiceStateWith(4)
+    }
+
+    @Test
+    fun when_updateDicesState_called_and_dices_numbers_are_1_4_and_all_pieces_locations_is_2_then_diceBox_updateDiceStateWith_4_atLeast_1_time_must_be_called_but_1_never_called() {
+        reversePieceList.forEach {
+            it.location = 1
+        }
+        normalPieceList.forEach {
+            it.location = 2
+        }
+        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(1, 4))
+        playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
+        verify(diceBox, atLeast(1)).updateDiceStateWith(4)
+        verify(diceBox, never()).updateDiceStateWith(1)
     }
 
     @Test(expected = ChooseStrategyException::class)
