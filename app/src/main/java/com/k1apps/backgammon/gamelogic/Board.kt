@@ -62,6 +62,12 @@ class BoardImpl @Inject constructor(
         if (fromPiece == null || toPiece == null) {
             return false
         }
+        val cell = cells[toPiece.location]
+        cell?.let {
+            if (cell.size > 1 && cell[0].moveType != toPiece.moveType) {
+                return false
+            }
+        }
         return true
     }
 

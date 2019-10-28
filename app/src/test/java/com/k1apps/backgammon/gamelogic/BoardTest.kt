@@ -146,4 +146,16 @@ class BoardTest {
         board.initBoard()
         assertTrue(board.isRangeFilledWithReversePiece(player2.homeCellIndexRange))
     }
+
+    @Test
+    fun when_canMovePiece_called_with_default_arrangement_and_move_normal_piece_from_cell_12_to_7_then_return_true() {
+        val piece = board.pieceList1[3]
+        assertTrue(board.canMovePiece(piece, piece.pieceAfterMove(5)))
+    }
+
+    @Test
+    fun when_canMovePiece_called_with_default_arrangement_and_move_reverse_piece_from_cell_17_to_21_then_return_false() {
+        val piece = board.pieceList2[8]
+        assertFalse(board.canMovePiece(piece, piece.pieceAfterMove(4)))
+    }
 }
