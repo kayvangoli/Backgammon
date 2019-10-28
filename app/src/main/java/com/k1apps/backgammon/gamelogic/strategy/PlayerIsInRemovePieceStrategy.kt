@@ -5,7 +5,7 @@ import com.k1apps.backgammon.Constants.REVERSE_HOME_RANGE
 import com.k1apps.backgammon.gamelogic.*
 
 class PlayerIsInRemovePieceStrategy :
-    PlayerPiecesActionStrategy {
+    PlayerPiecesActionStrategy() {
     override fun updateDicesState(diceBox: DiceBox, list: ArrayList<Piece>, board: Board) {
         val homeCellIndexRange: IntRange = if (list[0].moveType == MoveType.Normal) {
             NORMAL_HOME_RANGE
@@ -15,28 +15,50 @@ class PlayerIsInRemovePieceStrategy :
         if (isInRemovePieceState(homeCellIndexRange, list).not()) {
             throw ChooseStrategyException("State is not remove piece")
         }
-        list.forEach { piece ->
-            diceBox.getAllNumbers().forEach { diceNumber ->
-                if (piece.locationInMySide() == diceNumber.toInt()) {
-                    diceBox.updateDiceStateWith(diceNumber)
-                }
-            }
-        }
-        if (diceBox.isEnable()) {
-            return
-        }
-        diceBox.getAllNumbers().forEach { number->
-            var canRemove = true
-            list.forEach pieceLoop@{ piece->
-                if (piece.locationInMySide() > number) {
-                    canRemove = false
-                    return@pieceLoop
-                }
-            }
-            if (canRemove) {
+        val headPieces = getHeadInGamePiecesFrom(list)
+        diceBox.getAllNumbers().forEach { number ->
+            if (isNumberLargestAllLocations(number, headPieces)) {
+                val piece = findPieceWithLargestLocation(headPieces)
+                // TODO: 10/11/19 Kayvan: View Interaction for active piece
                 diceBox.updateDiceStateWith(number)
             }
+            headPieces.forEach { piece ->
+                if (number <= piece.locationInMySide()) {
+                    val pieceAfterMove = piece.pieceAfterMove(number)
+                    if (pieceAfterMove != null) {
+                        if (board.canMovePiece(piece, pieceAfterMove)) {
+                            // TODO: 10/11/19 Kayvan: View Interaction for active piece
+                            diceBox.updateDiceStateWith(number)
+                        }
+                    } else {
+                        // TODO: 10/11/19 Kayvan: View Interaction for active piece
+                        diceBox.updateDiceStateWith(number)
+                    }
+                }
+            }
         }
+    }
+
+    private fun findPieceWithLargestLocation(pieces: List<Piece>): Piece? {
+        if (pieces.isEmpty()) {
+            return null
+        }
+        var piece = pieces[0]
+        pieces.forEach {
+            if (it.locationInMySide() > piece.locationInMySide()) {
+                piece = it
+            }
+        }
+        return piece
+    }
+
+    private fun isNumberLargestAllLocations(number: Byte, pieces: List<Piece>): Boolean {
+        pieces.forEach {
+            if (number <= it.locationInMySide()) {
+                return false
+            }
+        }
+        return true
     }
 
     private fun isInRemovePieceState(homeCellIndexRange: IntRange, pieceList: ArrayList<Piece>)

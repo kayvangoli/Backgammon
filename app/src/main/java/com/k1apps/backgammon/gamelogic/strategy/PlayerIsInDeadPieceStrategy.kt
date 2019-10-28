@@ -3,7 +3,7 @@ package com.k1apps.backgammon.gamelogic.strategy
 import com.k1apps.backgammon.gamelogic.*
 
 class PlayerIsInDeadPieceStrategy:
-    PlayerPiecesActionStrategy {
+    PlayerPiecesActionStrategy() {
     override fun updateDicesState(diceBox: DiceBox, list: ArrayList<Piece>, board: Board) {
         val deadPieceCount = deadPieceCount(list)
         if (deadPieceCount == 0) {
