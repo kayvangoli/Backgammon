@@ -245,7 +245,7 @@ class PlayerIsInRemovePieceStrategyTest {
     }
 
     @Test
-    fun when_updateDicesState_called_and_dices_numbers_are_1_4_and_all_pieces_locations_is_2_and_cell_1_fiiled_by_opponent_then_diceBox_updateDiceStateWith_4_atLeast_1_time_must_be_called_but_1_never_called() {
+    fun when_updateDicesState_called_and_dices_numbers_are_1_4_and_all_pieces_locations_is_2_and_cell_1_filled_by_opponent_then_diceBox_updateDiceStateWith_4_atLeast_1_time_must_be_called_but_1_never_called() {
         reversePieceList.forEach {
             it.location = 24
         }

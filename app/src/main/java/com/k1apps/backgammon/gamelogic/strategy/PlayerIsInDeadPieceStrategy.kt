@@ -14,6 +14,7 @@ class PlayerIsInDeadPieceStrategy :
                 val pieceAfterMove = deadPiece.pieceAfterMove(number)
                 pieceAfterMove?.let {
                     if (it.state == PieceState.IN_GAME && board.canMovePiece(deadPiece, it)) {
+                        // TODO: 10/11/19 Kayvan: View Interaction for active piece
                         diceBox.updateDiceStateWith(number)
                     }
                 }
