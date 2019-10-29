@@ -135,7 +135,7 @@ class DiceDistributorTest {
     @Test
     fun when_dice_box_thrown_then_invoke_player_update_dice() {
         val player = mock(Player::class.java)
-        `when`(diceBox.isEnable()).thenReturn(true)
+        `when`(diceBox.isAtLeastOneDiceEnable()).thenReturn(true)
         `when`(player.diceBox).thenReturn(diceBox)
         val diceBoxThrownEvent = DiceBoxThrownEvent(player)
         diceDistributor.onEvent(diceBoxThrownEvent)
@@ -148,7 +148,7 @@ class DiceDistributorTest {
         `when`(diceBox.dice1.number).thenReturn(4)
         `when`(diceBox.dice2.number).thenReturn(4)
         player1.diceBox = diceBox
-        `when`(diceBox.isEnable()).thenReturn(false)
+        `when`(diceBox.isAtLeastOneDiceEnable()).thenReturn(false)
         diceDistributor.onEvent(diceBoxThrownEvent)
         verify(player1, times(1)).retakeDiceBox()
         verify(player2, times(1)).diceBox = diceBox

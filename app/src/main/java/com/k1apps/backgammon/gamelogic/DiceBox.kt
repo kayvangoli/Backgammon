@@ -33,7 +33,7 @@ class DiceBoxImpl(override val dice1: Dice, override val dice2: Dice) : DiceBox 
         }
     }
 
-    override fun isEnable(): Boolean {
+    override fun isAtLeastOneDiceEnable(): Boolean {
         var enable = dice1.enabled || dice2.enabled
         dice3?.let {
             enable = it.enabled
@@ -76,7 +76,7 @@ interface DiceBox {
     val dice3: Dice?
     val dice4: Dice?
     fun updateDiceStateWith(number: Byte)
-    fun isEnable(): Boolean
+    fun isAtLeastOneDiceEnable(): Boolean
     fun enable()
     fun getAllNumbers(): List<Byte>
 }

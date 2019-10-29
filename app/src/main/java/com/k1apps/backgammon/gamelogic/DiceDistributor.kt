@@ -65,7 +65,7 @@ class DiceDistributorImpl(
     override fun onEvent(event: DiceBoxThrownEvent) {
         with(event.player) {
             updateDicesStateInDiceBox()
-            if (diceBox!!.isEnable().not()) {
+            if (diceBox!!.isAtLeastOneDiceEnable().not()) {
                 // TODO: 10/11/19 Kayvan: View interaction: no move
                 retakeDiceBox()
                 setDiceBox(getOpponent(this))
