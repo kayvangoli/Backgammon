@@ -8,7 +8,7 @@ class PlayerIsInGamePieceStrategy : PlayerPiecesActionStrategy() {
     override fun updateDicesState(diceBox: DiceBox, list: ArrayList<Piece>, board: Board) {
         val headPieces = getHeadInGamePiecesFrom(list)
         headPieces.forEach { piece ->
-            diceBox.getAllNumbers().forEach { number ->
+            diceBox.getAllUnUsedNumbers().forEach { number ->
                 val pieceAfterMove = piece.pieceAfterMove(number)
                 if (pieceAfterMove != null && board.canMovePiece(piece, pieceAfterMove)) {
                     // TODO: 10/11/19 Kayvan: View Interaction for active piece

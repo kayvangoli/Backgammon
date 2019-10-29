@@ -16,7 +16,7 @@ class PlayerIsInRemovePieceStrategy :
             throw ChooseStrategyException("State is not remove piece")
         }
         val headPieces = getHeadInGamePiecesFrom(list)
-        diceBox.getAllNumbers().forEach { number ->
+        diceBox.getAllUnUsedNumbers().forEach { number ->
             if (isNumberLargestAllLocations(number, headPieces)) {
                 val piece = findPieceWithLargestLocation(headPieces)
                 // TODO: 10/11/19 Kayvan: View Interaction for active piece

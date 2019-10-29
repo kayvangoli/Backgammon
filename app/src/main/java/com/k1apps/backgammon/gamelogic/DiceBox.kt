@@ -51,19 +51,27 @@ class DiceBoxImpl(override val dice1: Dice, override val dice2: Dice) : DiceBox 
         dice4?.enabled = true
     }
 
-    override fun getAllNumbers(): List<Byte> {
+    override fun getAllUnUsedNumbers(): List<Byte> {
         val list = arrayListOf<Byte>()
         dice1.number?.let {
-            list.add(it)
+            if (dice1.used.not()) {
+                list.add(it)
+            }
         }
         dice2.number?.let {
-            list.add(it)
+            if (dice2.used.not()) {
+                list.add(it)
+            }
         }
         dice3?.number?.let {
-            list.add(it)
+            if (dice3!!.used.not()) {
+                list.add(it)
+            }
         }
         dice4?.number?.let {
-            list.add(it)
+            if (dice4!!.used.not()) {
+                list.add(it)
+            }
         }
         return list
     }
@@ -78,6 +86,6 @@ interface DiceBox {
     fun updateDiceStateWith(number: Byte)
     fun isAtLeastOneDiceEnable(): Boolean
     fun enable()
-    fun getAllNumbers(): List<Byte>
+    fun getAllUnUsedNumbers(): List<Byte>
 }
 

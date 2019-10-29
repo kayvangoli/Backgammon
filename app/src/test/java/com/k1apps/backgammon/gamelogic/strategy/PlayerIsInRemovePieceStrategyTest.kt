@@ -53,7 +53,7 @@ class PlayerIsInRemovePieceStrategyTest {
         reversePieceList.forEach {
             it.location = 1
         }
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 5))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 5))
         reversePieceList[0].location = 4
         reversePieceList[1].location = 5
         playerPiecesActionStrategy.updateDicesState(diceBox, reversePieceList, board)
@@ -69,7 +69,7 @@ class PlayerIsInRemovePieceStrategyTest {
         reversePieceList.forEach {
             it.location = 4
         }
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, reversePieceList, board)
         verify(diceBox, atLeast(4)).updateDiceStateWith(4)
     }
@@ -82,7 +82,7 @@ class PlayerIsInRemovePieceStrategyTest {
         reversePieceList.forEach {
             it.location = 1
         }
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, reversePieceList, board)
         verify(diceBox, atLeast(4)).updateDiceStateWith(4)
     }
@@ -96,7 +96,7 @@ class PlayerIsInRemovePieceStrategyTest {
             it.location = 1
         }
         reversePieceList[0].location = 5
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, reversePieceList, board)
         verify(diceBox, atLeast(4)).updateDiceStateWith(4)
     }
@@ -110,7 +110,7 @@ class PlayerIsInRemovePieceStrategyTest {
             it.location = 2
             `when`(board.canMovePiece(it, it.pieceAfterMove(1))).thenReturn(false)
         }
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(1, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(1, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, reversePieceList, board)
         verify(diceBox, atLeast(1)).updateDiceStateWith(4)
         verify(diceBox, never()).updateDiceStateWith(1)
@@ -127,7 +127,7 @@ class PlayerIsInRemovePieceStrategyTest {
             `when`(board.canMovePiece(it, it.pieceAfterMove(2))).thenReturn(true)
             `when`(board.canMovePiece(it, it.pieceAfterMove(3))).thenReturn(false)
         }
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(1, 2))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(1, 2))
         playerPiecesActionStrategy.updateDicesState(diceBox, reversePieceList, board)
         verify(diceBox, atLeast(1)).updateDiceStateWith(2)
         verify(diceBox, never()).updateDiceStateWith(1)
@@ -142,7 +142,7 @@ class PlayerIsInRemovePieceStrategyTest {
             it.location = 2
             `when`(board.canMovePiece(it, it.pieceAfterMove(1))).thenReturn(false)
         }
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(1, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(1, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, reversePieceList, board)
         verify(diceBox, atLeast(1)).updateDiceStateWith(4)
         verify(diceBox, never()).updateDiceStateWith(1)
@@ -158,7 +158,7 @@ class PlayerIsInRemovePieceStrategyTest {
             `when`(board.canMovePiece(it, it.pieceAfterMove(1))).thenReturn(false)
         }
         reversePieceList[0].location = 3
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(1, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(1, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, reversePieceList, board)
         verify(diceBox, atLeast(1)).updateDiceStateWith(4)
         verify(diceBox, atLeast(1)).updateDiceStateWith(1)
@@ -196,7 +196,7 @@ class PlayerIsInRemovePieceStrategyTest {
         normalPieceList.forEach {
             it.location = 1
         }
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 5))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 5))
         normalPieceList[0].location = 4
         normalPieceList[1].location = 5
         playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
@@ -212,7 +212,7 @@ class PlayerIsInRemovePieceStrategyTest {
         normalPieceList.forEach {
             it.location = 4
         }
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
         verify(diceBox, atLeast(4)).updateDiceStateWith(4)
     }
@@ -225,7 +225,7 @@ class PlayerIsInRemovePieceStrategyTest {
         normalPieceList.forEach {
             it.location = 1
         }
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
         verify(diceBox, atLeast(4)).updateDiceStateWith(4)
     }
@@ -239,7 +239,7 @@ class PlayerIsInRemovePieceStrategyTest {
             it.location = 1
         }
         normalPieceList[0].location = 5
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
         verify(diceBox, atLeast(4)).updateDiceStateWith(4)
     }
@@ -253,7 +253,7 @@ class PlayerIsInRemovePieceStrategyTest {
             it.location = 2
             `when`(board.canMovePiece(it, it.pieceAfterMove(1))).thenReturn(false)
         }
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(1, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(1, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
         verify(diceBox, atLeast(1)).updateDiceStateWith(4)
         verify(diceBox, never()).updateDiceStateWith(1)
@@ -270,7 +270,7 @@ class PlayerIsInRemovePieceStrategyTest {
             `when`(board.canMovePiece(it, it.pieceAfterMove(2))).thenReturn(true)
             `when`(board.canMovePiece(it, it.pieceAfterMove(3))).thenReturn(false)
         }
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(1, 2))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(1, 2))
         playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
         verify(diceBox, atLeast(1)).updateDiceStateWith(2)
         verify(diceBox, never()).updateDiceStateWith(1)
@@ -285,7 +285,7 @@ class PlayerIsInRemovePieceStrategyTest {
             it.location = 2
             `when`(board.canMovePiece(it, it.pieceAfterMove(1))).thenReturn(false)
         }
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(1, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(1, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
         verify(diceBox, atLeast(1)).updateDiceStateWith(4)
         verify(diceBox, never()).updateDiceStateWith(1)
@@ -301,7 +301,7 @@ class PlayerIsInRemovePieceStrategyTest {
             `when`(board.canMovePiece(it, it.pieceAfterMove(1))).thenReturn(false)
         }
         normalPieceList[0].location = 3
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(1, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(1, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
         verify(diceBox, atLeast(1)).updateDiceStateWith(4)
         verify(diceBox, atLeast(1)).updateDiceStateWith(1)

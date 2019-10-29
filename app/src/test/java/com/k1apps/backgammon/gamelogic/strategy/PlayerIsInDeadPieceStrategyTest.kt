@@ -53,7 +53,7 @@ class PlayerIsInDeadPieceStrategyTest {
         }
         reversePieceList[0].state = PieceState.DEAD
         reversePieceList[1].state = PieceState.DEAD
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 5))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 5))
         playerPiecesActionStrategy.updateDicesState(diceBox, reversePieceList, board)
         verify(diceBox, atLeastOnce()).updateDiceStateWith(4)
         verify(diceBox, atLeastOnce()).updateDiceStateWith(5)
@@ -71,7 +71,7 @@ class PlayerIsInDeadPieceStrategyTest {
         fromPiece.state = PieceState.DEAD
         `when`(board.canMovePiece(fromPiece, fromPiece.pieceAfterMove(4))).thenReturn(false)
         `when`(board.canMovePiece(fromPiece, fromPiece.pieceAfterMove(5))).thenReturn(false)
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 5))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 5))
         playerPiecesActionStrategy.updateDicesState(diceBox, reversePieceList, board)
         verify(diceBox, never()).updateDiceStateWith(4)
         verify(diceBox, never()).updateDiceStateWith(5)
@@ -89,7 +89,7 @@ class PlayerIsInDeadPieceStrategyTest {
         fromPiece.state = PieceState.DEAD
         `when`(board.canMovePiece(fromPiece, fromPiece.pieceAfterMove(4))).thenReturn(true)
         `when`(board.canMovePiece(fromPiece, fromPiece.pieceAfterMove(5))).thenReturn(false)
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 5))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 5))
         playerPiecesActionStrategy.updateDicesState(diceBox, reversePieceList, board)
         verify(diceBox, atLeastOnce()).updateDiceStateWith(4)
         verify(diceBox, never()).updateDiceStateWith(5)
@@ -106,7 +106,7 @@ class PlayerIsInDeadPieceStrategyTest {
         val fromPiece = reversePieceList[0]
         fromPiece.state = PieceState.DEAD
         `when`(board.canMovePiece(fromPiece, fromPiece.pieceAfterMove(4))).thenReturn(true)
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, reversePieceList, board)
         verify(diceBox, atLeast(4)).updateDiceStateWith(4)
     }
@@ -125,7 +125,7 @@ class PlayerIsInDeadPieceStrategyTest {
         val piece2 = reversePieceList[1]
         piece2.state = PieceState.DEAD
         `when`(board.canMovePiece(piece2, piece2.pieceAfterMove(4))).thenReturn(true)
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, reversePieceList, board)
         verify(diceBox, atLeast(4)).updateDiceStateWith(4)
     }
@@ -147,7 +147,7 @@ class PlayerIsInDeadPieceStrategyTest {
         val piece3 = reversePieceList[2]
         piece3.state = PieceState.DEAD
         `when`(board.canMovePiece(piece3, piece3.pieceAfterMove(4))).thenReturn(true)
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, reversePieceList, board)
         verify(diceBox, atLeast(4)).updateDiceStateWith(4)
     }
@@ -172,7 +172,7 @@ class PlayerIsInDeadPieceStrategyTest {
         val piece4 = reversePieceList[3]
         piece4.state = PieceState.DEAD
         `when`(board.canMovePiece(piece4, piece4.pieceAfterMove(4))).thenReturn(true)
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, reversePieceList, board)
         verify(diceBox, atLeast(4)).updateDiceStateWith(4)
     }
@@ -187,7 +187,7 @@ class PlayerIsInDeadPieceStrategyTest {
         }
         normalPieceList[0].state = PieceState.DEAD
         normalPieceList[1].state = PieceState.DEAD
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 5))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 5))
         playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
         verify(diceBox, atLeastOnce()).updateDiceStateWith(4)
         verify(diceBox, atLeastOnce()).updateDiceStateWith(5)
@@ -205,7 +205,7 @@ class PlayerIsInDeadPieceStrategyTest {
         fromPiece.state = PieceState.DEAD
         `when`(board.canMovePiece(fromPiece, fromPiece.pieceAfterMove(4))).thenReturn(false)
         `when`(board.canMovePiece(fromPiece, fromPiece.pieceAfterMove(5))).thenReturn(false)
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 5))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 5))
         playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
         verify(diceBox, never()).updateDiceStateWith(4)
         verify(diceBox, never()).updateDiceStateWith(5)
@@ -223,7 +223,7 @@ class PlayerIsInDeadPieceStrategyTest {
         fromPiece.state = PieceState.DEAD
         `when`(board.canMovePiece(fromPiece, fromPiece.pieceAfterMove(4))).thenReturn(true)
         `when`(board.canMovePiece(fromPiece, fromPiece.pieceAfterMove(5))).thenReturn(false)
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 5))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 5))
         playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
         verify(diceBox, atLeastOnce()).updateDiceStateWith(4)
         verify(diceBox, never()).updateDiceStateWith(5)
@@ -240,7 +240,7 @@ class PlayerIsInDeadPieceStrategyTest {
         val fromPiece = normalPieceList[0]
         fromPiece.state = PieceState.DEAD
         `when`(board.canMovePiece(fromPiece, fromPiece.pieceAfterMove(4))).thenReturn(true)
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
         verify(diceBox, atLeast(4)).updateDiceStateWith(4)
     }
@@ -259,7 +259,7 @@ class PlayerIsInDeadPieceStrategyTest {
         val piece2 = normalPieceList[1]
         piece2.state = PieceState.DEAD
         `when`(board.canMovePiece(piece2, piece2.pieceAfterMove(4))).thenReturn(true)
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
         verify(diceBox, atLeast(4)).updateDiceStateWith(4)
     }
@@ -281,7 +281,7 @@ class PlayerIsInDeadPieceStrategyTest {
         val piece3 = normalPieceList[2]
         piece3.state = PieceState.DEAD
         `when`(board.canMovePiece(piece3, piece3.pieceAfterMove(4))).thenReturn(true)
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
         verify(diceBox, atLeast(4)).updateDiceStateWith(4)
     }
@@ -306,7 +306,7 @@ class PlayerIsInDeadPieceStrategyTest {
         val piece4 = normalPieceList[3]
         piece4.state = PieceState.DEAD
         `when`(board.canMovePiece(piece4, piece4.pieceAfterMove(4))).thenReturn(true)
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 4, 4, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
         verify(diceBox, atLeast(4)).updateDiceStateWith(4)
     }

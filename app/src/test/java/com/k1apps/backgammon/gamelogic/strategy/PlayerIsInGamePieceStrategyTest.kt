@@ -12,7 +12,6 @@ import dagger.Provides
 import org.junit.Before
 
 import org.junit.Test
-import org.mockito.Mockito
 import org.mockito.Mockito.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -48,7 +47,7 @@ class PlayerIsInGamePieceStrategyTest {
 
     @Test
     fun when_updateDicesState_called_and_dices_numbers_are_1_4_with_default_arrangement_then_diceBox_updateDiceStateWith_4_and_1_atLeast_1_time_must_be_called() {
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(1, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(1, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
         verify(diceBox, atLeastOnce()).updateDiceStateWith(4)
         verify(diceBox, atLeastOnce()).updateDiceStateWith(1)
@@ -56,7 +55,7 @@ class PlayerIsInGamePieceStrategyTest {
 
     @Test
     fun when_reverse_updateDicesState_called_and_dices_numbers_are_1_4_with_default_arrangement_then_diceBox_updateDiceStateWith_4_and_1_atLeast_1_time_must_be_called() {
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(1, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(1, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, reversePieceList, board)
         verify(diceBox, atLeastOnce()).updateDiceStateWith(4)
         verify(diceBox, atLeastOnce()).updateDiceStateWith(1)
@@ -67,7 +66,7 @@ class PlayerIsInGamePieceStrategyTest {
         for (piece in normalPieceList) {
             `when`(board.canMovePiece(piece, piece.pieceAfterMove(4))).thenReturn(false)
         }
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(1, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(1, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
         verify(diceBox, never()).updateDiceStateWith(4)
         verify(diceBox, atLeastOnce()).updateDiceStateWith(1)
@@ -78,7 +77,7 @@ class PlayerIsInGamePieceStrategyTest {
         for (piece in reversePieceList) {
             `when`(board.canMovePiece(piece, piece.pieceAfterMove(4))).thenReturn(false)
         }
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(1, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(1, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, reversePieceList, board)
         verify(diceBox, never()).updateDiceStateWith(4)
         verify(diceBox, atLeastOnce()).updateDiceStateWith(1)
@@ -89,7 +88,7 @@ class PlayerIsInGamePieceStrategyTest {
             `when`(board.canMovePiece(piece, piece.pieceAfterMove(4))).thenReturn(false)
             `when`(board.canMovePiece(piece, piece.pieceAfterMove(1))).thenReturn(false)
         }
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(1, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(1, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
         verify(diceBox, never()).updateDiceStateWith(4)
         verify(diceBox, never()).updateDiceStateWith(1)
@@ -101,7 +100,7 @@ class PlayerIsInGamePieceStrategyTest {
             `when`(board.canMovePiece(piece, piece.pieceAfterMove(4))).thenReturn(false)
             `when`(board.canMovePiece(piece, piece.pieceAfterMove(1))).thenReturn(false)
         }
-        `when`(diceBox.getAllNumbers()).thenReturn(arrayListOf(1, 4))
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(1, 4))
         playerPiecesActionStrategy.updateDicesState(diceBox, reversePieceList, board)
         verify(diceBox, never()).updateDiceStateWith(4)
         verify(diceBox, never()).updateDiceStateWith(1)

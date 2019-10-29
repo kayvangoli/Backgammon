@@ -10,7 +10,7 @@ class PlayerIsInDeadPieceStrategy :
             throw ChooseStrategyException("There are no dead piece in list")
         }
         deadList.forEach { deadPiece ->
-            diceBox.getAllNumbers().forEach { number->
+            diceBox.getAllUnUsedNumbers().forEach { number->
                 val pieceAfterMove = deadPiece.pieceAfterMove(number)
                 pieceAfterMove?.let {
                     if (it.state == PieceState.IN_GAME && board.canMovePiece(deadPiece, it)) {
