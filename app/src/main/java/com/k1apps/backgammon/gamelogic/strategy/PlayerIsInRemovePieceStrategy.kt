@@ -39,6 +39,10 @@ class PlayerIsInRemovePieceStrategy :
         }
     }
 
+    override fun move(dice: Dice, piece: Piece, board: Board): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     private fun findPieceWithLargestLocation(pieces: List<Piece>): Piece? {
         if (pieces.isEmpty()) {
             return null

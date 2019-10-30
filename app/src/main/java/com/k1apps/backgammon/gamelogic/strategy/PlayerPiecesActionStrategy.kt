@@ -1,10 +1,7 @@
 package com.k1apps.backgammon.gamelogic.strategy
 
 import com.k1apps.backgammon.Constants.BOARD_LOCATION_RANGE
-import com.k1apps.backgammon.gamelogic.Board
-import com.k1apps.backgammon.gamelogic.DiceBox
-import com.k1apps.backgammon.gamelogic.Piece
-import com.k1apps.backgammon.gamelogic.PieceState
+import com.k1apps.backgammon.gamelogic.*
 
 abstract class PlayerPiecesActionStrategy {
     abstract fun updateDicesState(diceBox: DiceBox, list: ArrayList<Piece>, board: Board)
@@ -21,4 +18,6 @@ abstract class PlayerPiecesActionStrategy {
         }
         return result
     }
+
+    abstract fun move(dice: Dice, piece: Piece, board: Board): Boolean
 }

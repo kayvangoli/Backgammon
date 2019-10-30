@@ -22,6 +22,13 @@ class PlayerIsInDeadPieceStrategy :
         }
     }
 
+    override fun move(dice: Dice, piece: Piece, board: Board): Boolean {
+        if (piece.state != PieceState.DEAD) {
+            throw ChooseStrategyException("The selected piece is alive")
+        }
+        return board.move(piece, dice.number!!)
+    }
+
     private fun deadPieceList(list: ArrayList<Piece>): List<Piece> {
         val deadList = arrayListOf<Piece>()
         list.forEach {

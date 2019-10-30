@@ -1,6 +1,7 @@
 package com.k1apps.backgammon.gamelogic.strategy
 
 import com.k1apps.backgammon.gamelogic.Board
+import com.k1apps.backgammon.gamelogic.Dice
 import com.k1apps.backgammon.gamelogic.DiceBox
 import com.k1apps.backgammon.gamelogic.Piece
 
@@ -16,5 +17,9 @@ class PlayerIsInGamePieceStrategy : PlayerPiecesActionStrategy() {
                 }
             }
         }
+    }
+
+    override fun move(dice: Dice, piece: Piece, board: Board): Boolean {
+        return false
     }
 }

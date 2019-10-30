@@ -9,6 +9,7 @@ import com.k1apps.backgammon.gamelogic.*
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.*
@@ -320,6 +321,31 @@ class PlayerIsInDeadPieceStrategyTest {
             it.location = 1
         }
         playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
+    }
+
+    @Test(expected = ChooseStrategyException::class)
+    fun when_move_called_and_piece_is_alive_then_thrown_chooseStrategyException() {
+        playerPiecesActionStrategy.move(diceBox.dice1, normalPieceList[0], board)
+    }
+
+    @Test
+    fun when_move_called_then_move_should_be_true_and_board_move_called() {
+        val piece = normalPieceList[0]
+        piece.state = PieceState.DEAD
+        `when`(diceBox.dice1.number).thenReturn(4)
+        val move = playerPiecesActionStrategy.move(diceBox.dice1, piece, board)
+        verify(board).move(piece, diceBox.dice1.number!!)
+        assertTrue(move)
+    }
+
+    @Test
+    fun when_move_called_with_reverse_piece_then_move_should_be_true_and_board_move_called() {
+        val piece = reversePieceList[0]
+        piece.state = PieceState.DEAD
+        `when`(diceBox.dice1.number).thenReturn(4)
+        val move = playerPiecesActionStrategy.move(diceBox.dice1, piece, board)
+        verify(board).move(piece, diceBox.dice1.number!!)
+        assertTrue(move)
     }
 }
 
