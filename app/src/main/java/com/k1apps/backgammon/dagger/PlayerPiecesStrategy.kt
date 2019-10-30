@@ -9,10 +9,10 @@ import dagger.Provides
 import javax.inject.Named
 
 @Module
-class PlayerPiecesStrategyModule {
+open class PlayerPiecesStrategyModule {
     @Provides
     @GameScope
-    fun providePlayerPiecesContextStrategy(
+    open fun providePlayerPiecesContextStrategy(
         @Named(PLAYER_PIECES_STATE_IN_GAME)
         inGamePieceStrategy: PlayerPiecesActionStrategy,
         @Named(PLAYER_PIECES_STATE_REMOVE)
@@ -29,19 +29,19 @@ class PlayerPiecesStrategyModule {
 
     @Provides
     @Named(PLAYER_PIECES_STATE_IN_GAME)
-    fun providePlayerIsInGamePieceStrategy(): PlayerPiecesActionStrategy {
+    open fun providePlayerIsInGamePieceStrategy(): PlayerPiecesActionStrategy {
         return PlayerIsInGamePieceStrategy()
     }
 
     @Provides
     @Named(PLAYER_PIECES_STATE_REMOVE)
-    fun providePlayerIsInRemovePieceStrategy(): PlayerPiecesActionStrategy {
+    open fun providePlayerIsInRemovePieceStrategy(): PlayerPiecesActionStrategy {
         return PlayerIsInRemovePieceStrategy()
     }
 
     @Provides
     @Named(PLAYER_PIECES_STATE_DEAD)
-    fun providePlayerIsInDeadPieceStrategy(): PlayerPiecesActionStrategy {
+    open fun providePlayerIsInDeadPieceStrategy(): PlayerPiecesActionStrategy {
         return PlayerIsInDeadPieceStrategy()
     }
 }

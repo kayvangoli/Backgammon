@@ -8,6 +8,7 @@ import com.k1apps.backgammon.dagger.DiceDistributorModule
 import com.k1apps.backgammon.dagger.GameScope
 import com.k1apps.backgammon.dagger.PlayerModule
 import com.k1apps.backgammon.gamelogic.event.DiceBoxThrownEvent
+import com.k1apps.backgammon.gamelogic.strategy.PlayerPiecesContextStrategy
 import dagger.Component
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -21,7 +22,7 @@ import javax.inject.Named
 interface DiceDistributorComponentTest {
     @Component.Builder
     interface Builder {
-        fun setDiceBox(diceBoxModule: DiceBoxModule) : Builder
+        fun setDiceBox(diceBoxModule: DiceBoxModule): Builder
         fun setPlayerModule(playerModule: PlayerModule): Builder
         fun build(): DiceDistributorComponentTest
     }
@@ -30,12 +31,20 @@ interface DiceDistributorComponentTest {
 }
 
 class SpyPlayerModule : PlayerModule() {
-    override fun providePlayer1(pieceList: ArrayList<Piece>, board: Board): Player {
-        return spy(super.providePlayer1(pieceList, board))
+    override fun providePlayer1(
+        pieceList: ArrayList<Piece>,
+        board: Board,
+        playerPiecesContextStrategy: PlayerPiecesContextStrategy
+    ): Player {
+        return spy(super.providePlayer1(pieceList, board, playerPiecesContextStrategy))
     }
 
-    override fun providePlayer2(pieceList: ArrayList<Piece>, board: Board): Player {
-        return spy(super.providePlayer2(pieceList, board))
+    override fun providePlayer2(
+        pieceList: ArrayList<Piece>,
+        board: Board,
+        playerPiecesContextStrategy: PlayerPiecesContextStrategy
+    ): Player {
+        return spy(super.providePlayer2(pieceList, board, playerPiecesContextStrategy))
     }
 }
 

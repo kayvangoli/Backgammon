@@ -4,6 +4,8 @@ import com.k1apps.backgammon.Constants.NORMAL_PLAYER
 import com.k1apps.backgammon.gamelogic.event.DiceThrownEvent
 import com.k1apps.backgammon.dagger.*
 import com.k1apps.backgammon.gamelogic.event.DiceBoxThrownEvent
+import com.k1apps.backgammon.gamelogic.strategy.PlayerPiecesActionStrategy
+import com.k1apps.backgammon.gamelogic.strategy.PlayerPiecesContextStrategy
 import dagger.Component
 import org.greenrobot.eventbus.EventBus
 import org.junit.Assert.assertTrue
@@ -12,7 +14,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.*
 import javax.inject.Inject
-import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import javax.inject.Named
@@ -30,12 +31,15 @@ class PlayerTest {
     lateinit var board: Board
     @Inject
     lateinit var diceBox: DiceBox
+    @Inject
+    lateinit var contextStrategy: PlayerPiecesContextStrategy
 
     @Before
     fun setup() {
         DaggerPlayerComponentTest.builder().setPieceListModule(SpyPieceListModule())
             .setBoardModule(SpyBoardModule())
             .setDiceBoxModule(SpyDiceBoxModuleTest())
+            .setContextStrategyModule(SpyPlayerPiecesStrategyModule())
             .build().inject(this)
         EventBus.getDefault().register(diceDistributor)
     }
@@ -80,106 +84,11 @@ class PlayerTest {
     }
 
     @Test
-    fun when_updateDicesStateInDiceBox_called_with_dices_6_and_5_and_have_dead_piece_and_both_two_cells_are_filled_by_opponent_then_dices_must_be_disable() {
+    fun when_updateDiceStateInDiceBox_called_then_playerPieceContextStrategy_updateDicesState_should_be_called(){
         player.diceBox = diceBox
-        `when`((player.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
-        `when`((player.diceBox as DiceBoxImpl).dice2.number).thenReturn(5)
-        player.pieceList[0].state = PieceState.DEAD
-        `when`(board.canMovePiece(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(false)
         player.updateDicesStateInDiceBox()
-        verify(player.diceBox!!.dice1, never()).enabled = true
-        verify(player.diceBox!!.dice2, never()).enabled = true
-    }
-
-    @Test
-    fun when_updateDicesStateInDiceBox_called_with_dices_6_and_5_and_have_dead_piece_and_cell6_is_filled_by_opponent_then_dice6_must_be_disable_and_dice_5_enable() {
-        player.diceBox = diceBox
-        `when`((player.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
-        `when`((player.diceBox as DiceBoxImpl).dice2.number).thenReturn(5)
-        val piece = player.pieceList[0]
-        piece.state = PieceState.DEAD
-        `when`(board.canMovePiece(piece, piece.pieceAfterMove(6))).thenReturn(false)
-        `when`(board.canMovePiece(piece, piece.pieceAfterMove(5))).thenReturn(true)
-        player.updateDicesStateInDiceBox()
-        verify(player.diceBox!!.dice1, never()).enabled = true
-        verify(player.diceBox!!.dice2, times(1)).enabled = true
-    }
-
-    @Test
-    fun when_updateDicesStateInDiceBox_called_with_dices_6_and_5_and_have_dead_piece_and_both_of_two_cells_are_empty_then_two_dices_must_be_enable() {
-        player.diceBox = diceBox
-        `when`((player.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
-        `when`((player.diceBox as DiceBoxImpl).dice2.number).thenReturn(5)
-        val piece = player.pieceList[0]
-        piece.state = PieceState.DEAD
-        `when`(board.canMovePiece(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(true)
-        player.updateDicesStateInDiceBox()
-        verify(player.diceBox!!.dice1, times(1)).enabled = true
-        verify(player.diceBox!!.dice2, times(1)).enabled = true
-    }
-
-    @Test
-    fun when_updateDicesStateInDiceBox_called_with_dices_6_and_5_and_have_2_dead_piece_and_just_cell6_is_empty_then_dice1_must_be_enable_and_dice2_disable() {
-        player.diceBox = diceBox
-        `when`((player.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
-        `when`((player.diceBox as DiceBoxImpl).dice2.number).thenReturn(5)
-        val piece = player.pieceList[0]
-        val piece1 = player.pieceList[1]
-        piece.state = PieceState.DEAD
-        piece1.state = PieceState.DEAD
-        `when`(board.canMovePiece(piece, piece.pieceAfterMove(6))).thenReturn(true)
-        `when`(board.canMovePiece(piece1, piece1.pieceAfterMove(6))).thenReturn(true)
-        `when`(board.canMovePiece(piece, piece.pieceAfterMove(5))).thenReturn(false)
-        `when`(board.canMovePiece(piece1, piece1.pieceAfterMove(5))).thenReturn(false)
-        player.updateDicesStateInDiceBox()
-        verify(player.diceBox!!.dice1, atLeastOnce()).enabled = true
-        verify(player.diceBox!!.dice2, never()).enabled = true
-    }
-
-    @Test
-    fun when_updateDicesStateInDiceBox_called_with_dices_6_and_6_and_have_4_dead_piece_and_cell6_is_full_then_never_call_updateDicesStateWith6() {
-        player.diceBox = diceBox
-        `when`((player.diceBox as DiceBoxImpl).dice1.number).thenReturn(6)
-        `when`((player.diceBox as DiceBoxImpl).dice2.number).thenReturn(6)
-        val piece = player.pieceList[0]
-        val piece1 = player.pieceList[1]
-        val piece2 = player.pieceList[1]
-        val piece3 = player.pieceList[1]
-        piece.state = PieceState.DEAD
-        piece1.state = PieceState.DEAD
-        piece2.state = PieceState.DEAD
-        piece3.state = PieceState.DEAD
-        `when`(board.canMovePiece(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(false)
-        player.updateDicesStateInDiceBox()
-        verify(player.diceBox, never())!!.updateDiceStateWith(6)
-    }
-
-    @Test
-    fun when_updateDicesStateInDiceBox_called_with_dices_6_and_6_and_have_4_dead_piece_and_cell6_is_empty_then_at_least_4_time_call_updateDicesStateWith6() {
-        player.diceBox = diceBox
-        `when`(player.diceBox!!.dice1.number).thenReturn(6)
-        `when`(player.diceBox!!.dice2.number).thenReturn(6)
-        val piece = player.pieceList[0]
-        val piece1 = player.pieceList[1]
-        val piece2 = player.pieceList[1]
-        val piece3 = player.pieceList[1]
-        piece.state = PieceState.DEAD
-        piece1.state = PieceState.DEAD
-        piece2.state = PieceState.DEAD
-        piece3.state = PieceState.DEAD
-        `when`(board.canMovePiece(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(true)
-        player.updateDicesStateInDiceBox()
-        verify(player.diceBox, atLeast(4))!!.updateDiceStateWith(6)
-    }
-
-    @Test
-    fun when_updateDiceStateInDiceBox_called_and_player_can_remove_piece_then_all_dices_must_be_enable(){
-        player.diceBox = diceBox
-        player.pieceList.forEach {
-            it.location = 1
-        }
-        player.updateDicesStateInDiceBox()
-        verify(player.diceBox!!, atLeastOnce()).enable()
+        verify(contextStrategy.getPlayerPiecesStrategy(player.pieceList))
+            .updateDicesState(diceBox, player.pieceList, board)
     }
 
     @Test
@@ -198,7 +107,7 @@ class PlayerTest {
 
 @GameScope
 @Component(modules = [PlayerModule::class, PieceListModule::class,
-    BoardModule::class, DiceBoxModule::class])
+    BoardModule::class, DiceBoxModule::class, PlayerPiecesStrategyModule::class])
 interface PlayerComponentTest {
 
     @Component.Builder
@@ -206,6 +115,7 @@ interface PlayerComponentTest {
         fun setPieceListModule(pieceListModule: PieceListModule): Builder
         fun setBoardModule(boardModule: BoardModule): Builder
         fun setDiceBoxModule(spyDiceBoxModuleTest: DiceBoxModule): Builder
+        fun setContextStrategyModule(playerPiecesStrategyModule: PlayerPiecesStrategyModule): Builder
         fun build(): PlayerComponentTest
     }
 
@@ -237,5 +147,31 @@ class SpyBoardModule : BoardModule() {
         reversePieceList: ArrayList<Piece>
     ): Board {
         return spy(super.provideBoard(normalPieceList, reversePieceList))
+    }
+}
+
+class SpyPlayerPiecesStrategyModule : PlayerPiecesStrategyModule() {
+    override fun providePlayerPiecesContextStrategy(
+        inGamePieceStrategy: PlayerPiecesActionStrategy,
+        removePieceStrategy: PlayerPiecesActionStrategy,
+        deadPieceStrategy: PlayerPiecesActionStrategy
+    ): PlayerPiecesContextStrategy {
+        return spy(super.providePlayerPiecesContextStrategy(
+            inGamePieceStrategy,
+            removePieceStrategy,
+            deadPieceStrategy
+        ))
+    }
+
+    override fun providePlayerIsInGamePieceStrategy(): PlayerPiecesActionStrategy {
+        return spy(super.providePlayerIsInGamePieceStrategy())
+    }
+
+    override fun providePlayerIsInRemovePieceStrategy(): PlayerPiecesActionStrategy {
+        return spy(super.providePlayerIsInRemovePieceStrategy())
+    }
+
+    override fun providePlayerIsInDeadPieceStrategy(): PlayerPiecesActionStrategy {
+        return spy(super.providePlayerIsInDeadPieceStrategy())
     }
 }

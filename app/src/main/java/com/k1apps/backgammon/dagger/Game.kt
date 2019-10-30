@@ -5,6 +5,7 @@ import com.k1apps.backgammon.Constants.NORMAL_PLAYER
 import com.k1apps.backgammon.Constants.REVERSE_PIECE_LIST
 import com.k1apps.backgammon.Constants.REVERSE_PLAYER
 import com.k1apps.backgammon.gamelogic.*
+import com.k1apps.backgammon.gamelogic.strategy.PlayerPiecesContextStrategy
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -60,16 +61,18 @@ open class BoardModule {
 
 }
 
-@Module(includes = [PieceListModule::class, BoardModule::class])
+@Module(includes = [PieceListModule::class, BoardModule::class, PlayerPiecesStrategyModule::class])
 open class PlayerModule {
     @GameScope
     @Provides
     @Named(NORMAL_PLAYER)
     open fun providePlayer1(
         @Named(NORMAL_PIECE_LIST) pieceList: ArrayList<Piece>,
-        board: Board
+        board: Board,
+        playerPiecesContextStrategy: PlayerPiecesContextStrategy
     ): Player {
-        return PlayerImpl(PlayerType.LocalPlayer, pieceList, MoveType.Normal, board)
+        return PlayerImpl(PlayerType.LocalPlayer, pieceList, MoveType.Normal, board,
+            playerPiecesContextStrategy)
     }
 
     @GameScope
@@ -77,9 +80,11 @@ open class PlayerModule {
     @Named(REVERSE_PLAYER)
     open fun providePlayer2(
         @Named(REVERSE_PIECE_LIST) pieceList: ArrayList<Piece>,
-        board: Board
+        board: Board,
+        playerPiecesContextStrategy: PlayerPiecesContextStrategy
     ): Player {
-        return PlayerImpl(PlayerType.LocalPlayer, pieceList, MoveType.Revers, board)
+        return PlayerImpl(PlayerType.LocalPlayer, pieceList, MoveType.Revers, board,
+            playerPiecesContextStrategy)
     }
 
 }

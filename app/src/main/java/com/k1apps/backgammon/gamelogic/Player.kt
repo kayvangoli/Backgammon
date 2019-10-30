@@ -4,6 +4,7 @@ import com.k1apps.backgammon.Constants.NORMAL_HOME_RANGE
 import com.k1apps.backgammon.Constants.REVERSE_HOME_RANGE
 import com.k1apps.backgammon.gamelogic.event.DiceBoxThrownEvent
 import com.k1apps.backgammon.gamelogic.event.DiceThrownEvent
+import com.k1apps.backgammon.gamelogic.strategy.PlayerPiecesContextStrategy
 import org.greenrobot.eventbus.EventBus
 import java.util.ArrayList
 
@@ -11,7 +12,8 @@ class PlayerImpl(
     override val playerType: PlayerType = PlayerType.LocalPlayer,
     override val pieceList: ArrayList<Piece>,
     val moveType: MoveType,
-    private val board: Board
+    private val board: Board,
+    private val playerPiecesContextStrategy: PlayerPiecesContextStrategy
 ) : Player {
     override var dice: Dice? = null
     override var diceBox: DiceBox? = null
@@ -42,35 +44,8 @@ class PlayerImpl(
     }
 
     override fun updateDicesStateInDiceBox() {
-        diceBox?.let { diceBox ->
-            when {
-                haveDiedPiece() -> updateDiceWithDeadPiece(diceBox)
-                isInRemovePieceState() -> diceBox.enable()
-            }
-        }
-    }
-
-    private fun isInRemovePieceState(): Boolean {
-        pieceList.forEach {
-            if (it.state == PieceState.DEAD) return false
-            if (it.state == PieceState.IN_GAME && it.location !in homeCellIndexRange) return false
-        }
-        return true
-    }
-
-    private fun updateDiceWithDeadPiece(diceBox: DiceBox) {
-        pieceList.forEach {
-            if (it.state == PieceState.DEAD) {
-                val number = diceBox.dice1.number!!
-                if (board.canMovePiece(it, it.pieceAfterMove(number))) {
-                    diceBox.updateDiceStateWith(number)
-                }
-                val number2 = diceBox.dice2.number!!
-                if (board.canMovePiece(it, it.pieceAfterMove(number2))) {
-                    diceBox.updateDiceStateWith(number2)
-                }
-            }
-        }
+        playerPiecesContextStrategy.getPlayerPiecesStrategy(pieceList)
+            .updateDicesState(diceBox!!, pieceList, board)
     }
 
     override fun haveDiedPiece(): Boolean {
