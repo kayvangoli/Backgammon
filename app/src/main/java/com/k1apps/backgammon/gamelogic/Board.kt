@@ -1,6 +1,7 @@
 package com.k1apps.backgammon.gamelogic
 
 import androidx.collection.ArrayMap
+import com.k1apps.backgammon.Constants.DICE_RANGE
 import javax.inject.Inject
 
 interface Board {
@@ -10,6 +11,7 @@ interface Board {
     fun canMovePiece(fromPiece: Piece?, toPiece: Piece?): Boolean
     fun isRangeFilledWithNormalPiece(range: IntRange): Boolean
     fun isRangeFilledWithReversePiece(range: IntRange): Boolean
+    fun move(piece: Piece, number: Byte): Boolean
 }
 
 class BoardImpl @Inject constructor(
@@ -93,14 +95,67 @@ class BoardImpl @Inject constructor(
         return true
     }
 
-    private fun setPieceToCell(piece: Piece) {
+    override fun move(piece: Piece, number: Byte): Boolean {
+        var moveCompleted = false
+        if (number !in DICE_RANGE) {
+            throw MoveException("Dice number range is incorrect")
+        }
+        if (piece.state == PieceState.WON) {
+            throw MoveException("You can't move piece with won state")
+        }
+        val pieceAfterMove = piece.pieceAfterMove(number)
+        if (pieceAfterMove == null) {
+            removePieceFromCell(piece)
+            piece.state = PieceState.WON
+            moveCompleted = true
+        } else {
+            if (canMovePiece(piece, pieceAfterMove)) {
+                piece.state = pieceAfterMove.state
+                piece.location = pieceAfterMove.location
+                moveCompleted = setPieceToCell(piece)
+            }
+        }
+        return moveCompleted
+    }
+
+    private fun setPieceToCell(piece: Piece): Boolean {
+        var isSet = false
         val array = cells[piece.location]
         if (array != null) {
-            array.add(piece)
+            when {
+                array.size > 1 -> if (piece.moveType == array[0].moveType) {
+                    array.add(piece)
+                    isSet = true
+                }
+                array.size == 1 -> isSet = if (piece.moveType == array[0].moveType) {
+                    array.add(piece)
+                    true
+                } else {
+                    val firstPiece = array[0]
+                    removePieceFromCell(firstPiece)
+                    killPiece(firstPiece)
+                    array.add(piece)
+                    true
+                }
+                else -> {
+                    array.add(piece)
+                    isSet = true
+                }
+            }
         } else {
             val arrayList = arrayListOf<Piece>()
             arrayList.add(piece)
             cells[piece.location] = arrayList
+            isSet = true
         }
+        return isSet
+    }
+
+    private fun killPiece(piece: Piece) {
+        piece.state = PieceState.DEAD
+    }
+
+    private fun removePieceFromCell(piece: Piece) {
+        cells[piece.location]?.remove(piece)
     }
 }
