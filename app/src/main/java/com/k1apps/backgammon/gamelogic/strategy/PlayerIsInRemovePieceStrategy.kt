@@ -1,5 +1,6 @@
 package com.k1apps.backgammon.gamelogic.strategy
 
+import com.k1apps.backgammon.Constants.DICE_RANGE
 import com.k1apps.backgammon.Constants.NORMAL_HOME_RANGE
 import com.k1apps.backgammon.Constants.REVERSE_HOME_RANGE
 import com.k1apps.backgammon.gamelogic.*
@@ -40,7 +41,13 @@ class PlayerIsInRemovePieceStrategy :
     }
 
     override fun move(dice: Dice, piece: Piece, board: Board): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (piece.state != PieceState.IN_GAME) {
+            throw ChooseStrategyException("Choose remove strategy with state: ${piece.state}")
+        }
+        if (piece.locationInMySide() !in DICE_RANGE) {
+            throw ChooseStrategyException("Player is not on remove but selected")
+        }
+        return board.move(piece, dice.number!!)
     }
 
     private fun findPieceWithLargestLocation(pieces: List<Piece>): Piece? {

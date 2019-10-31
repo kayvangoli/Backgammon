@@ -10,6 +10,7 @@ import com.k1apps.backgammon.gamelogic.*
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.Assert
 import org.junit.Before
 
 import org.junit.Test
@@ -330,6 +331,39 @@ class PlayerIsInRemovePieceStrategyTest {
         normalPieceList[0].location = 14
         playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
     }
+
+    @Test(expected = ChooseStrategyException::class)
+    fun when_move_called_and_piece_location_is_out_of_home_range_then_thrown_chooseStrategyException() {
+        val piece = normalPieceList[0]
+        piece.location = 13
+        playerPiecesActionStrategy.move(diceBox.dice1, piece, board)
+    }
+
+    @Test(expected = ChooseStrategyException::class)
+    fun when_move_called_and_piece_state_is_not_inGame_then_thrown_chooseStrategyException() {
+        val piece = normalPieceList[0]
+        piece.state = PieceState.WON
+        playerPiecesActionStrategy.move(diceBox.dice1, piece, board)
+    }
+
+    @Test
+    fun when_move_called_then_move_should_be_true_and_board_move_called() {
+        val piece = normalPieceList[14]
+        `when`(diceBox.dice1.number).thenReturn(4)
+        val move = playerPiecesActionStrategy.move(diceBox.dice1, piece, board)
+        verify(board).move(piece, diceBox.dice1.number!!)
+        Assert.assertTrue(move)
+    }
+
+    @Test
+    fun when_move_called_with_reverse_piece_then_move_should_be_true_and_board_move_called() {
+        val piece = reversePieceList[14]
+        `when`(diceBox.dice1.number).thenReturn(4)
+        val move = playerPiecesActionStrategy.move(diceBox.dice1, piece, board)
+        verify(board).move(piece, diceBox.dice1.number!!)
+        Assert.assertTrue(move)
+    }
+
 }
 
 @GameScope
