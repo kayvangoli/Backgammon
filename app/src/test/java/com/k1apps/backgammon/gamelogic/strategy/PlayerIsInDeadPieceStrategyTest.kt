@@ -347,6 +347,28 @@ class PlayerIsInDeadPieceStrategyTest {
         verify(board).move(piece, diceBox.dice1.number!!)
         assertTrue(move)
     }
+
+    @Test(expected = CellNumberException::class)
+    fun when_findDice_called_and_both_of_fromCell_and_toCell_are_null_then_throw_CellNumberException() {
+        playerPiecesActionStrategy.findDice(null, null, diceBox, board)
+    }
+
+    @Test(expected = CellNumberException::class)
+    fun when_findDice_called_and_fromCell_is_null_and_to_cell_is_not_in_dice_range_then_throw_CellNumberException() {
+        playerPiecesActionStrategy.findDice(null, 8, diceBox, board)
+    }
+
+    @Test(expected = ChooseStrategyException::class)
+    fun when_findDice_called_and_fromCell_is_not_null_then_throw_ChooseStrategyException() {
+        playerPiecesActionStrategy.findDice(6, 8, diceBox, board)
+    }
+
+    @Test
+    fun when_findDice_called_and_fromCell_is_null_and_to_cell_is_5_then_diceBox_getDiceWithNumber_should_be_called() {
+        val mockDiceBox = mock(DiceBox::class.java)
+        playerPiecesActionStrategy.findDice(null, 5, mockDiceBox, board)
+        verify(mockDiceBox).getDiceWithNumber(5)
+    }
 }
 
 @GameScope

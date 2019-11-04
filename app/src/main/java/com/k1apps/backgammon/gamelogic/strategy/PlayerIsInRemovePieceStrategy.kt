@@ -50,6 +50,15 @@ class PlayerIsInRemovePieceStrategy :
         return board.move(piece, dice.number!!)
     }
 
+    override fun findDice(
+        fromCellNumber: Int?,
+        toCellNumber: Int?,
+        diceBox: DiceBox,
+        board: Board
+    ): Dice? {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     private fun findPieceWithLargestLocation(pieces: List<Piece>): Piece? {
         if (pieces.isEmpty()) {
             return null

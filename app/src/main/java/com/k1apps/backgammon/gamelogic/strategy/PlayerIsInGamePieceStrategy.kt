@@ -26,4 +26,13 @@ class PlayerIsInGamePieceStrategy : PlayerPiecesActionStrategy() {
         }
         return board.move(piece, dice.number!!)
     }
+
+    override fun findDice(
+        fromCellNumber: Int?,
+        toCellNumber: Int?,
+        diceBox: DiceBox,
+        board: Board
+    ): Dice? {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }

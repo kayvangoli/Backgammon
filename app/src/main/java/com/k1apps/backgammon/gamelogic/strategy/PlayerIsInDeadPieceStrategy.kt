@@ -1,5 +1,6 @@
 package com.k1apps.backgammon.gamelogic.strategy
 
+import com.k1apps.backgammon.Constants
 import com.k1apps.backgammon.gamelogic.*
 
 class PlayerIsInDeadPieceStrategy :
@@ -27,6 +28,24 @@ class PlayerIsInDeadPieceStrategy :
             throw ChooseStrategyException("The selected piece is alive")
         }
         return board.move(piece, dice.number!!)
+    }
+
+    override fun findDice(
+        fromCellNumber: Int?,
+        toCellNumber: Int?,
+        diceBox: DiceBox,
+        board: Board
+    ): Dice? {
+        if (fromCellNumber == null && toCellNumber == null) {
+            throw CellNumberException("Move method called where fromCellNumber and toCellNumber are null")
+        }
+        if (fromCellNumber != null) {
+            throw ChooseStrategyException("There are no dead piece in list")
+        }
+        if (toCellNumber !in Constants.DICE_RANGE) {
+            throw CellNumberException("Move piece to Game with range greater than dice")
+        }
+        return diceBox.getDiceWithNumber(toCellNumber)
     }
 
     private fun deadPieceList(list: ArrayList<Piece>): List<Piece> {

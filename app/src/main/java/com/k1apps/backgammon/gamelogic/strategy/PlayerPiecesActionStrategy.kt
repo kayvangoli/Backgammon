@@ -20,4 +20,9 @@ abstract class PlayerPiecesActionStrategy {
     }
 
     abstract fun move(dice: Dice, piece: Piece, board: Board): Boolean
+
+    abstract fun findDice(fromCellNumber: Int?,
+                          toCellNumber: Int?,
+                          diceBox: DiceBox,
+                          board: Board): Dice?
 }
