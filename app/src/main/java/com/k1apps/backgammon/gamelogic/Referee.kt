@@ -26,6 +26,12 @@ class RefereeImpl(
             }
         }
     }
+
+    //move to InGame
+
+    //Move to won
+
+    // Move with two number (fromCellNumber, ToCellNumber)
 }
 
 interface Referee {

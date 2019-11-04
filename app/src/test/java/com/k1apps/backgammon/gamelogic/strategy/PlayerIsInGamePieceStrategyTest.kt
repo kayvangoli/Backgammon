@@ -83,6 +83,7 @@ class PlayerIsInGamePieceStrategyTest {
         verify(diceBox, never()).updateDiceStateWith(4)
         verify(diceBox, atLeastOnce()).updateDiceStateWith(1)
     }
+
     @Test
     fun when_updateDicesState_called_and_dices_numbers_are_1_4_and_all_move_with_4_and_1_are_filled_by_opponent_then_diceBox_updateDiceStateWith_1_and_4_never_called() {
         for (piece in normalPieceList) {
@@ -140,6 +141,28 @@ class PlayerIsInGamePieceStrategyTest {
         Assert.assertTrue(move)
     }
 
+    @Test(expected = CellNumberException::class)
+    fun when_findDice_called_and_both_of_fromCell_and_toCell_are_null_then_throw_CellNumberException() {
+        playerPiecesActionStrategy.findDice(null, null, diceBox, board)
+    }
+
+    @Test(expected = ChooseStrategyException::class)
+    fun when_findDice_called_and_fromCell_is_null_and_toCell_is_8_then_throw_ChooseStrategyException() {
+        playerPiecesActionStrategy.findDice(null, 8, diceBox, board)
+    }
+
+    @Test(expected = ChooseStrategyException::class)
+    fun when_findDice_called_and_fromCell_is_8_and_toCell_is_null_then_throw_ChooseStrategyException() {
+        playerPiecesActionStrategy.findDice(8, null, diceBox, board)
+    }
+
+    @Test
+    fun when_findDice_called_and_fromCell_is_6_and_to_cell_is_5_then_diceBox_getDiceWithNumber_1_and_board_findDistanceBetweenTwoCell_should_be_called() {
+        val mockDiceBox = mock(DiceBox::class.java)
+        playerPiecesActionStrategy.findDice(6, 5, mockDiceBox, board)
+        verify(board).findDistanceBetweenTwoCell(6, 5)
+        verify(mockDiceBox).getDiceWithNumber(1)
+    }
 }
 
 @GameScope
@@ -159,6 +182,7 @@ interface PlayerIsInGamePieceComponentTest {
         fun setDiceBoxModule(diceBoxModule: DiceBoxModule): Builder
         fun build(): PlayerIsInGamePieceComponentTest
     }
+
     fun inject(playerIsInGamePieceStrategyTest: PlayerIsInGamePieceStrategyTest)
 }
 

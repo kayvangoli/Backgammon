@@ -33,6 +33,16 @@ class PlayerIsInGamePieceStrategy : PlayerPiecesActionStrategy() {
         diceBox: DiceBox,
         board: Board
     ): Dice? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (fromCellNumber == null && toCellNumber == null) {
+            throw CellNumberException("Move method called where fromCellNumber and toCellNumber are null")
+        }
+        if (fromCellNumber == null || toCellNumber == null) {
+            throw ChooseStrategyException("Find dice called while one of selected cell is null")
+        }
+        if (toCellNumber !in Constants.DICE_RANGE) {
+            throw CellNumberException("Move piece to Game with range greater than dice")
+        }
+        val number = board.findDistanceBetweenTwoCell(fromCellNumber, toCellNumber)
+        return diceBox.getDiceWithNumber(number)
     }
 }
