@@ -277,6 +277,36 @@ class BoardTest {
         assertTrue(piece == null)
     }
 
+    @Test(expected = CellNumberException::class)
+    fun when_findDistanceBetweenTwoCells_called_and_where_fromCell_is_25_then_throw_CellNumberException() {
+        board.findDistanceBetweenTwoCell(25, 1)
+    }
+
+    @Test(expected = CellNumberException::class)
+    fun when_findDistanceBetweenTwoCells_called_and_where_toCell_is_25_then_throw_CellNumberException() {
+        board.findDistanceBetweenTwoCell(1, 25)
+    }
+
+    @Test
+    fun when_findDistanceBetweenTwoCells_called_with_fromCell_1_and_toCell_is_6_then_return_5() {
+        assertTrue(board.findDistanceBetweenTwoCell(1, 6) == 5)
+    }
+
+    @Test
+    fun when_findDistanceBetweenTwoCells_called_with_fromCell_6_and_toCell_is_1_then_return_5() {
+        assertTrue(board.findDistanceBetweenTwoCell(6, 1) == 5)
+    }
+
+    @Test
+    fun when_findDistanceBetweenTwoCells_called_with_fromCell_1_and_toCell_is_24_then_return_5() {
+        assertTrue(board.findDistanceBetweenTwoCell(1, 24) == 23)
+    }
+
+    @Test
+    fun when_findDistanceBetweenTwoCells_called_with_fromCell_24_and_toCell_is_1_then_return_5() {
+        assertTrue(board.findDistanceBetweenTwoCell(24, 1) == 23)
+    }
+
     @Test(expected = MoveException::class)
     fun when_move_called_with_won_piece_then_throw_exception() {
         val piece = board.pieceList1[0]

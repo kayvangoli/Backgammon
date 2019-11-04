@@ -14,6 +14,7 @@ interface Board {
     fun isRangeFilledWithReversePiece(range: IntRange): Boolean
     fun move(piece: Piece, number: Byte): Boolean
     fun getHeadPiece(cellNumber: Int): Piece?
+    fun findDistanceBetweenTwoCell(fromCell: Int, toCell: Int): Int
 }
 
 class BoardImpl @Inject constructor(
@@ -81,6 +82,16 @@ class BoardImpl @Inject constructor(
         }
         val cell = cells[cellNumber]
         return cell?.get(0)
+    }
+
+    override fun findDistanceBetweenTwoCell(fromCell: Int, toCell: Int): Int {
+        if (fromCell !in BOARD_LOCATION_RANGE) {
+            throw CellNumberException("FromCell number is: $fromCell")
+        }
+        if (toCell !in BOARD_LOCATION_RANGE) {
+            throw CellNumberException("ToCell number is: $toCell")
+        }
+        return Math.abs(fromCell - toCell)
     }
 
     override fun isRangeFilledWithNormalPiece(range: IntRange): Boolean {
