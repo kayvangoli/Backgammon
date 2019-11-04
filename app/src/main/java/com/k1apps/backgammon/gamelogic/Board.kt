@@ -1,6 +1,7 @@
 package com.k1apps.backgammon.gamelogic
 
 import androidx.collection.ArrayMap
+import com.k1apps.backgammon.Constants.BOARD_LOCATION_RANGE
 import com.k1apps.backgammon.Constants.DICE_RANGE
 import javax.inject.Inject
 
@@ -12,6 +13,7 @@ interface Board {
     fun isRangeFilledWithNormalPiece(range: IntRange): Boolean
     fun isRangeFilledWithReversePiece(range: IntRange): Boolean
     fun move(piece: Piece, number: Byte): Boolean
+    fun getHeadPiece(cellNumber: Int): Piece?
 }
 
 class BoardImpl @Inject constructor(
@@ -71,6 +73,14 @@ class BoardImpl @Inject constructor(
             }
         }
         return true
+    }
+
+    override fun getHeadPiece(cellNumber: Int): Piece? {
+        if (cellNumber !in BOARD_LOCATION_RANGE) {
+            throw CellNumberException("Selected cell number is: $cellNumber")
+        }
+        val cell = cells[cellNumber]
+        return cell?.get(0)
     }
 
     override fun isRangeFilledWithNormalPiece(range: IntRange): Boolean {

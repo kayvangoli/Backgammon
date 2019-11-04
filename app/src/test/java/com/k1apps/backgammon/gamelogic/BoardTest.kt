@@ -250,6 +250,33 @@ class BoardTest {
         assertTrue(move)
     }
 
+    @Test(expected = CellNumberException::class)
+    fun when_getHeadPiece_called_and_cell_is_not_in_board_range_then_throw_CellNumber_exception() {
+        board.getHeadPiece(25)
+    }
+
+    @Test
+    fun when_getHeadPiece_called_with_default_arrangement_and_cellNumber_is_12_then_return_reverse_piece() {
+        val piece = board.getHeadPiece(12)
+        assertTrue(piece != null)
+        assertTrue(piece!!.moveType == MoveType.Revers)
+        assertTrue(piece.location == 12)
+    }
+
+    @Test
+    fun when_getHeadPiece_called_with_default_arrangement_and_cellNumber_is_13_then_return_normal_piece() {
+        val piece = board.getHeadPiece(13)
+        assertTrue(piece != null)
+        assertTrue(piece!!.moveType == MoveType.Normal)
+        assertTrue(piece.location == 13)
+    }
+
+    @Test
+    fun when_getHeadPiece_called_with_default_arrangement_and_cellNumber_is_7_then_return_null() {
+        val piece = board.getHeadPiece(7)
+        assertTrue(piece == null)
+    }
+
     @Test(expected = MoveException::class)
     fun when_move_called_with_won_piece_then_throw_exception() {
         val piece = board.pieceList1[0]
