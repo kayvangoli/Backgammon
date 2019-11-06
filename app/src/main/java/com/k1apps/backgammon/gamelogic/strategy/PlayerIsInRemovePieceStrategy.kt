@@ -1,5 +1,6 @@
 package com.k1apps.backgammon.gamelogic.strategy
 
+import com.k1apps.backgammon.Constants
 import com.k1apps.backgammon.Constants.DICE_RANGE
 import com.k1apps.backgammon.Constants.NORMAL_HOME_RANGE
 import com.k1apps.backgammon.Constants.REVERSE_HOME_RANGE
@@ -56,7 +57,22 @@ class PlayerIsInRemovePieceStrategy :
         diceBox: DiceBox,
         board: Board
     ): Dice? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (fromCellNumber == null && toCellNumber == null) {
+            throw CellNumberException("Find dice called where fromCellNumber and toCellNumber are null")
+        }
+        if (fromCellNumber == null) {
+            throw ChooseStrategyException("Find dice called while fromCellNumber is null")
+        }
+        if (fromCellNumber !in DICE_RANGE) {
+            throw ChooseStrategyException("FromCellNumber is not in dice range")
+        }
+
+        if (toCellNumber == null) {
+            return diceBox.getDiceGreaterEqual(fromCellNumber)
+        } else {
+            val number = board.findDistanceBetweenTwoCell(fromCellNumber, toCellNumber)
+            return diceBox.getDiceWithNumber(number)
+        }
     }
 
     private fun findPieceWithLargestLocation(pieces: List<Piece>): Piece? {

@@ -80,6 +80,10 @@ class DiceBoxImpl(override val dice1: Dice, override val dice2: Dice) : DiceBox 
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    override fun getDiceGreaterEqual(number: Int): Dice? {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
 }
 
 interface DiceBox {
@@ -93,5 +97,6 @@ interface DiceBox {
     fun enable()
     fun getAllUnUsedNumbers(): List<Byte>
     fun getDiceWithNumber(number: Int?): Dice?
+    fun getDiceGreaterEqual(number: Int): Dice?
 }
 
