@@ -1,5 +1,6 @@
 package com.k1apps.backgammon.gamelogic
 
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,6 +32,34 @@ class DiceTest {
     @Test
     fun when_dice_roll_not_yet_called_then_number_should_be_null() {
         assertTrue(dice.number == null)
+    }
+
+    @Test
+    fun given_isActive_called_when_used_is_true_and_enable_is_true_then_return_false() {
+        dice.enabled = true
+        dice.used = true
+        assertFalse(dice.isActive())
+    }
+
+    @Test
+    fun given_isActive_called_when_used_is_false_and_enable_is_false_then_return_false() {
+        dice.enabled = false
+        dice.used = false
+        assertFalse(dice.isActive())
+    }
+
+    @Test
+    fun given_isActive_called_when_used_is_true_and_enable_is_false_then_return_false() {
+        dice.used = true
+        dice.enabled = false
+        assertFalse(dice.isActive())
+    }
+
+    @Test
+    fun given_isActive_called_when_used_is_false_and_enable_is_true_then_return_true() {
+        dice.enabled = true
+        dice.used = false
+        assertTrue(dice.isActive())
     }
 
 }

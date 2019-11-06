@@ -22,6 +22,16 @@ class DiceImpl(override val random: Random) : Dice {
             return diceImpl
         }
     }
+
+    override fun isActive(): Boolean {
+        if (enabled.not()) {
+            return false
+        }
+        if (used) {
+            return false
+        }
+        return true
+    }
 }
 
 interface Dice {
@@ -30,4 +40,5 @@ interface Dice {
     var used: Boolean
     val number: Byte?
     fun roll(): Byte
+    fun isActive(): Boolean
 }
