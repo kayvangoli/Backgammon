@@ -101,7 +101,16 @@ class DiceBoxImpl(override val dice1: Dice, override val dice2: Dice) : DiceBox 
     }
 
     override fun getActiveDiceGreaterEqual(number: Int): Dice? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (number !in DICE_RANGE) {
+            throw DiceRangeException("$number is not in dice range($DICE_RANGE)")
+        }
+        for (num in number until 7) {
+            val result = getActiveDiceWithNumber(num)
+            if (result != null) {
+                return result
+            }
+        }
+        return null
     }
 
 }

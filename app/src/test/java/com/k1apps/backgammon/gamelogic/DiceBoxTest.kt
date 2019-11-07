@@ -226,12 +226,44 @@ class DiceBoxTest {
     }
 
     @Test
-    fun given_getDiceWithNumber_5_called_when_dice1_number_is_5_and_deactive_and_dice2_is_2_and_active_then_return_null() {
+    fun given_getActiveDiceWithNumber_5_called_when_dice1_number_is_5_and_deactive_and_dice2_is_2_and_active_then_return_null() {
         `when`(random.nextInt(1, 7)).thenReturn(5).thenReturn(2)
         diceBox.roll()
         `when`(diceBox.dice1.isActive()).thenReturn(false)
         `when`(diceBox.dice2.isActive()).thenReturn(true)
         assertTrue(diceBox.getActiveDiceWithNumber(5) == null)
+    }
+
+    @Test
+    fun given_getActiveDiceGreaterEqual_2_called_then_invoke_getActiveDiceWithNumber_2() {
+        diceBox.getActiveDiceGreaterEqual(2)
+        verify(diceBox).getActiveDiceWithNumber(2)
+    }
+
+    @Test
+    fun given_getActiveDiceGreaterEqual_2_called_when_getActiveDiceWithNumber_2_is_null_and_getActiveDiceWithNumber_3_is_mockedDice_then_return_mockedDice() {
+        val mockedDice = mock(Dice::class.java)
+        `when`(diceBox.getActiveDiceWithNumber(2)).thenReturn(null)
+        `when`(diceBox.getActiveDiceWithNumber(3)).thenReturn(mockedDice)
+        val diceResult = diceBox.getActiveDiceGreaterEqual(2)
+        assertTrue(diceResult == mockedDice)
+    }
+
+    @Test
+    fun given_getActiveDiceGreaterEqual_2_called_when_getActiveDiceWithNumber_2_to_5_is_null_and_getActiveDiceWithNumber_6_is_mockedDice_then_return_mockedDice() {
+        val mockedDice = mock(Dice::class.java)
+        `when`(diceBox.getActiveDiceWithNumber(2)).thenReturn(null)
+        `when`(diceBox.getActiveDiceWithNumber(3)).thenReturn(null)
+        `when`(diceBox.getActiveDiceWithNumber(4)).thenReturn(null)
+        `when`(diceBox.getActiveDiceWithNumber(5)).thenReturn(null)
+        `when`(diceBox.getActiveDiceWithNumber(6)).thenReturn(mockedDice)
+        val diceResult = diceBox.getActiveDiceGreaterEqual(2)
+        assertTrue(diceResult == mockedDice)
+    }
+
+    @Test(expected = DiceRangeException::class)
+    fun given_getActiveDiceGreaterEqual_8_called_then_throw_diceRangeException() {
+        diceBox.getActiveDiceGreaterEqual(8)
     }
 }
 
