@@ -12,8 +12,8 @@ class DiceBoxImpl(override val dice1: Dice, override val dice2: Dice) : DiceBox 
     override fun roll() {
         Pair(dice1.roll(), dice2.roll())
         if (dice1.number == dice2.number) {
-            dice3 = DiceFactory.createDice(dice2)
-            dice4 = DiceFactory.createDice(dice2)
+            dice3 = dice2.copy()
+            dice4 = dice2.copy()
         } else {
             dice3 = null
             dice4 = null

@@ -15,14 +15,6 @@ class DiceImpl(override val random: Random) : Dice {
         return number!!
     }
 
-    companion object {
-        fun build(dice: Dice): Dice {
-            val diceImpl = DiceImpl(dice.random)
-            diceImpl.number = dice.number
-            return diceImpl
-        }
-    }
-
     override fun isActive(): Boolean {
         if (enabled.not()) {
             return false
@@ -31,6 +23,12 @@ class DiceImpl(override val random: Random) : Dice {
             return false
         }
         return true
+    }
+
+    override fun copy(): Dice? {
+        val dice = DiceImpl(random)
+        dice.number = number
+        return dice
     }
 }
 
@@ -41,4 +39,5 @@ interface Dice {
     val number: Byte?
     fun roll(): Byte
     fun isActive(): Boolean
+    fun copy(): Dice?
 }

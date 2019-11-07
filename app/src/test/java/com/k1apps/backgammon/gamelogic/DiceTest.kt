@@ -5,8 +5,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
-import org.mockito.Mockito.spy
-import org.mockito.Mockito.times
+import org.mockito.Mockito.*
 import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
 import kotlin.random.Random
@@ -15,7 +14,9 @@ import kotlin.random.Random
 class DiceTest {
 
     @Spy
-    var dice: Dice = spy(DiceImpl(Random))
+    val random = Random
+    @Spy
+    var dice: Dice = spy(DiceImpl(random))
 
     @Test
     fun when_dice_every_time_roll_called_then_dice_should_be_disabled() {
@@ -60,6 +61,13 @@ class DiceTest {
         dice.enabled = true
         dice.used = false
         assertTrue(dice.isActive())
+    }
+
+    @Test
+    fun given_copy_called_when_number_is_3_then_return_dice_with_number_3() {
+        `when`(dice.number).thenReturn(3)
+        val copiedDice = dice.copy()
+        assertTrue(copiedDice!!.number == 3.toByte())
     }
 
 }
