@@ -76,11 +76,31 @@ class DiceBoxImpl(override val dice1: Dice, override val dice2: Dice) : DiceBox 
         return list
     }
 
-    override fun getDiceWithNumber(number: Int?): Dice? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun getActiveDiceWithNumber(number: Int): Dice? {
+        dice1.number?.let {
+            if (number.toByte() == it && dice1.isActive()) {
+                return dice1
+            }
+        }
+        dice2.number?.let {
+            if (number.toByte() == it && dice2.isActive()) {
+                return dice2
+            }
+        }
+        dice3?.number?.let {
+            if (number.toByte() == it && dice3!!.isActive()) {
+                return dice3!!
+            }
+        }
+        dice4?.number?.let {
+            if (number.toByte() == it && dice4!!.isActive()) {
+                return dice4!!
+            }
+        }
+        return null
     }
 
-    override fun getDiceGreaterEqual(number: Int): Dice? {
+    override fun getActiveDiceGreaterEqual(number: Int): Dice? {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -96,7 +116,7 @@ interface DiceBox {
     fun isAtLeastOneDiceEnable(): Boolean
     fun enable()
     fun getAllUnUsedNumbers(): List<Byte>
-    fun getDiceWithNumber(number: Int?): Dice?
-    fun getDiceGreaterEqual(number: Int): Dice?
+    fun getActiveDiceWithNumber(number: Int): Dice?
+    fun getActiveDiceGreaterEqual(number: Int): Dice?
 }
 

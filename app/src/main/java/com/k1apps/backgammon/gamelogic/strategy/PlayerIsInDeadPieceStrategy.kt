@@ -42,6 +42,9 @@ class PlayerIsInDeadPieceStrategy :
         if (fromCellNumber != null) {
             throw ChooseStrategyException("There are no dead piece in list")
         }
+        if (toCellNumber == null) {
+            throw ChooseStrategyException("There are no dead piece in list")
+        }
         if (toCellNumber !in Constants.DICE_RANGE) {
             throw CellNumberException("Move piece to Game with range greater than dice")
         }

@@ -161,6 +161,77 @@ class DiceBoxTest {
         assertTrue(allNumbers[1] == 5.toByte())
     }
 
+    @Test
+    fun given_getActiveDiceWithNumber_2_called_when_dice1_number_is_2_and_is_deactive_and_dice2_number_is_2_and_active_and_dice3_and_dice4_like_to_dice2_then_return_dice2() {
+        `when`(diceBox.dice2.copy()).thenReturn(mock(Dice::class.java))
+        `when`(random.nextInt(1, 7)).thenReturn(2).thenReturn(2)
+        diceBox.roll()
+        `when`(diceBox.dice1.isActive()).thenReturn(false)
+        `when`(diceBox.dice2.isActive()).thenReturn(true)
+        `when`(diceBox.dice3!!.isActive()).thenReturn(true)
+        `when`(diceBox.dice4!!.isActive()).thenReturn(true)
+        assertTrue(diceBox.getActiveDiceWithNumber(2) == diceBox.dice2)
+    }
+
+    @Test
+    fun given_getActiveDiceWithNumber_2_called_when_dice1_number_is_2_and_active_and_dice2_number_is_2_and_active_and_dice3_and_dice4_like_to_dice2_then_return_dice1() {
+        `when`(diceBox.dice2.copy()).thenReturn(mock(Dice::class.java))
+        `when`(random.nextInt(1, 7)).thenReturn(2).thenReturn(2)
+        diceBox.roll()
+        `when`(diceBox.dice1.isActive()).thenReturn(true)
+        `when`(diceBox.dice2.isActive()).thenReturn(true)
+        `when`(diceBox.dice3!!.isActive()).thenReturn(true)
+        `when`(diceBox.dice4!!.isActive()).thenReturn(true)
+        assertTrue(diceBox.getActiveDiceWithNumber(2) == diceBox.dice1)
+    }
+
+    @Test
+    fun given_getActiveDiceWithNumber_2_called_when_dice1_number_is_2_and_deactive_and_dice2_number_is_2_and_deactive_and_dice3_is_active_and_dice4_like_to_dice3_then_return_dice3() {
+        `when`(diceBox.dice2.copy()).thenReturn(mock(Dice::class.java))
+        `when`(random.nextInt(1, 7)).thenReturn(2).thenReturn(2)
+        diceBox.roll()
+        `when`(diceBox.dice1.isActive()).thenReturn(false)
+        `when`(diceBox.dice2.isActive()).thenReturn(false)
+        `when`(diceBox.dice3!!.isActive()).thenReturn(true)
+        `when`(diceBox.dice3!!.number).thenReturn(2)
+        `when`(diceBox.dice4!!.isActive()).thenReturn(true)
+        `when`(diceBox.dice4!!.number).thenReturn(2)
+        assertTrue(diceBox.getActiveDiceWithNumber(2) == diceBox.dice3)
+    }
+
+    @Test
+    fun given_getActiveDiceWithNumber_2_called_when_dice1_number_is_2_and_deactive_and_dice2_number_is_2_and_deactive_and_dice3_is_deactive_and_dice4_is_active_then_return_dice4() {
+        `when`(diceBox.dice2.copy()).thenReturn(mock(Dice::class.java))
+        `when`(random.nextInt(1, 7)).thenReturn(2).thenReturn(2)
+        diceBox.roll()
+        `when`(diceBox.dice1.isActive()).thenReturn(false)
+        `when`(diceBox.dice2.isActive()).thenReturn(false)
+        `when`(diceBox.dice3!!.isActive()).thenReturn(false)
+        `when`(diceBox.dice3!!.number).thenReturn(2)
+        `when`(diceBox.dice4!!.isActive()).thenReturn(true)
+        `when`(diceBox.dice4!!.number).thenReturn(2)
+        assertTrue(diceBox.getActiveDiceWithNumber(2) == diceBox.dice4)
+    }
+
+    @Test
+    fun given_getActiveDiceWithNumber_2_called_when_dice1_number_is_2_and_deactive_and_dice2_number_is_2_and_deactive_and_dice3_is_deactive_and_dice4_is_deactive_then_return_null() {
+        `when`(diceBox.dice2.copy()).thenReturn(mock(Dice::class.java))
+        `when`(random.nextInt(1, 7)).thenReturn(2).thenReturn(2)
+        diceBox.roll()
+        `when`(diceBox.dice1.isActive()).thenReturn(false)
+        `when`(diceBox.dice2.isActive()).thenReturn(false)
+        `when`(diceBox.dice3!!.isActive()).thenReturn(false)
+        `when`(diceBox.dice4!!.isActive()).thenReturn(false)
+        assertTrue(diceBox.getActiveDiceWithNumber(2) == null)
+    }
+
+    @Test
+    fun given_getDiceWithNumber_5_called_when_dice1_number_is_5_and_deactive_and_dice2_is_2_and_active_then_return_null() {
+        `when`(random.nextInt(1, 7)).thenReturn(5).thenReturn(2)
+        diceBox.roll()
+        `when`(diceBox.dice1.isActive()).thenReturn(false)
+        `when`(diceBox.dice2.isActive()).thenReturn(true)
+        assertTrue(diceBox.getActiveDiceWithNumber(5) == null)
     }
 }
 
