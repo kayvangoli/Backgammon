@@ -45,7 +45,7 @@ class PlayerIsInDeadPieceStrategy :
         if (toCellNumber !in Constants.DICE_RANGE) {
             throw CellNumberException("Move piece to Game with range greater than dice")
         }
-        return diceBox.getDiceWithNumber(toCellNumber)
+        return diceBox.getActiveDiceWithNumber(toCellNumber)
     }
 
     private fun deadPieceList(list: ArrayList<Piece>): List<Piece> {

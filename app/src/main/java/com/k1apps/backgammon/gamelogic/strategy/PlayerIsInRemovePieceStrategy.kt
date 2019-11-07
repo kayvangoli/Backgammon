@@ -68,10 +68,10 @@ class PlayerIsInRemovePieceStrategy :
         }
 
         if (toCellNumber == null) {
-            return diceBox.getDiceGreaterEqual(fromCellNumber)
+            return diceBox.getActiveDiceGreaterEqual(fromCellNumber)
         } else {
             val number = board.findDistanceBetweenTwoCell(fromCellNumber, toCellNumber)
-            return diceBox.getDiceWithNumber(number)
+            return diceBox.getActiveDiceWithNumber(number)
         }
     }
 

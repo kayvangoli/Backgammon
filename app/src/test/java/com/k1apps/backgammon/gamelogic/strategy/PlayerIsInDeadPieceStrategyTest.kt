@@ -367,7 +367,7 @@ class PlayerIsInDeadPieceStrategyTest {
     fun when_findDice_called_and_fromCell_is_null_and_to_cell_is_5_then_diceBox_getDiceWithNumber_should_be_called() {
         val mockDiceBox = mock(DiceBox::class.java)
         playerPiecesActionStrategy.findDice(null, 5, mockDiceBox, board)
-        verify(mockDiceBox).getDiceWithNumber(5)
+        verify(mockDiceBox).getActiveDiceWithNumber(5)
     }
 }
 

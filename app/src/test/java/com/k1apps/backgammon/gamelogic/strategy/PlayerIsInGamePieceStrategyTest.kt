@@ -161,7 +161,7 @@ class PlayerIsInGamePieceStrategyTest {
         val mockDiceBox = mock(DiceBox::class.java)
         playerPiecesActionStrategy.findDice(6, 5, mockDiceBox, board)
         verify(board).findDistanceBetweenTwoCell(6, 5)
-        verify(mockDiceBox).getDiceWithNumber(1)
+        verify(mockDiceBox).getActiveDiceWithNumber(1)
     }
 }
 

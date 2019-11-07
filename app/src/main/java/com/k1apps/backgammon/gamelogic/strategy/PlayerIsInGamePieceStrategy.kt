@@ -43,6 +43,6 @@ class PlayerIsInGamePieceStrategy : PlayerPiecesActionStrategy() {
             throw CellNumberException("Move piece to Game with range greater than dice")
         }
         val number = board.findDistanceBetweenTwoCell(fromCellNumber, toCellNumber)
-        return diceBox.getDiceWithNumber(number)
+        return diceBox.getActiveDiceWithNumber(number)
     }
 }

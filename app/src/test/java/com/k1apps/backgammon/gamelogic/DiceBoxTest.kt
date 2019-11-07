@@ -140,7 +140,7 @@ class DiceBoxTest {
     }
 
     @Test
-    fun when_getAllNumbers_called_and_dices_are_pairs_with_number5_then_return_list_with_four_numbers5() {
+    fun when_getAllUnusedNumbers_called_and_dices_are_pairs_with_number5_then_return_list_with_four_numbers5() {
         `when`(random.nextInt(1, 7)).thenReturn(5)
         diceBox.roll()
         val allNumbers = diceBox.getAllUnUsedNumbers()
@@ -152,13 +152,14 @@ class DiceBoxTest {
     }
 
     @Test
-    fun when_getAllNumbers_called_and_dices_are_4_and_5_then_return_list_with_two_numbers_4_and_5() {
+    fun when_getAllUnusedNumbers_called_and_dices_are_4_and_5_then_return_list_with_two_numbers_4_and_5() {
         `when`(random.nextInt(1, 7)).thenReturn(4).thenReturn(5)
         diceBox.roll()
         val allNumbers = diceBox.getAllUnUsedNumbers()
         assertTrue(allNumbers.size == 2)
-        assertTrue(allNumbers[0]== 4.toByte())
-        assertTrue(allNumbers[1]== 5.toByte())
+        assertTrue(allNumbers[0] == 4.toByte())
+        assertTrue(allNumbers[1] == 5.toByte())
+    }
 
     }
 }
