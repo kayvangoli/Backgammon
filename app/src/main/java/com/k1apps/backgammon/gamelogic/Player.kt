@@ -1,9 +1,12 @@
 package com.k1apps.backgammon.gamelogic
 
+import com.k1apps.backgammon.Constants.DICE_RANGE
 import com.k1apps.backgammon.Constants.NORMAL_HOME_RANGE
 import com.k1apps.backgammon.Constants.REVERSE_HOME_RANGE
 import com.k1apps.backgammon.gamelogic.event.DiceBoxThrownEvent
 import com.k1apps.backgammon.gamelogic.event.DiceThrownEvent
+import com.k1apps.backgammon.gamelogic.event.GameEndedEvent
+import com.k1apps.backgammon.gamelogic.event.MoveCompletedEvent
 import com.k1apps.backgammon.gamelogic.strategy.PlayerPiecesContextStrategy
 import org.greenrobot.eventbus.EventBus
 import java.util.ArrayList
@@ -64,6 +67,56 @@ class PlayerImpl(
             return board.isRangeFilledWithReversePiece(homeCellIndexRange)
         }
     }
+
+    override fun move(fromCellNumber: Int?, toCellNumber: Int?) {
+        if (diceBox == null) {
+            throw MoveException("Move called when player not have diceBox")
+        }
+        val piece: Piece?
+        if (fromCellNumber != null) {
+            piece = board.getHeadPiece(fromCellNumber)
+        } else {
+            if (haveDiedPiece()) {
+                piece = getDeadPiece()
+            } else {
+                throw MoveException("Move called when fromCell is null and player has not dead piece")
+            }
+        }
+        if (piece != null && piece.moveType == moveType) {
+            val playerPiecesStrategy =
+                playerPiecesContextStrategy.getPlayerPiecesStrategy(pieceList)
+            val dice = playerPiecesStrategy
+                .findDice(fromCellNumber, toCellNumber, diceBox!!, board)
+            dice?.let {
+                val moveResult = playerPiecesStrategy.move(dice, piece, board)
+                if (moveResult) {
+                    EventBus.getDefault().post(MoveCompletedEvent(this))
+                    if (allPieceAreWon()) {
+                        EventBus.getDefault().post(GameEndedEvent(this))
+                    }
+                }
+            }
+        }
+
+    }
+
+    private fun allPieceAreWon(): Boolean {
+        pieceList.forEach {
+            if (it.state != PieceState.WON) {
+                return false
+            }
+        }
+        return true
+    }
+
+    private fun getDeadPiece(): Piece? {
+        pieceList.forEach {
+            if (it.state == PieceState.DEAD) {
+                return it
+            }
+        }
+        return null
+    }
 }
 
 interface Player {
@@ -78,6 +131,7 @@ interface Player {
     fun updateDicesStateInDiceBox()
     fun haveDiedPiece(): Boolean
     fun isHomeRangeFill(): Boolean
+    fun move(fromCellNumber: Int?, toCellNumber: Int?)
 }
 
 enum class PlayerType {

@@ -2,6 +2,8 @@ package com.k1apps.backgammon.gamelogic
 
 import com.k1apps.backgammon.gamelogic.event.DiceBoxThrownEvent
 import com.k1apps.backgammon.gamelogic.event.DiceThrownEvent
+import com.k1apps.backgammon.gamelogic.event.GameEndedEvent
+import com.k1apps.backgammon.gamelogic.event.MoveCompletedEvent
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
@@ -73,6 +75,16 @@ class DiceDistributorImpl(
         }
     }
 
+    @Subscribe
+    override fun onEvent(event: GameEndedEvent) {
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    @Subscribe
+    override fun onEvent(event: MoveCompletedEvent) {
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     private fun getOpponent(player: Player): Player {
         if (player === player1) {
             return player2
@@ -96,4 +108,6 @@ interface DiceDistributor {
     fun whichPlayerHasDice(): Pair<Player, Player?>?
     fun onEvent(event: DiceThrownEvent)
     fun onEvent(event: DiceBoxThrownEvent)
+    fun onEvent(event: GameEndedEvent)
+    fun onEvent(event: MoveCompletedEvent)
 }

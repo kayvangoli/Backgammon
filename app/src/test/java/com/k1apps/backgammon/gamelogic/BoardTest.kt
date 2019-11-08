@@ -8,6 +8,7 @@ import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.mockito.Mockito
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -305,6 +306,12 @@ class BoardTest {
     @Test
     fun when_findDistanceBetweenTwoCells_called_with_fromCell_24_and_toCell_is_1_then_return_5() {
         assertTrue(board.findDistanceBetweenTwoCell(24, 1) == 23)
+    }
+
+    @Test
+    fun given_findDistanceBetweenTwoCells_called_when_fromCell_is_6_and_to_cell_is_6_then_return_0() {
+        val result = board.findDistanceBetweenTwoCell(6, 6)
+        assertTrue(result == 0)
     }
 
     @Test(expected = MoveException::class)

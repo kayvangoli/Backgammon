@@ -10,9 +10,8 @@ import com.k1apps.backgammon.gamelogic.*
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.Assert
+import org.junit.Assert.assertTrue
 import org.junit.Before
-
 import org.junit.Test
 import org.mockito.Mockito.*
 import javax.inject.Inject
@@ -352,7 +351,7 @@ class PlayerIsInRemovePieceStrategyTest {
         `when`(diceBox.dice1.number).thenReturn(4)
         val move = playerPiecesActionStrategy.move(diceBox.dice1, piece, board)
         verify(board).move(piece, diceBox.dice1.number!!)
-        Assert.assertTrue(move)
+        assertTrue(move)
     }
 
     @Test
@@ -361,7 +360,7 @@ class PlayerIsInRemovePieceStrategyTest {
         `when`(diceBox.dice1.number).thenReturn(4)
         val move = playerPiecesActionStrategy.move(diceBox.dice1, piece, board)
         verify(board).move(piece, diceBox.dice1.number!!)
-        Assert.assertTrue(move)
+        assertTrue(move)
     }
 
 
@@ -395,6 +394,13 @@ class PlayerIsInRemovePieceStrategyTest {
         verify(mockDiceBox).getActiveDiceGreaterEqual(2)
     }
 
+
+    @Test
+    fun given_findDice_called_when_fromCell_is_6_and_to_cell_is_6_then_return_null() {
+        val mockDiceBox = mock(DiceBox::class.java)
+        val result = playerPiecesActionStrategy.findDice(6, 6, mockDiceBox, board)
+        assertTrue(result == null)
+    }
 }
 
 @GameScope

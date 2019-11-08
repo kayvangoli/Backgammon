@@ -9,9 +9,8 @@ import com.k1apps.backgammon.gamelogic.*
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.Assert
+import org.junit.Assert.assertTrue
 import org.junit.Before
-
 import org.junit.Test
 import org.mockito.Mockito.*
 import javax.inject.Inject
@@ -129,7 +128,7 @@ class PlayerIsInGamePieceStrategyTest {
         `when`(diceBox.dice1.number).thenReturn(4)
         val move = playerPiecesActionStrategy.move(diceBox.dice1, piece, board)
         verify(board).move(piece, diceBox.dice1.number!!)
-        Assert.assertTrue(move)
+        assertTrue(move)
     }
 
     @Test
@@ -138,7 +137,7 @@ class PlayerIsInGamePieceStrategyTest {
         `when`(diceBox.dice1.number).thenReturn(4)
         val move = playerPiecesActionStrategy.move(diceBox.dice1, piece, board)
         verify(board).move(piece, diceBox.dice1.number!!)
-        Assert.assertTrue(move)
+        assertTrue(move)
     }
 
     @Test(expected = CellNumberException::class)
@@ -157,11 +156,26 @@ class PlayerIsInGamePieceStrategyTest {
     }
 
     @Test
-    fun when_findDice_called_and_fromCell_is_6_and_to_cell_is_5_then_diceBox_getDiceWithNumber_1_and_board_findDistanceBetweenTwoCell_should_be_called() {
+    fun given_findDice_called_when_fromCell_is_6_and_toCell_is_5_then_diceBox_getDiceWithNumber_1_and_board_findDistanceBetweenTwoCell_should_be_called() {
         val mockDiceBox = mock(DiceBox::class.java)
         playerPiecesActionStrategy.findDice(6, 5, mockDiceBox, board)
         verify(board).findDistanceBetweenTwoCell(6, 5)
         verify(mockDiceBox).getActiveDiceWithNumber(1)
+    }
+
+    @Test
+    fun given_findDice_called_when_fromCell_is_22_and_toCell_is_21_then_diceBox_getDiceWithNumber_1_and_board_findDistanceBetweenTwoCell_should_be_called() {
+        val mockDiceBox = mock(DiceBox::class.java)
+        playerPiecesActionStrategy.findDice(22, 21, mockDiceBox, board)
+        verify(board).findDistanceBetweenTwoCell(22, 21)
+        verify(mockDiceBox).getActiveDiceWithNumber(1)
+    }
+
+    @Test
+    fun given_findDice_called_when_fromCell_is_6_and_to_cell_is_6_then_return_null() {
+        val mockDiceBox = mock(DiceBox::class.java)
+        val result = playerPiecesActionStrategy.findDice(6, 6, mockDiceBox, board)
+        assertTrue(result == null)
     }
 }
 

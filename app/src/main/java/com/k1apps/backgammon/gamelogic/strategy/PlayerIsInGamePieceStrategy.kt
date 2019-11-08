@@ -39,9 +39,6 @@ class PlayerIsInGamePieceStrategy : PlayerPiecesActionStrategy() {
         if (fromCellNumber == null || toCellNumber == null) {
             throw ChooseStrategyException("Find dice called while one of selected cell is null")
         }
-        if (toCellNumber !in Constants.DICE_RANGE) {
-            throw CellNumberException("Move piece to Game with range greater than dice")
-        }
         val number = board.findDistanceBetweenTwoCell(fromCellNumber, toCellNumber)
         return diceBox.getActiveDiceWithNumber(number)
     }
