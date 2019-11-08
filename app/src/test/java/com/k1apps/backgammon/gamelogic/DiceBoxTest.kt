@@ -265,6 +265,18 @@ class DiceBoxTest {
     fun given_getActiveDiceGreaterEqual_8_called_then_throw_diceRangeException() {
         diceBox.getActiveDiceGreaterEqual(8)
     }
+
+    @Test(expected = DiceException::class)
+    fun given_useDice_called_when_dice_is_not_exist_in_diceBox_then_throw_diceException() {
+        val dice = mock(Dice::class.java)
+        diceBox.useDice(dice)
+    }
+
+    @Test
+    fun given_useDice_called_when_dice_is_dice1_in_then_dice1_use_should_be_called() {
+        diceBox.useDice(diceBox.dice1)
+        verify(diceBox.dice1).used = true
+    }
 }
 
 @GameScope

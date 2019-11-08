@@ -1,6 +1,5 @@
 package com.k1apps.backgammon.gamelogic.strategy
 
-import com.k1apps.backgammon.Constants
 import com.k1apps.backgammon.gamelogic.*
 
 class PlayerIsInGamePieceStrategy : PlayerPiecesActionStrategy() {

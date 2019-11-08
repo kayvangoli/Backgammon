@@ -13,7 +13,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.*
 import javax.inject.Inject
 import org.mockito.Mock
@@ -121,6 +120,19 @@ class PlayerTest {
         player.diceBox = diceBox
         player.move(fromCellNumber, toCellNumber)
         verify(diceDistributor).onEvent(MoveCompletedEvent(player))
+    }
+
+    @Test
+    fun given_move_24_23_called_when_dice_number_is_1_then_diceBox_useDice_should_be_called() {
+        board.initBoard()
+        val fromCellNumber = 24
+        val toCellNumber = 23
+        val mockedDice = mock(Dice::class.java)
+        `when`(mockedDice.number).thenReturn(1)
+        `when`(diceBox.getActiveDiceWithNumber(1)).thenReturn(mockedDice)
+        player.diceBox = diceBox
+        player.move(fromCellNumber, toCellNumber)
+        verify(diceBox).useDice(mockedDice)
     }
 
     @Test(expected = MoveException::class)

@@ -113,6 +113,20 @@ class DiceBoxImpl(override val dice1: Dice, override val dice2: Dice) : DiceBox 
         return null
     }
 
+    override fun useDice(dice: Dice?) {
+        var diceExist = false
+        when {
+            dice === dice1 -> diceExist = true
+            dice === dice2 -> diceExist = true
+            dice === dice3 -> diceExist = true
+            dice === dice4 -> diceExist = true
+        }
+        if (diceExist.not()) {
+            throw DiceException("Can not use dice while not exist")
+        }
+        dice1.used = true
+    }
+
 }
 
 interface DiceBox {
@@ -127,5 +141,6 @@ interface DiceBox {
     fun getAllUnUsedNumbers(): List<Byte>
     fun getActiveDiceWithNumber(number: Int): Dice?
     fun getActiveDiceGreaterEqual(number: Int): Dice?
+    fun useDice(dice: Dice?)
 }
 
