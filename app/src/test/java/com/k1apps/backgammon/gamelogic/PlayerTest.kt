@@ -116,6 +116,7 @@ class PlayerTest {
         val toCellNumber = 23
         val mockedDice = mock(Dice::class.java)
         `when`(mockedDice.number).thenReturn(1)
+        val diceBox = mock(DiceBox::class.java)
         `when`(diceBox.getActiveDiceWithNumber(1)).thenReturn(mockedDice)
         player.diceBox = diceBox
         player.move(fromCellNumber, toCellNumber)
@@ -129,6 +130,7 @@ class PlayerTest {
         val toCellNumber = 23
         val mockedDice = mock(Dice::class.java)
         `when`(mockedDice.number).thenReturn(1)
+        val diceBox = mock(DiceBox::class.java)
         `when`(diceBox.getActiveDiceWithNumber(1)).thenReturn(mockedDice)
         player.diceBox = diceBox
         player.move(fromCellNumber, toCellNumber)
