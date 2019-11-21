@@ -27,18 +27,18 @@ class PlayerIsInGamePieceStrategy : PlayerPiecesActionStrategy() {
     }
 
     override fun findDice(
-        fromCellNumber: Int?,
-        toCellNumber: Int?,
+        StartCellNumber: Int?,
+        destinationCellNumber: Int?,
         diceBox: DiceBox,
         board: Board
     ): Dice? {
-        if (fromCellNumber == null && toCellNumber == null) {
-            throw CellNumberException("Move method called where fromCellNumber and toCellNumber are null")
+        if (StartCellNumber == null && destinationCellNumber == null) {
+            throw CellNumberException("Move method called where StartCellNumber and destinationCellNumber are null")
         }
-        if (fromCellNumber == null || toCellNumber == null) {
+        if (StartCellNumber == null || destinationCellNumber == null) {
             throw ChooseStrategyException("Find dice called while one of selected cell is null")
         }
-        val number = board.findDistanceBetweenTwoCell(fromCellNumber, toCellNumber)
+        val number = board.findDistanceBetweenTwoCell(StartCellNumber, destinationCellNumber)
         return diceBox.getActiveDiceWithNumber(number)
     }
 }

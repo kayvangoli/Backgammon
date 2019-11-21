@@ -279,37 +279,37 @@ class BoardTest {
     }
 
     @Test(expected = CellNumberException::class)
-    fun when_findDistanceBetweenTwoCells_called_and_where_fromCell_is_25_then_throw_CellNumberException() {
+    fun when_findDistanceBetweenTwoCells_called_and_where_startCell_is_25_then_throw_CellNumberException() {
         board.findDistanceBetweenTwoCell(25, 1)
     }
 
     @Test(expected = CellNumberException::class)
-    fun when_findDistanceBetweenTwoCells_called_and_where_toCell_is_25_then_throw_CellNumberException() {
+    fun when_findDistanceBetweenTwoCells_called_and_where_destinationCell_is_25_then_throw_CellNumberException() {
         board.findDistanceBetweenTwoCell(1, 25)
     }
 
     @Test
-    fun when_findDistanceBetweenTwoCells_called_with_fromCell_1_and_toCell_is_6_then_return_5() {
+    fun when_findDistanceBetweenTwoCells_called_with_startCell_1_and_destinationCell_is_6_then_return_5() {
         assertTrue(board.findDistanceBetweenTwoCell(1, 6) == 5)
     }
 
     @Test
-    fun when_findDistanceBetweenTwoCells_called_with_fromCell_6_and_toCell_is_1_then_return_5() {
+    fun when_findDistanceBetweenTwoCells_called_with_startCell_6_and_destinationCell_is_1_then_return_5() {
         assertTrue(board.findDistanceBetweenTwoCell(6, 1) == 5)
     }
 
     @Test
-    fun when_findDistanceBetweenTwoCells_called_with_fromCell_1_and_toCell_is_24_then_return_5() {
+    fun when_findDistanceBetweenTwoCells_called_with_startCell_1_and_destinationCell_is_24_then_return_5() {
         assertTrue(board.findDistanceBetweenTwoCell(1, 24) == 23)
     }
 
     @Test
-    fun when_findDistanceBetweenTwoCells_called_with_fromCell_24_and_toCell_is_1_then_return_5() {
+    fun when_findDistanceBetweenTwoCells_called_with_startCell_24_and_destinationCell_is_1_then_return_5() {
         assertTrue(board.findDistanceBetweenTwoCell(24, 1) == 23)
     }
 
     @Test
-    fun given_findDistanceBetweenTwoCells_called_when_fromCell_is_6_and_to_cell_is_6_then_return_0() {
+    fun given_findDistanceBetweenTwoCells_called_when_startCell_is_6_and_to_cell_is_6_then_return_0() {
         val result = board.findDistanceBetweenTwoCell(6, 6)
         assertTrue(result == 0)
     }

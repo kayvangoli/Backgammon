@@ -31,7 +31,7 @@ class RefereeImpl(
 
     //Move to won
 
-    // Move with two number (fromCellNumber, ToCellNumber)
+    // Move with two number (StartCellNumber, destinationCellNumber)
 }
 
 interface Referee {

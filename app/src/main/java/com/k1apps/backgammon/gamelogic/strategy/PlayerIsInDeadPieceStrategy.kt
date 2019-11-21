@@ -31,24 +31,24 @@ class PlayerIsInDeadPieceStrategy :
     }
 
     override fun findDice(
-        fromCellNumber: Int?,
-        toCellNumber: Int?,
+        StartCellNumber: Int?,
+        destinationCellNumber: Int?,
         diceBox: DiceBox,
         board: Board
     ): Dice? {
-        if (fromCellNumber == null && toCellNumber == null) {
-            throw CellNumberException("Move method called where fromCellNumber and toCellNumber are null")
+        if (StartCellNumber == null && destinationCellNumber == null) {
+            throw CellNumberException("Move method called where StartCellNumber and destinationCellNumber are null")
         }
-        if (fromCellNumber != null) {
+        if (StartCellNumber != null) {
             throw ChooseStrategyException("There are no dead piece in list")
         }
-        if (toCellNumber == null) {
+        if (destinationCellNumber == null) {
             throw ChooseStrategyException("There are no dead piece in list")
         }
-        if (toCellNumber !in Constants.DICE_RANGE) {
+        if (destinationCellNumber !in Constants.DICE_RANGE) {
             throw CellNumberException("Move piece to Game with range greater than dice")
         }
-        return diceBox.getActiveDiceWithNumber(toCellNumber)
+        return diceBox.getActiveDiceWithNumber(destinationCellNumber)
     }
 
     private fun deadPieceList(list: ArrayList<Piece>): List<Piece> {

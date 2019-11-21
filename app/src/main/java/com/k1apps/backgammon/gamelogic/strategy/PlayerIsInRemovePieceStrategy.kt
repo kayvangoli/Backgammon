@@ -20,7 +20,7 @@ class PlayerIsInRemovePieceStrategy :
         val headPieces = getHeadInGamePiecesFrom(list)
         diceBox.getAllUnUsedNumbers().forEach { number ->
             if (isNumberLargestAllLocations(number, headPieces)) {
-                val piece = findPieceWithLargestLocation(headPieces)
+                val ggpiece = findPieceWithLargestLocation(headPieces)
                 // TODO: 10/11/19 Kayvan: View Interaction for active piece
                 diceBox.updateDiceStateWith(number)
             }
@@ -52,25 +52,25 @@ class PlayerIsInRemovePieceStrategy :
     }
 
     override fun findDice(
-        fromCellNumber: Int?,
-        toCellNumber: Int?,
+        StartCellNumber: Int?,
+        destinationCellNumber: Int?,
         diceBox: DiceBox,
         board: Board
     ): Dice? {
-        if (fromCellNumber == null && toCellNumber == null) {
-            throw CellNumberException("Find dice called where fromCellNumber and toCellNumber are null")
+        if (StartCellNumber == null && destinationCellNumber == null) {
+            throw CellNumberException("Find dice called where StartCellNumber and destinationCellNumber are null")
         }
-        if (fromCellNumber == null) {
-            throw ChooseStrategyException("Find dice called while fromCellNumber is null")
+        if (StartCellNumber == null) {
+            throw ChooseStrategyException("Find dice called while StartCellNumber is null")
         }
-        if (fromCellNumber !in DICE_RANGE) {
-            throw ChooseStrategyException("FromCellNumber is not in dice range")
+        if (StartCellNumber !in DICE_RANGE) {
+            throw ChooseStrategyException("StartCellNumber is not in dice range")
         }
 
-        if (toCellNumber == null) {
-            return diceBox.getActiveDiceGreaterEqual(fromCellNumber)
+        if (destinationCellNumber == null) {
+            return diceBox.getActiveDiceGreaterEqual(StartCellNumber)
         } else {
-            val number = board.findDistanceBetweenTwoCell(fromCellNumber, toCellNumber)
+            val number = board.findDistanceBetweenTwoCell(StartCellNumber, destinationCellNumber)
             return diceBox.getActiveDiceWithNumber(number)
         }
     }

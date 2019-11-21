@@ -4,6 +4,8 @@ import androidx.collection.ArrayMap
 import com.k1apps.backgammon.Constants.BOARD_LOCATION_RANGE
 import com.k1apps.backgammon.Constants.DICE_RANGE
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.math.abs
 
 interface Board {
     val pieceList1: ArrayList<Piece>
@@ -14,7 +16,7 @@ interface Board {
     fun isRangeFilledWithReversePiece(range: IntRange): Boolean
     fun move(piece: Piece, number: Byte): Boolean
     fun getHeadPiece(cellNumber: Int): Piece?
-    fun findDistanceBetweenTwoCell(fromCell: Int, toCell: Int): Int
+    fun findDistanceBetweenTwoCell(startCell: Int, destinationCell: Int): Int
 }
 
 class BoardImpl @Inject constructor(
@@ -56,10 +58,10 @@ class BoardImpl @Inject constructor(
 
     private fun initLists() {
         pieceList1.forEach {
-            setPieceToCell(it)
+            setPieceIntoCell(it)
         }
         pieceList2.forEach {
-            setPieceToCell(it)
+            setPieceIntoCell(it)
         }
     }
 
@@ -84,14 +86,14 @@ class BoardImpl @Inject constructor(
         return cell?.get(0)
     }
 
-    override fun findDistanceBetweenTwoCell(fromCell: Int, toCell: Int): Int {
-        if (fromCell !in BOARD_LOCATION_RANGE) {
-            throw CellNumberException("FromCell number is: $fromCell")
+    override fun findDistanceBetweenTwoCell(startCell: Int, destinationCell: Int): Int {
+        if (startCell !in BOARD_LOCATION_RANGE) {
+            throw CellNumberException("startCell number is: $startCell")
         }
-        if (toCell !in BOARD_LOCATION_RANGE) {
-            throw CellNumberException("ToCell number is: $toCell")
+        if (destinationCell !in BOARD_LOCATION_RANGE) {
+            throw CellNumberException("destinationCell number is: $destinationCell")
         }
-        return Math.abs(fromCell - toCell)
+        return abs(startCell - destinationCell)
     }
 
     override fun isRangeFilledWithNormalPiece(range: IntRange): Boolean {
@@ -133,40 +135,40 @@ class BoardImpl @Inject constructor(
             if (canMovePiece(piece, pieceAfterMove)) {
                 piece.state = pieceAfterMove.state
                 piece.location = pieceAfterMove.location
-                moveCompleted = setPieceToCell(piece)
+                moveCompleted = setPieceIntoCell(piece)
             }
         }
         return moveCompleted
     }
 
-    private fun setPieceToCell(piece: Piece): Boolean {
+    private fun setPieceIntoCell(piece: Piece): Boolean {
         var isSet = false
-        val array = cells[piece.location]
-        if (array != null) {
+        val arrayList = cells[piece.location]
+        if (arrayList != null) {
             when {
-                array.size > 1 -> if (piece.moveType == array[0].moveType) {
-                    array.add(piece)
+                arrayList.size > 1 -> if (piece.moveType == arrayList[0].moveType) {
+                    arrayList.add(piece)
                     isSet = true
                 }
-                array.size == 1 -> isSet = if (piece.moveType == array[0].moveType) {
-                    array.add(piece)
+                arrayList.size == 1 -> isSet = if (piece.moveType == arrayList[0].moveType) {
+                    arrayList.add(piece)
                     true
                 } else {
-                    val firstPiece = array[0]
+                    val firstPiece = arrayList[0]
                     removePieceFromCell(firstPiece)
                     killPiece(firstPiece)
-                    array.add(piece)
+                    arrayList.add(piece)
                     true
                 }
                 else -> {
-                    array.add(piece)
+                    arrayList.add(piece)
                     isSet = true
                 }
             }
         } else {
-            val arrayList = arrayListOf<Piece>()
-            arrayList.add(piece)
-            cells[piece.location] = arrayList
+            val createdArray = arrayListOf<Piece>()
+            createdArray.add(piece)
+            cells[piece.location] = createdArray
             isSet = true
         }
         return isSet

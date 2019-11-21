@@ -1,6 +1,5 @@
 package com.k1apps.backgammon.gamelogic
 
-import com.k1apps.backgammon.Constants.DICE_RANGE
 import com.k1apps.backgammon.Constants.NORMAL_HOME_RANGE
 import com.k1apps.backgammon.Constants.REVERSE_HOME_RANGE
 import com.k1apps.backgammon.gamelogic.event.DiceBoxThrownEvent
@@ -68,25 +67,25 @@ class PlayerImpl(
         }
     }
 
-    override fun move(fromCellNumber: Int?, toCellNumber: Int?) {
+    override fun move(startCellNumber: Int?, destinationCellNumber: Int?) {
         if (diceBox == null) {
             throw MoveException("Move called when player not have diceBox")
         }
         val piece: Piece?
-        if (fromCellNumber != null) {
-            piece = board.getHeadPiece(fromCellNumber)
+        if (startCellNumber != null) {
+            piece = board.getHeadPiece(startCellNumber)
         } else {
             if (haveDiedPiece()) {
                 piece = getDeadPiece()
             } else {
-                throw MoveException("Move called when fromCell is null and player has not dead piece")
+                throw MoveException("Move called when startCell is null and player has not dead piece")
             }
         }
         if (piece != null && piece.moveType == moveType) {
             val playerPiecesStrategy =
                 playerPiecesContextStrategy.getPlayerPiecesStrategy(pieceList)
             val dice = playerPiecesStrategy
-                .findDice(fromCellNumber, toCellNumber, diceBox!!, board)
+                .findDice(startCellNumber, destinationCellNumber, diceBox!!, board)
             dice?.let {
                 val moveResult = playerPiecesStrategy.move(it, piece, board)
                 if (moveResult) {
@@ -132,7 +131,7 @@ interface Player {
     fun updateDicesStateInDiceBox()
     fun haveDiedPiece(): Boolean
     fun isHomeRangeFill(): Boolean
-    fun move(fromCellNumber: Int?, toCellNumber: Int?)
+    fun move(startCellNumber: Int?, destinationCellNumber: Int?)
 }
 
 enum class PlayerType {

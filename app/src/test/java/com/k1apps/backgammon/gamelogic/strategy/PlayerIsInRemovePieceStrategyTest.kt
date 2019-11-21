@@ -365,22 +365,22 @@ class PlayerIsInRemovePieceStrategyTest {
 
 
     @Test(expected = CellNumberException::class)
-    fun when_findDice_called_and_both_of_fromCell_and_toCell_are_null_then_throw_CellNumberException() {
+    fun when_findDice_called_and_both_of_startCell_and_destinationCell_are_null_then_throw_CellNumberException() {
         playerPiecesActionStrategy.findDice(null, null, diceBox, board)
     }
 
     @Test(expected = ChooseStrategyException::class)
-    fun when_findDice_called_and_fromCell_is_null_then_throw_ChooseStrategyException() {
+    fun when_findDice_called_and_startCell_is_null_then_throw_ChooseStrategyException() {
         playerPiecesActionStrategy.findDice(null, 8, diceBox, board)
     }
 
     @Test(expected = ChooseStrategyException::class)
-    fun when_findDice_called_and_fromCell_is_not_in_DiceRange_then_throw_ChooseStrategyException() {
+    fun when_findDice_called_and_startCell_is_not_in_DiceRange_then_throw_ChooseStrategyException() {
         playerPiecesActionStrategy.findDice(13, 8, diceBox, board)
     }
 
     @Test
-    fun when_findDice_called_and_fromCell_is_6_and_to_cell_is_5_then_diceBox_getDiceWithNumber_1_and_board_findDistanceBetweenTwoCell_should_be_called() {
+    fun when_findDice_called_and_startCell_is_6_and_to_cell_is_5_then_diceBox_getDiceWithNumber_1_and_board_findDistanceBetweenTwoCell_should_be_called() {
         val mockDiceBox = mock(DiceBox::class.java)
         playerPiecesActionStrategy.findDice(6, 5, mockDiceBox, board)
         verify(board).findDistanceBetweenTwoCell(6, 5)
@@ -388,7 +388,7 @@ class PlayerIsInRemovePieceStrategyTest {
     }
 
     @Test
-    fun when_findDice_called_and_fromCell_is_2_and_to_cell_is_null_then_diceBox_getDiceGreaterEqual_2_should_be_called() {
+    fun when_findDice_called_and_startCell_is_2_and_to_cell_is_null_then_diceBox_getDiceGreaterEqual_2_should_be_called() {
         val mockDiceBox = mock(DiceBox::class.java)
         playerPiecesActionStrategy.findDice(2, null, mockDiceBox, board)
         verify(mockDiceBox).getActiveDiceGreaterEqual(2)
@@ -396,7 +396,7 @@ class PlayerIsInRemovePieceStrategyTest {
 
 
     @Test
-    fun given_findDice_called_when_fromCell_is_6_and_to_cell_is_6_then_return_null() {
+    fun given_findDice_called_when_startCell_is_6_and_to_cell_is_6_then_return_null() {
         val mockDiceBox = mock(DiceBox::class.java)
         val result = playerPiecesActionStrategy.findDice(6, 6, mockDiceBox, board)
         assertTrue(result == null)

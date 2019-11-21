@@ -112,28 +112,28 @@ class PlayerTest {
     @Test
     fun given_move_24_23_called_when_dice1_number_is_1_then_moveCompletedEvent_should_be_called() {
         board.initBoard()
-        val fromCellNumber = 24
-        val toCellNumber = 23
+        val StartCellNumber = 24
+        val destinationCellNumber = 23
         val mockedDice = mock(Dice::class.java)
         `when`(mockedDice.number).thenReturn(1)
         val diceBox = mock(DiceBox::class.java)
         `when`(diceBox.getActiveDiceWithNumber(1)).thenReturn(mockedDice)
         player.diceBox = diceBox
-        player.move(fromCellNumber, toCellNumber)
+        player.move(StartCellNumber, destinationCellNumber)
         verify(diceDistributor).onEvent(MoveCompletedEvent(player))
     }
 
     @Test
     fun given_move_24_23_called_when_dice_number_is_1_then_diceBox_useDice_should_be_called() {
         board.initBoard()
-        val fromCellNumber = 24
-        val toCellNumber = 23
+        val StartCellNumber = 24
+        val destinationCellNumber = 23
         val mockedDice = mock(Dice::class.java)
         `when`(mockedDice.number).thenReturn(1)
         val diceBox = mock(DiceBox::class.java)
         `when`(diceBox.getActiveDiceWithNumber(1)).thenReturn(mockedDice)
         player.diceBox = diceBox
-        player.move(fromCellNumber, toCellNumber)
+        player.move(StartCellNumber, destinationCellNumber)
         verify(diceBox).useDice(mockedDice)
     }
 
