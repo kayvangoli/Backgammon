@@ -1,13 +1,11 @@
 package com.k1apps.backgammon.gamelogic.strategy
 
-import com.k1apps.backgammon.Constants
 import com.k1apps.backgammon.Constants.DICE_RANGE
 import com.k1apps.backgammon.Constants.NORMAL_HOME_RANGE
 import com.k1apps.backgammon.Constants.REVERSE_HOME_RANGE
 import com.k1apps.backgammon.gamelogic.*
 
-class PlayerIsInRemovePieceStrategy :
-    PlayerPiecesActionStrategy() {
+class PlayerIsInRemovePieceStrategy : PlayerPiecesActionStrategy() {
     override fun updateDicesState(diceBox: DiceBox, list: ArrayList<Piece>, board: Board) {
         val homeCellIndexRange: IntRange = if (list[0].moveType == MoveType.Normal) {
             NORMAL_HOME_RANGE
@@ -20,7 +18,7 @@ class PlayerIsInRemovePieceStrategy :
         val headPieces = getHeadInGamePiecesFrom(list)
         diceBox.getAllUnUsedNumbers().forEach { number ->
             if (isNumberLargestAllLocations(number, headPieces)) {
-                val ggpiece = findPieceWithLargestLocation(headPieces)
+                val piece = findPieceWithLargestLocation(headPieces)
                 // TODO: 10/11/19 Kayvan: View Interaction for active piece
                 diceBox.updateDiceStateWith(number)
             }

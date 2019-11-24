@@ -61,6 +61,20 @@ class PlayerIsInRemovePieceStrategyTest {
         verify(diceBox, atLeastOnce()).updateDiceStateWith(5)
     }
 
+    @Test(expected = ChooseStrategyException::class)
+    fun given_updateDiceState_with_normal_pieceList_called_when_one_piece_is_won_and_ane_piece_in_location_12_then_throw_chooseStrategyException() {
+        normalPieceList.forEach {
+            it.location = 24
+        }
+        reversePieceList.forEach {
+            it.location = 1
+        }
+        `when`(diceBox.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 5))
+        normalPieceList[0].state = PieceState.WON
+        normalPieceList[1].location = 12
+        playerPiecesActionStrategy.updateDicesState(diceBox, normalPieceList, board)
+    }
+
     @Test
     fun when_reverse_updateDicesState_called_and_dices_numbers_are_4_4_and_there_are_4_piece_with_location_4_then_diceBox_updateDiceStateWith_4_times_must_be_called() {
         normalPieceList.forEach {
