@@ -13,7 +13,7 @@ import java.util.ArrayList
 class PlayerImpl(
     override val playerType: PlayerType = PlayerType.LocalPlayer,
     override val pieceList: ArrayList<Piece>,
-    val moveType: MoveType,
+    private val moveType: MoveType,
     private val board: Board,
     private val playerPiecesContextStrategy: PlayerPiecesContextStrategy
 ) : Player {
@@ -60,10 +60,10 @@ class PlayerImpl(
     }
 
     override fun isHomeRangeFill(): Boolean {
-        if (moveType == MoveType.Normal) {
-            return board.isRangeFilledWithNormalPiece(homeCellIndexRange)
+        return if (moveType == MoveType.Normal) {
+            board.isRangeFilledWithNormalPiece(homeCellIndexRange)
         } else {
-            return board.isRangeFilledWithReversePiece(homeCellIndexRange)
+            board.isRangeFilledWithReversePiece(homeCellIndexRange)
         }
     }
 
@@ -71,12 +71,11 @@ class PlayerImpl(
         if (diceBox == null) {
             throw MoveException("Move called when player not have diceBox")
         }
-        val piece: Piece?
-        if (startCellNumber != null) {
-            piece = board.getHeadPiece(startCellNumber)
+        val piece: Piece? = if (startCellNumber != null) {
+            board.getHeadPiece(startCellNumber)
         } else {
             if (haveDiedPiece()) {
-                piece = getDeadPiece()
+                getDeadPiece()
             } else {
                 throw MoveException("Move called when startCell is null and player has not dead piece")
             }
