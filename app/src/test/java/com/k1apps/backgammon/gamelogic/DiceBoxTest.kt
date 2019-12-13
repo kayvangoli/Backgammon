@@ -277,6 +277,28 @@ class DiceBoxTest {
         diceBox.useDice(diceBox.dice1)
         verify(diceBox.dice1).used = true
     }
+
+    @Test
+    fun given_isAtLeastOneDiceEnable_called_when_dice4_is_disable_and_dice1_to_dice3_is_enable_then_isAtLeastOneDiceEnable_should_return_true() {
+        val enableDice  = mock(Dice::class.java)
+        val disableDice = mock(Dice::class.java)
+        `when`(enableDice.enabled).thenReturn(true)
+        `when`(disableDice.enabled).thenReturn(false)
+        `when`(diceBox.dice1).thenReturn(enableDice)
+        `when`(diceBox.dice2).thenReturn(enableDice)
+        `when`(diceBox.dice3).thenReturn(enableDice)
+        `when`(diceBox.dice4).thenReturn(disableDice)
+        assertTrue(diceBox.isAtLeastOneDiceEnable())
+    }
+
+    @Test
+    fun given_isAtLeastOneDiceEnable_called_when_dice1_and_dice2_are_disable_then_isAtLeastOneDiceEnable_should_return_false() {
+        val disableDice = mock(Dice::class.java)
+        `when`(disableDice.enabled).thenReturn(false)
+        `when`(diceBox.dice1).thenReturn(disableDice)
+        `when`(diceBox.dice2).thenReturn(disableDice)
+        assertFalse(diceBox.isAtLeastOneDiceEnable())
+    }
 }
 
 @GameScope

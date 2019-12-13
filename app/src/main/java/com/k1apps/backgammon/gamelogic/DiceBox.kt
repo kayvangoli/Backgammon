@@ -34,14 +34,23 @@ class DiceBoxImpl(override val dice1: Dice, override val dice2: Dice) : DiceBox 
     }
 
     override fun isAtLeastOneDiceEnable(): Boolean {
-        var enable = dice1.enabled || dice2.enabled
+        if (dice1.enabled) {
+            return true
+        }
+        if (dice2.enabled) {
+            return true
+        }
         dice3?.let {
-            enable = it.enabled
+            if (it.enabled) {
+                return true
+            }
         }
         dice4?.let {
-            enable = it.enabled
+            if (it.enabled) {
+                return true
+            }
         }
-        return enable
+        return false
     }
 
     override fun enable() {
