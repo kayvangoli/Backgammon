@@ -272,10 +272,22 @@ class DiceBoxTest {
         diceBox.useDice(dice)
     }
 
+    @Test(expected = DiceException::class)
+    fun given_useDice_called_when_parameter_used_before_then_throw_diceException() {
+        `when`(diceBox.dice2.used).thenReturn(true)
+        diceBox.useDice(diceBox.dice2)
+    }
+
     @Test
-    fun given_useDice_called_when_dice_is_dice1_in_then_dice1_use_should_be_called() {
+    fun given_useDice_called_when_parameter_is_dice1_in_then_dice1_used_should_be_called() {
         diceBox.useDice(diceBox.dice1)
         verify(diceBox.dice1).used = true
+    }
+
+    @Test
+    fun given_useDice_called_when_parameter_is_dice2_in_then_dice2_used_should_be_called() {
+        diceBox.useDice(diceBox.dice2)
+        verify(diceBox.dice2).used = true
     }
 
     @Test
