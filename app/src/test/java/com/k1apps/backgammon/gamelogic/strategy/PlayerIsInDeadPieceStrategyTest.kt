@@ -45,7 +45,7 @@ class PlayerIsInDeadPieceStrategyTest {
     }
 
     @Test
-    fun when_reverse_updateDicesState_called_and_dices_numbers_are_4_5_and_two_pieces_are_dead_and_opponent_cells_4_and_5_are_empty_then_diceBox_updateDiceStateWith_4_5_must_be_called() {
+    fun given_updateDicesState_with_reverse_list_called_when_dices_numbers_are_4_5_and_two_pieces_are_dead_and_opponent_cells_4_and_5_are_empty_then_diceBox_updateDiceStateWith_4_5_must_be_called() {
         normalPieceList.forEach {
             it.location = 24
         }
@@ -61,7 +61,7 @@ class PlayerIsInDeadPieceStrategyTest {
     }
 
     @Test
-    fun when_reverse_updateDicesState_called_and_dices_numbers_are_4_5_and_one_piece_is_dead_and_opponent_cells_4_and_5_are_fill_then_diceBox_updateDiceStateWith_4_5_never_must_be_called() {
+    fun given_updateDicesState_with_reverse_list_called_when_dices_numbers_are_4_5_and_one_piece_is_dead_and_opponent_cells_4_and_5_are_filled_then_diceBox_updateDiceStateWith_4_5_never_must_be_called() {
         normalPieceList.forEach {
             it.location = 24
         }
@@ -79,7 +79,7 @@ class PlayerIsInDeadPieceStrategyTest {
     }
 
     @Test
-    fun when_reverse_updateDicesState_called_and_dices_numbers_are_4_5_and_two_piece_is_dead_and_opponent_cell_4_is_empty_and_5_is_fill_then_diceBox_updateDiceStateWith_5_never_must_be_called_and_4_atLeast_once_must_be_called() {
+    fun given_updateDicesState_with_reverse_list_called_when_dices_numbers_are_4_5_and_two_piece_is_dead_and_opponent_cell_4_is_empty_and_5_is_filled_then_diceBox_updateDiceStateWith_5_never_must_be_called_and_4_atLeast_once_must_be_called() {
         normalPieceList.forEach {
             it.location = 24
         }
