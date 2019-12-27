@@ -19,18 +19,17 @@ annotation class GameScope
 
 @GameScope
 @Component(modules = [GameModule::class])
-interface GameComponent {
-}
+interface GameComponent
 
 @Module(includes = [BoardModule::class, DiceDistributorModule::class])
 class GameModule {
     @Provides
     @GameScope
-    fun provideReferee(
+    fun provideGame(
         board: Board,
         diceDistributor: DiceDistributor
-    ): Referee {
-        return RefereeImpl(board, diceDistributor)
+    ): Game {
+        return GameImpl(board, diceDistributor)
     }
 }
 

@@ -8,7 +8,7 @@ import org.mockito.Mockito.*
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
-class RefereeTest {
+class GameTest {
     @Mock
     lateinit var board: Board
     @Mock
@@ -18,7 +18,7 @@ class RefereeTest {
     @Mock
     lateinit var diceDistributor: DiceDistributor
     @InjectMocks
-    lateinit var refereeImpl: RefereeImpl
+    lateinit var refereeImpl: GameImpl
 
     @Test
     fun when_referee_started_then_board_should_be_init_called() {

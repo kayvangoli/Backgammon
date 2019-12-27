@@ -1,9 +1,9 @@
 package com.k1apps.backgammon.gamelogic
 
-class RefereeImpl(
+class GameImpl(
     private val board: Board,
     private val diceDistributor: DiceDistributor
-) : Referee {
+) : Game {
 
     override fun start() {
         diceDistributor.start()
@@ -31,10 +31,10 @@ class RefereeImpl(
 
     //Move to won
 
-    // Move with two number (StartCellNumber, destinationCellNumber)
+    //Move with two number (StartCellNumber, destinationCellNumber)
 }
 
-interface Referee {
+interface Game {
     fun start()
     fun roll(playerType: PlayerType)
 }
