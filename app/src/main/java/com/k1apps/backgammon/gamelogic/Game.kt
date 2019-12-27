@@ -27,6 +27,17 @@ class GameImpl(
         }
     }
 
+    override fun getTargetCellsBaseOn(playerType: PlayerType, cellPosition: Int): ArrayList<Int> {
+        val pair = diceDistributor.whichPlayerHasDice()
+        pair?.let {
+            it.second?.let {
+                return arrayListOf()
+            }
+
+        }
+        return arrayListOf()
+    }
+
     //move to InGame
 
     //Move to won
@@ -37,5 +48,6 @@ class GameImpl(
 interface Game {
     fun start()
     fun roll(playerType: PlayerType)
+    fun getTargetCellsBaseOn(playerType: PlayerType, cellPosition: Int): ArrayList<Int>
 }
 
