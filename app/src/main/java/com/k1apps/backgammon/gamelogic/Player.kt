@@ -96,7 +96,11 @@ class PlayerImpl(
                 }
             }
         }
+    }
 
+    override fun getTargetCellsBasedOn(number: Byte, cellPosition: Int?): Int? {
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return null
     }
 
     private fun allPieceAreWon(): Boolean {
@@ -131,6 +135,7 @@ interface Player {
     fun haveDiedPiece(): Boolean
     fun isHomeRangeFill(): Boolean
     fun move(startCellNumber: Int?, destinationCellNumber: Int?)
+    fun getTargetCellsBasedOn(number: Byte, cellPosition: Int?): Int?
 }
 
 enum class PlayerType {

@@ -28,14 +28,21 @@ class GameImpl(
     }
 
     override fun getTargetCellsBaseOn(playerType: PlayerType, cellPosition: Int): ArrayList<Int> {
+        val targetArray = arrayListOf<Int>()
         val pair = diceDistributor.whichPlayerHasDice()
         pair?.let {
-            it.second?.let {
-                return arrayListOf()
+            val player = it.first
+            if (it.second != null || player.playerType != playerType) {
+                return targetArray
             }
-
+            player.diceBox!!.getAllUnUsedNumbers().forEach { number ->
+                val target = player.getTargetCellsBasedOn(number, cellPosition)
+                target?.let {
+                    targetArray.add(target)
+                }
+            }
         }
-        return arrayListOf()
+        return targetArray
     }
 
     //move to InGame

@@ -110,4 +110,16 @@ class GameTest {
         val lst = game.getTargetCellsBaseOn(PlayerType.LocalPlayer, 10)
         assertTrue(lst.isEmpty())
     }
+
+    @Test
+    fun given_getTargetCellsBasedOn_called_when_playerType_is_correct_then_player_getTargetCellsBasedOn_for_each_unused_dice_should_be_called() {
+        `when`(player1.diceBox).thenReturn(mock(DiceBox::class.java))
+        `when`(player1.playerType).thenReturn(PlayerType.LocalPlayer)
+        `when`(diceDistributor.whichPlayerHasDice()).thenReturn(Pair(player1, null))
+        `when`(player1.diceBox!!.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 5))
+        val cellPosition = 10
+        game.getTargetCellsBaseOn(PlayerType.LocalPlayer, cellPosition)
+        verify(player1).getTargetCellsBasedOn(4, cellPosition)
+        verify(player1).getTargetCellsBasedOn(5, cellPosition)
+    }
 }
