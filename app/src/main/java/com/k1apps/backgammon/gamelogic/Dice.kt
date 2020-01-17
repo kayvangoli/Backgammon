@@ -56,6 +56,15 @@ class DiceImpl(override val random: Random) : Dice {
         }
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (other !is DiceImpl) {
+            return false
+        }
+        return other.used == used &&
+                other.enabled == enabled &&
+                other.number == number
+    }
+
     private data class DiceMemento(
         val enabled: Boolean = false,
         val used: Boolean,

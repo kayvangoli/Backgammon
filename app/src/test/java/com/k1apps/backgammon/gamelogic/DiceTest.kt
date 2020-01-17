@@ -72,4 +72,12 @@ class DiceTest {
         assertTrue(copiedDice!!.number == 3.toByte())
     }
 
+    @Test
+    fun given_createMemento_called_when_restore_memento_to_new_object_then_new_object_should_equal_to_first_object() {
+        val memento = dice.createMemento()
+        val dice1 = DiceImpl(random)
+        dice1.restore(memento)
+        assertTrue(dice1 == dice)
+    }
+
 }
