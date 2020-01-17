@@ -1,87 +1,48 @@
 package com.k1apps.backgammon.gamelogic
 
-import com.k1apps.backgammon.Constants.NORMAL_PLAYER
-import com.k1apps.backgammon.Constants.REVERSE_PLAYER
 import com.k1apps.backgammon.gamelogic.event.DiceThrownEvent
-import com.k1apps.backgammon.dagger.DiceBoxModule
-import com.k1apps.backgammon.dagger.DiceDistributorModule
-import com.k1apps.backgammon.dagger.GameScope
-import com.k1apps.backgammon.dagger.PlayerModule
 import com.k1apps.backgammon.gamelogic.event.DiceBoxThrownEvent
-import com.k1apps.backgammon.gamelogic.strategy.PlayerPiecesContextStrategy
-import dagger.Component
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Mock
 import org.mockito.Mockito.*
-import javax.inject.Inject
-import javax.inject.Named
+import org.mockito.junit.MockitoJUnitRunner
 
-@GameScope
-@Component(modules = [DiceDistributorModule::class, PlayerModule::class])
-interface DiceDistributorComponentTest {
-    @Component.Builder
-    interface Builder {
-        fun setDiceBox(diceBoxModule: DiceBoxModule): Builder
-        fun setPlayerModule(playerModule: PlayerModule): Builder
-        fun build(): DiceDistributorComponentTest
-    }
 
-    fun inject(diceDistributorTest: DiceDistributorTest)
-}
-
-class SpyPlayerModule : PlayerModule() {
-    override fun providePlayer1(
-        pieceList: ArrayList<Piece>,
-        board: Board,
-        playerPiecesContextStrategy: PlayerPiecesContextStrategy
-    ): Player {
-        return spy(super.providePlayer1(pieceList, board, playerPiecesContextStrategy))
-    }
-
-    override fun providePlayer2(
-        pieceList: ArrayList<Piece>,
-        board: Board,
-        playerPiecesContextStrategy: PlayerPiecesContextStrategy
-    ): Player {
-        return spy(super.providePlayer2(pieceList, board, playerPiecesContextStrategy))
-    }
-}
-
+@RunWith(MockitoJUnitRunner::class)
 class DiceDistributorTest {
 
-    @Inject
-    lateinit var diceDistributor: DiceDistributor
-
-    @Inject
+    @Mock
     lateinit var diceBox: DiceBox
 
-    @Inject
-    @field:Named(NORMAL_PLAYER)
+    @Mock
     lateinit var player1: Player
 
-    @Inject
-    @field:Named(REVERSE_PLAYER)
+    @Mock
     lateinit var player2: Player
+
+    lateinit var diceDistributor : DiceDistributor
 
     @Before
     fun setup() {
-        DaggerDiceDistributorComponentTest.builder()
-            .setPlayerModule(SpyPlayerModule())
-            .setDiceBox(SpyDiceBoxModuleTest())
-            .build().inject(this)
+        diceDistributor = DiceDistributorImpl(player1, player2, diceBox)
     }
 
     @Test
     fun when_dice_distributor_started_then_each_player_must_have_dice() {
+        val dice1 = mock(Dice::class.java)
+        `when`(diceBox.dice1).thenReturn(dice1)
+        val dice2 = mock(Dice::class.java)
+        `when`(diceBox.dice2).thenReturn(dice2)
         diceDistributor.start()
-        verify(player1, times(1)).dice = diceBox.dice1
-        verify(player2, times(1)).dice = diceBox.dice2
+        verify(player1, times(1)).dice = dice1
+        verify(player2, times(1)).dice = dice2
     }
 
     @Test
-    fun when_player1_dice_num_is_6_and_player2_is_2_then_set_dice_box_to_player1_and_retake_dice() {
-        diceDistributor.start()
+    fun given_DiceThrownEvent_when_player1_dice_num_is_6_and_player2_is_2_then_set_dice_box_to_player1_and_retake_dices() {
         `when`(diceBox.dice1.number).thenReturn(6)
         `when`(diceBox.dice2.number).thenReturn(2)
         diceDistributor.onEvent(DiceThrownEvent(player1))
@@ -162,5 +123,11 @@ class DiceDistributorTest {
         verify(player1, times(1)).retakeDiceBox()
         verify(player2, times(1)).diceBox = diceBox
     }
+
+//    @Test
+//    fun given_whichPlayerHasDiceBox_when_player1_has_diceBox_then_return_player1() {
+//        player1.diceBox = diceBox
+//        assertTrue(diceDistributor.whichPlayerHasDiceBox() === player1)
+//    }
 
 }
