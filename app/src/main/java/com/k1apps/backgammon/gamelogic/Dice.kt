@@ -8,8 +8,6 @@ class DiceImpl(override val random: Random) : Dice {
     override var used: Boolean = false
     override var number: Byte? = null
         private set(value) {
-            enabled = false
-            used = false
             value?.let {
                 if (value !in DICE_RANGE) {
                     throw DiceRangeException("$value is not in dice range($DICE_RANGE)")
@@ -19,6 +17,11 @@ class DiceImpl(override val random: Random) : Dice {
         }
 
     override fun roll(): Byte {
+        if (used.not()) {
+            throw DiceException("Can not roll unUsed dice!")
+        }
+        enabled = false
+        used = false
         number = random.nextInt(1, 7).toByte()
         return number!!
     }

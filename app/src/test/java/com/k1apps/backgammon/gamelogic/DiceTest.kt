@@ -18,14 +18,15 @@ class DiceTest {
     @Spy
     var dice: Dice = spy(DiceImpl(random))
 
-    @Test
-    fun when_dice_every_time_roll_called_then_dice_should_be_disabled() {
+    @Test(expected = DiceException::class)
+    fun given_roll_called_when_dice_is_unUsed_then_throw_DiceException() {
+        dice.used = false
         dice.roll()
-        Mockito.verify(dice, times(1)).enabled = false
     }
 
     @Test
     fun when_dice_roll_called_then_number_should_between_1_to_6() {
+        dice.used = true
         dice.roll()
         assertTrue(dice.number!! in 1..6)
     }
