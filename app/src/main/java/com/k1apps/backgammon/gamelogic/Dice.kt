@@ -1,6 +1,8 @@
 package com.k1apps.backgammon.gamelogic
 
 import com.k1apps.backgammon.Constants.DICE_RANGE
+import com.k1apps.backgammon.gamelogic.memento.Memento
+import com.k1apps.backgammon.gamelogic.memento.Originator
 import kotlin.random.Random
 
 class DiceImpl(override val random: Random) : Dice {
@@ -38,9 +40,27 @@ class DiceImpl(override val random: Random) : Dice {
         dice.number = number
         return dice
     }
+
+    override fun createMemento(): Memento {
+        return DiceMemento(enabled, used, number)
+    }
+
+    override fun restore(memento: Memento) {
+        (memento as DiceMemento).let {
+            number = it.number
+            used = it.used
+            enabled = it.enabled
+        }
+    }
+
+    private data class DiceMemento(
+        val enabled: Boolean = false,
+        val used: Boolean,
+        val number: Byte?
+    ) : Memento
 }
 
-interface Dice {
+interface Dice : Originator {
     val random: Random
     var enabled: Boolean
     var used: Boolean

@@ -21,7 +21,7 @@ class DiceTest {
     @Test
     fun when_dice_every_time_roll_called_then_dice_should_be_disabled() {
         dice.roll()
-        Mockito.verify(dice, times(1)).enabled = false
+        verify(dice, times(1)).enabled = false
     }
 
     @Test
