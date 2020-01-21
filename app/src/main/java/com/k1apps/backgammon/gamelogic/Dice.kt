@@ -17,13 +17,17 @@ class DiceImpl(override val random: Random) : Dice {
         }
 
     override fun roll(): Byte {
-        if (used.not()) {
-            throw DiceException("Can not roll unUsed dice!")
+        if (used.not() && isFirstRoll().not()) {
+            throw DiceException("Can not roll dice when state is unUsed!")
         }
         enabled = false
         used = false
         number = random.nextInt(1, 7).toByte()
         return number!!
+    }
+
+    private fun isFirstRoll(): Boolean {
+        return number == null
     }
 
     override fun isActive(): Boolean {

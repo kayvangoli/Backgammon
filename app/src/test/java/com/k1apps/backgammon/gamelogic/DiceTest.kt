@@ -19,7 +19,7 @@ class DiceTest {
     var dice: Dice = spy(DiceImpl(random))
 
     @Test(expected = DiceException::class)
-    fun given_roll_called_when_dice_is_unUsed_then_throw_DiceException() {
+    fun given_roll_called_when_dice_is_unUsed_and_rolled_then_throw_DiceException() {
         dice.used = false
         dice.roll()
     }
