@@ -1,11 +1,17 @@
 package com.k1apps.backgammon.gamelogic
 
-import com.k1apps.backgammon.Constants.DICE_RANGE
+import com.k1apps.backgammon.DiceStatus
 import kotlin.random.Random
 
 class DiceImpl(override val random: Random) : Dice {
-    private var enable = false
     private var twice = false
+        set(value) {
+            status.setTwice(value)
+            field = value
+        }
+    private val status by lazy {
+        DiceStatus()
+    }
 
     override var number: Byte? = null
         private set
@@ -22,27 +28,34 @@ class DiceImpl(override val random: Random) : Dice {
         return number != null
     }
 
-    override fun isActive() = isRolled() && enable
+    override fun isActive() = isRolled() && status.enable
 
-    override fun enable() {
+    override fun enableWith(number: Byte): Boolean {
         if (isRolled().not()) {
             throw DiceException("Dice is not rolled!")
         }
-        enable = true
+        if (this.number != number) {
+            return false
+        }
+        if (status.isFullEnabled()) {
+            return false
+        }
+        status.enable = true
+        return true
     }
 
     override fun use(): Boolean {
         if (isRolled().not()) {
             throw DiceException("Dice is not roll yet!")
         }
-        if (enable.not()) {
+        if (status.enable.not()) {
             return false
         }
+        status.enable = false
         if (twice) {
             twice = false
         } else {
             number = null
-            enable = false
         }
         return true
     }
@@ -58,7 +71,7 @@ class DiceImpl(override val random: Random) : Dice {
 interface Dice {
     val random: Random
     val number: Byte?
-    fun enable()
+    fun enableWith(number: Byte): Boolean
     fun use(): Boolean
     fun roll(): Byte
     fun isActive(): Boolean

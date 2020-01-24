@@ -2,21 +2,31 @@ package com.k1apps.backgammon.gamelogic
 
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
+import org.mockito.Mock
 import org.mockito.Mockito.*
-import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
 import kotlin.random.Random
 
 @RunWith(MockitoJUnitRunner::class)
 class DiceTest {
 
-    @Spy
-    val random = Random
-    @Spy
-    var dice: Dice = spy(DiceImpl(random))
+    companion object {
+        private const val NUMBER: Byte = 5
+    }
+
+    @Mock
+    private lateinit var random: Random
+
+    private lateinit var dice: Dice
+
+    @Before
+    fun setup() {
+        `when`(random.nextInt(1, 7)).thenReturn(5)
+        dice = spy(DiceImpl(random))
+    }
 
     @Test(expected = DiceException::class)
     fun given_roll_called_when_dice_rolled_and_not_yet_use_and_rolled_again_then_throw_DiceException() {
@@ -25,10 +35,24 @@ class DiceTest {
         dice.roll()
     }
 
-    @Test
-    fun given_roll_called_then_number_should_between_1_to_6() {
+    @Test(expected = DiceException::class)
+    fun given_roll_called_when_dice_rolled_and_twice_and_two_time_enabled_and_one_time_used_then_rolled_again_should_throw_DiceException() {
         dice.roll()
-        assertTrue(dice.number!! in 1..6)
+        dice.twice()
+        dice.enableWith(NUMBER)
+        dice.enableWith(NUMBER)
+        dice.use()
+        dice.roll()
+    }
+
+    @Test
+    fun given_roll_called_when_dice_rolled_without_twice_and_two_time_enabled_and_one_time_used_then_rolled_again_should_be_without_DiceException() {
+        dice.roll()
+//        dice.twice()
+        dice.enableWith(NUMBER)
+        dice.enableWith(NUMBER)
+        dice.use()
+        dice.roll()
     }
 
     @Test(expected = DiceException::class)
@@ -46,7 +70,7 @@ class DiceTest {
     @Test
     fun give_use_called_when_dice_rolled_and_enabled_then_return_value_should_be_true_and_can_roll_again() {
         dice.roll()
-        dice.enable()
+        dice.enableWith(NUMBER)
         assertTrue(dice.use())
         dice.roll()
     }
@@ -54,7 +78,7 @@ class DiceTest {
     @Test(expected = DiceException::class)
     fun give_use_called_when_dice_rolled_and_enabled_and_twice_then_return_value_should_be_true_and_can_not_roll_again() {
         dice.roll()
-        dice.enable()
+        dice.enableWith(NUMBER)
         dice.twice()
         assertTrue(dice.use())
         dice.roll()
@@ -62,7 +86,24 @@ class DiceTest {
 
     @Test(expected = DiceException::class)
     fun give_enable_called_when_dice_is_not_yet_rolled_then_throw_DiceException() {
-        dice.enable()
+        dice.enableWith(NUMBER)
+    }
+
+    @Test
+    fun given_enableWith_called_when_dice_is_twice_and_one_time_enabled_then_return_true() {
+        dice.roll()
+        dice.twice()
+        dice.enableWith(NUMBER)
+        assertTrue(dice.enableWith(NUMBER))
+    }
+
+    @Test
+    fun give_enableWith_called_when_dice_is_twice_and_one_time_enabled_and_one_time_use_called_then_return_true() {
+        dice.roll()
+        dice.twice()
+        dice.enableWith(NUMBER)
+        dice.use()
+        assertTrue(dice.enableWith(NUMBER))
     }
 
     @Test(expected = DiceException::class)
@@ -73,7 +114,7 @@ class DiceTest {
     @Test(expected = DiceException::class)
     fun given_twice_called_when_dice_is_used_before_then_throw_DiceException() {
         dice.roll()
-        dice.enable()
+        dice.enableWith(NUMBER)
         dice.use()
         dice.twice()
     }
@@ -92,24 +133,24 @@ class DiceTest {
     @Test
     fun given_isActive_called_when_rolled_and_enabled_and_used_then_return_false() {
         dice.roll()
-        dice.enable()
+        dice.enableWith(NUMBER)
         dice.use()
         assertFalse(dice.isActive())
     }
 
     @Test
-    fun given_isActive_called_when_rolled_and_enabled_and_twice_and_used_then_return_true() {
+    fun given_isActive_called_when_rolled_and_twice_and_one_time_enable_invoked_then_isActive_should_be_false() {
         dice.roll()
-        dice.enable()
+        dice.enableWith(NUMBER)
         dice.twice()
         dice.use()
-        assertTrue(dice.isActive())
+        assertFalse(dice.isActive())
     }
 
     @Test
     fun given_isActive_called_when_rolled_and_enabled_then_return_true() {
         dice.roll()
-        dice.enable()
+        dice.enableWith(NUMBER)
         assertTrue(dice.isActive())
     }
 }
