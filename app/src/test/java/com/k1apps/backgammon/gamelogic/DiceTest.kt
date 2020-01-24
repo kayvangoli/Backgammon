@@ -19,56 +19,97 @@ class DiceTest {
     var dice: Dice = spy(DiceImpl(random))
 
     @Test(expected = DiceException::class)
-    fun given_roll_called_when_dice_is_unUsed_and_rolled_then_throw_DiceException() {
-        dice.used = false
+    fun given_roll_called_when_dice_rolled_and_not_yet_use_and_rolled_again_then_throw_DiceException() {
+        dice.roll()
+        //dice.enable()
         dice.roll()
     }
 
     @Test
-    fun when_dice_roll_called_then_number_should_between_1_to_6() {
-        dice.used = true
+    fun given_roll_called_then_number_should_between_1_to_6() {
         dice.roll()
         assertTrue(dice.number!! in 1..6)
     }
 
-    @Test
-    fun when_dice_roll_not_yet_called_then_number_should_be_null() {
-        assertTrue(dice.number == null)
+    @Test(expected = DiceException::class)
+    fun give_use_called_when_dice_is_not_yet_rolled_then_throw_DiceException() {
+        dice.use()
     }
 
     @Test
-    fun given_isActive_called_when_used_is_true_and_enable_is_true_then_return_false() {
-        dice.enabled = true
-        dice.used = true
+    fun give_use_called_when_dice_is_disable_then_return_false() {
+        dice.roll()
+        //dice.enable()
+        assertFalse(dice.use())
+    }
+
+    @Test
+    fun give_use_called_when_dice_rolled_and_enabled_then_return_value_should_be_true_and_can_roll_again() {
+        dice.roll()
+        dice.enable()
+        assertTrue(dice.use())
+        dice.roll()
+    }
+
+    @Test(expected = DiceException::class)
+    fun give_use_called_when_dice_rolled_and_enabled_and_twice_then_return_value_should_be_true_and_can_not_roll_again() {
+        dice.roll()
+        dice.enable()
+        dice.twice()
+        assertTrue(dice.use())
+        dice.roll()
+    }
+
+    @Test(expected = DiceException::class)
+    fun give_enable_called_when_dice_is_not_yet_rolled_then_throw_DiceException() {
+        dice.enable()
+    }
+
+    @Test(expected = DiceException::class)
+    fun given_twice_called_when_dice_is_not_rolled_then_throw_DiceException() {
+        dice.twice()
+    }
+
+    @Test(expected = DiceException::class)
+    fun given_twice_called_when_dice_is_used_before_then_throw_DiceException() {
+        dice.roll()
+        dice.enable()
+        dice.use()
+        dice.twice()
+    }
+
+    @Test
+    fun given_isActive_called_when_dice_is_not_yet_rolled_then_return_false() {
         assertFalse(dice.isActive())
     }
 
     @Test
-    fun given_isActive_called_when_used_is_false_and_enable_is_false_then_return_false() {
-        dice.enabled = false
-        dice.used = false
+    fun given_isActive_called_when_rolled_and_not_enabled_then_return_false() {
+        dice.roll()
         assertFalse(dice.isActive())
     }
 
     @Test
-    fun given_isActive_called_when_used_is_true_and_enable_is_false_then_return_false() {
-        dice.used = true
-        dice.enabled = false
+    fun given_isActive_called_when_rolled_and_enabled_and_used_then_return_false() {
+        dice.roll()
+        dice.enable()
+        dice.use()
         assertFalse(dice.isActive())
     }
 
     @Test
-    fun given_isActive_called_when_used_is_false_and_enable_is_true_then_return_true() {
-        dice.enabled = true
-        dice.used = false
+    fun given_isActive_called_when_rolled_and_enabled_and_twice_and_used_then_return_true() {
+        dice.roll()
+        dice.enable()
+        dice.twice()
+        dice.use()
         assertTrue(dice.isActive())
     }
 
     @Test
-    fun given_copy_called_when_number_is_3_then_return_dice_with_number_3() {
-        `when`(dice.number).thenReturn(3)
-        val copiedDice = dice.copy()
-        assertTrue(copiedDice!!.number == 3.toByte())
+    fun given_isActive_called_when_rolled_and_enabled_then_return_true() {
+        dice.roll()
+        dice.enable()
+        assertTrue(dice.isActive())
     }
-
 }

@@ -4,55 +4,63 @@ import com.k1apps.backgammon.Constants.DICE_RANGE
 import kotlin.random.Random
 
 class DiceImpl(override val random: Random) : Dice {
-    override var enabled: Boolean = false
-    override var used: Boolean = false
+    private var enable = false
+    private var twice = false
+
     override var number: Byte? = null
-        private set(value) {
-            value?.let {
-                if (value !in DICE_RANGE) {
-                    throw DiceRangeException("$value is not in dice range($DICE_RANGE)")
-                }
-            }
-            field = value
-        }
+        private set
 
     override fun roll(): Byte {
-        if (used.not() && isFirstRoll().not()) {
-            throw DiceException("Can not roll dice when state is unUsed!")
+        if (isRolled()) {
+            throw DiceException("Roll dice twice!")
         }
-        enabled = false
-        used = false
         number = random.nextInt(1, 7).toByte()
         return number!!
     }
 
-    private fun isFirstRoll(): Boolean {
-        return number == null
+    private fun isRolled(): Boolean {
+        return number != null
     }
 
-    override fun isActive(): Boolean {
-        if (enabled.not()) {
+    override fun isActive() = isRolled() && enable
+
+    override fun enable() {
+        if (isRolled().not()) {
+            throw DiceException("Dice is not rolled!")
+        }
+        enable = true
+    }
+
+    override fun use(): Boolean {
+        if (isRolled().not()) {
+            throw DiceException("Dice is not roll yet!")
+        }
+        if (enable.not()) {
             return false
         }
-        if (used) {
-            return false
+        if (twice) {
+            twice = false
+        } else {
+            number = null
+            enable = false
         }
         return true
     }
 
-    override fun copy(): Dice? {
-        val dice = DiceImpl(random)
-        dice.number = number
-        return dice
+    override fun twice() {
+        if (isRolled().not()) {
+            throw DiceException("Dice is not roll yet!")
+        }
+        twice = true
     }
 }
 
 interface Dice {
     val random: Random
-    var enabled: Boolean
-    var used: Boolean
     val number: Byte?
+    fun enable()
+    fun use(): Boolean
     fun roll(): Byte
     fun isActive(): Boolean
-    fun copy(): Dice?
+    fun twice()
 }
