@@ -3,15 +3,15 @@ package com.k1apps.backgammon.gamelogic
 import com.k1apps.backgammon.DiceStatus
 import kotlin.random.Random
 
-class DiceImpl(override val random: Random) : Dice {
+class DiceImpl(
+    override val random: Random,
+    override val status: DiceStatus
+) : Dice {
     private var twice = false
         set(value) {
             status.setTwice(value)
             field = value
         }
-    private val status by lazy {
-        DiceStatus()
-    }
 
     override var number: Byte? = null
         private set
@@ -66,14 +66,24 @@ class DiceImpl(override val random: Random) : Dice {
         }
         twice = true
     }
+
+    override fun getActiveNumbers(): List<Byte> {
+        val lst = arrayListOf<Byte>()
+        for (item in 0 until status.enableCount()) {
+            lst.add(number!!.toByte())
+        }
+        return lst
+    }
 }
 
 interface Dice {
     val random: Random
     val number: Byte?
+    val status: DiceStatus
     fun enableWith(number: Byte): Boolean
     fun use(): Boolean
     fun roll(): Byte
     fun isActive(): Boolean
     fun twice()
+    fun getActiveNumbers(): List<Byte>
 }

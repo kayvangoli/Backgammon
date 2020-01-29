@@ -1,7 +1,8 @@
 package com.k1apps.backgammon
 
+import javax.inject.Inject
 
-class DiceStatus() {
+class DiceStatus @Inject constructor() {
     private var enable1 = false
     private var enable2 = false
     private var twice = false
@@ -45,5 +46,16 @@ class DiceStatus() {
 
     fun setTwice(twice: Boolean) {
         this.twice = twice
+    }
+
+    fun enableCount(): Byte {
+        var count = 0.toByte()
+        if (enable1) {
+            count++
+        }
+        if (enable2) {
+            count++
+        }
+        return count;
     }
 }

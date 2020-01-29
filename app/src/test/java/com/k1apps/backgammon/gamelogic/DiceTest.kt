@@ -1,5 +1,6 @@
 package com.k1apps.backgammon.gamelogic
 
+import com.k1apps.backgammon.DiceStatus
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -7,6 +8,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.*
+import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
 import kotlin.random.Random
 
@@ -19,13 +21,15 @@ class DiceTest {
 
     @Mock
     private lateinit var random: Random
+    @Spy
+    private lateinit var status: DiceStatus
 
     private lateinit var dice: Dice
 
     @Before
     fun setup() {
         `when`(random.nextInt(1, 7)).thenReturn(5)
-        dice = spy(DiceImpl(random))
+        dice = spy(DiceImpl(random, status))
     }
 
     @Test(expected = DiceException::class)
@@ -152,5 +156,27 @@ class DiceTest {
         dice.roll()
         dice.enableWith(NUMBER)
         assertTrue(dice.isActive())
+    }
+
+    @Test
+    fun given_getActiveNumbers_called_when_dice_number_is_5_and_status_enable_count_is_2_then_return_should_be_array_two_count_5() {
+        `when`(dice.number).thenReturn(NUMBER)
+        `when`(status.enableCount()).thenReturn(2)
+        assertTrue(dice.getActiveNumbers().size == 2)
+        assertTrue(dice.getActiveNumbers()[0] == NUMBER)
+        assertTrue(dice.getActiveNumbers()[1] == NUMBER)
+    }
+    @Test
+    fun given_getActiveNumbers_called_when_dice_number_is_5_and_status_enable_count_is_1_then_return_should_be_array_one_count_5() {
+        `when`(dice.number).thenReturn(NUMBER)
+        `when`(status.enableCount()).thenReturn(1)
+        assertTrue(dice.getActiveNumbers().size == 1)
+        assertTrue(dice.getActiveNumbers()[0] == NUMBER)
+    }
+    @Test
+    fun given_getActiveNumbers_called_when_dice_number_is_5_and_status_enable_count_is_0_then_return_should_be_empty_array() {
+//        `when`(dice.number).thenReturn(NUMBER)
+        `when`(status.enableCount()).thenReturn(0)
+        assertTrue(dice.getActiveNumbers().isEmpty())
     }
 }
