@@ -88,7 +88,7 @@ class PlayerImpl(
             dice?.let {
                 val moveResult = playerPiecesStrategy.move(it, piece, board)
                 if (moveResult) {
-                    diceBox!!.useDice(it)
+                    it.use()
                     EventBus.getDefault().post(MoveCompletedEvent(this))
                     if (allPieceAreWon()) {
                         EventBus.getDefault().post(GameEndedEvent(this))

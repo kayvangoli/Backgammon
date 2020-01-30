@@ -16,11 +16,11 @@ class PlayerIsInRemovePieceStrategy : PlayerPiecesActionStrategy() {
             throw ChooseStrategyException("State is not remove piece")
         }
         val headPieces = getHeadInGamePiecesFrom(list)
-        diceBox.getAllUnUsedNumbers().forEach { number ->
+        diceBox.allActiveDicesNumbers().forEach { number ->
             if (isNumberLargestAllLocations(number, headPieces)) {
                 val piece = findPieceWithLargestLocation(headPieces)
                 // TODO: 10/11/19 Kayvan: View Interaction for active piece
-                diceBox.updateDiceStateWith(number)
+                diceBox.enableDiceWith(number)
             }
             headPieces.forEach { piece ->
                 if (number <= piece.locationInMySide()) {
@@ -28,11 +28,11 @@ class PlayerIsInRemovePieceStrategy : PlayerPiecesActionStrategy() {
                     if (pieceAfterMove != null) {
                         if (board.canMovePiece(piece, pieceAfterMove)) {
                             // TODO: 10/11/19 Kayvan: View Interaction for active piece
-                            diceBox.updateDiceStateWith(number)
+                            diceBox.enableDiceWith(number)
                         }
                     } else {
                         // TODO: 10/11/19 Kayvan: View Interaction for active piece
-                        diceBox.updateDiceStateWith(number)
+                        diceBox.enableDiceWith(number)
                     }
                 }
             }

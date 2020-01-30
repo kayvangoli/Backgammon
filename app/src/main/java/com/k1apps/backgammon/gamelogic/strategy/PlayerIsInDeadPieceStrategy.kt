@@ -11,12 +11,12 @@ class PlayerIsInDeadPieceStrategy :
             throw ChooseStrategyException("There are no dead piece in list")
         }
         deadList.forEach { deadPiece ->
-            diceBox.getAllUnUsedNumbers().forEach { number->
+            diceBox.allActiveDicesNumbers().forEach { number->
                 val pieceAfterMove = deadPiece.pieceAfterMove(number)
                 pieceAfterMove?.let {
                     if (it.state == PieceState.IN_GAME && board.canMovePiece(deadPiece, it)) {
                         // TODO: 10/11/19 Kayvan: View Interaction for active piece
-                        diceBox.updateDiceStateWith(number)
+                        diceBox.enableDiceWith(number)
                     }
                 }
             }
