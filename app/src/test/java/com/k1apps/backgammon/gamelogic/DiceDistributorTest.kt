@@ -102,7 +102,7 @@ class DiceDistributorTest {
         `when`(player1.diceBox).thenReturn(diceBox)
         val diceBoxThrownEvent = DiceBoxThrownEvent(player1)
         diceDistributor.onEvent(diceBoxThrownEvent)
-        verify(player1, times(1)).updateDicesStateInDiceBox()
+        verify(player1, times(1)).updateDiceBoxStatus()
     }
 
     @Test

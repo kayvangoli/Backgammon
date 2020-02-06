@@ -3,7 +3,7 @@ package com.k1apps.backgammon.gamelogic.strategy
 import com.k1apps.backgammon.gamelogic.*
 
 class PlayerIsInGamePieceStrategy : PlayerPiecesActionStrategy() {
-    override fun updateDicesState(diceBox: DiceBox, list: ArrayList<Piece>, board: Board) {
+    override fun updateDiceBoxStatus(diceBox: DiceBox, list: ArrayList<Piece>, board: Board) {
         val headPieces = getHeadInGamePiecesFrom(list)
         headPieces.forEach { piece ->
             diceBox.allActiveDicesNumbers().forEach { number ->

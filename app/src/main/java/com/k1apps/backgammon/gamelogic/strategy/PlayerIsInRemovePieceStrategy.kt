@@ -6,7 +6,7 @@ import com.k1apps.backgammon.Constants.REVERSE_HOME_RANGE
 import com.k1apps.backgammon.gamelogic.*
 
 class PlayerIsInRemovePieceStrategy : PlayerPiecesActionStrategy() {
-    override fun updateDicesState(diceBox: DiceBox, list: ArrayList<Piece>, board: Board) {
+    override fun updateDiceBoxStatus(diceBox: DiceBox, list: ArrayList<Piece>, board: Board) {
         val homeCellIndexRange: IntRange = if (list[0].moveType == MoveType.Normal) {
             NORMAL_HOME_RANGE
         } else {

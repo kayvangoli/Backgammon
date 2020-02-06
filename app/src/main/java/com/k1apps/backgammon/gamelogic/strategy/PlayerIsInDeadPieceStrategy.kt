@@ -5,7 +5,7 @@ import com.k1apps.backgammon.gamelogic.*
 
 class PlayerIsInDeadPieceStrategy :
     PlayerPiecesActionStrategy() {
-    override fun updateDicesState(diceBox: DiceBox, list: ArrayList<Piece>, board: Board) {
+    override fun updateDiceBoxStatus(diceBox: DiceBox, list: ArrayList<Piece>, board: Board) {
         val deadList = deadPieceList(list)
         if (deadList.isEmpty()) {
             throw ChooseStrategyException("There are no dead piece in list")
