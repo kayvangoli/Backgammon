@@ -1,52 +1,45 @@
 package com.k1apps.backgammon.gamelogic
 
-import com.k1apps.backgammon.Constants.NORMAL_PLAYER
 import com.k1apps.backgammon.gamelogic.event.DiceThrownEvent
-import com.k1apps.backgammon.dagger.*
 import com.k1apps.backgammon.gamelogic.event.DiceBoxThrownEvent
+import com.k1apps.backgammon.gamelogic.event.GameEndedEvent
 import com.k1apps.backgammon.gamelogic.event.MoveCompletedEvent
 import com.k1apps.backgammon.gamelogic.strategy.PlayerPiecesActionStrategy
 import com.k1apps.backgammon.gamelogic.strategy.PlayerPiecesContextStrategy
-import dagger.Component
 import org.greenrobot.eventbus.EventBus
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.*
-import javax.inject.Inject
 import org.mockito.Mock
+import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
-import javax.inject.Named
 
 @RunWith(MockitoJUnitRunner::class)
 class PlayerTest {
 
-    @Inject
-    @field:Named(NORMAL_PLAYER)
-    lateinit var player: Player
-
+    private lateinit var player: Player
     @Mock
-    lateinit var diceDistributor: DiceDistributorImpl
-    @Inject
-    lateinit var board: Board
-    @Inject
-    lateinit var diceBox: DiceBox
-    @Inject
-    lateinit var contextStrategy: PlayerPiecesContextStrategy
+    private lateinit var diceDistributor: DiceDistributorImpl
+    @Mock
+    private lateinit var board: Board
+    @Spy
+    private var diceBox = DiceBoxImpl(mock(Dice::class.java), mock(Dice::class.java))
+    @Mock
+    private lateinit var contextStrategy: PlayerPiecesContextStrategy
+    @Spy
+    private var pieceList = arrayListOf<Piece>()
 
     @Before
     fun setup() {
-        DaggerPlayerComponentTest.builder().setPieceListModule(SpyPieceListModule())
-            .setBoardModule(SpyBoardModule())
-            .setDiceBoxModule(SpyDiceBoxModuleTest())
-            .setContextStrategyModule(SpyPlayerPiecesStrategyModule())
-            .build().inject(this)
+        player =
+            PlayerImpl(PlayerType.LocalPlayer, pieceList, MoveType.Normal, board, contextStrategy)
         EventBus.getDefault().register(diceDistributor)
     }
 
     @Test
-    fun given_roll_called_with_dice_then_roll_dice_and_post_dice_thrown_event_callback_invoked() {
+    fun given_roll_called_when_player_has_dice_then_roll_dice_and_post_dice_thrown_event_callback_invoked() {
         val diceMock: Dice = mock(Dice::class.java)
         `when`(diceMock.roll()).thenReturn(2)
         player.dice = diceMock
@@ -55,9 +48,10 @@ class PlayerTest {
     }
 
     @Test
-    fun given_roll_called_with_dice_then_roll_dice_and_post_dice_box_thrown_event_callback_invoked() {
+    fun given_roll_called_when_player_has_diceBox_then_roll_diceBox_and_post_dice_box_thrown_event_callback_invoked() {
         player.diceBox = diceBox
         player.roll()
+        verify(diceBox).roll()
         verify(diceDistributor, times(1)).onEvent(DiceBoxThrownEvent(player))
     }
 
@@ -85,23 +79,12 @@ class PlayerTest {
     }
 
     @Test
-    fun given_updateDiceStateInDiceBox_called_then_playerPieceContextStrategy_updateDicesState_should_be_called() {
+    fun given_updateDiceBoxStatus_called_then_playerPieceContextStrategy_updateDiceBoxStatus_should_be_called() {
         player.diceBox = diceBox
-        player.updateDicesStateInDiceBox()
-        verify(contextStrategy.getPlayerPiecesStrategy(player.pieceList))
-            .updateDicesState(diceBox, player.pieceList, board)
-    }
-
-    @Test
-    fun given_haveDiedPiece_called_when_piece_index_2_is_died_then_return_true() {
-        player.pieceList[2].state = PieceState.DEAD
-        assertTrue(player.haveDiedPiece())
-    }
-
-    @Test
-    fun given_isHomeRangeFill_called_then_invoke_board_isHomeRangeFilled() {
-        player.isHomeRangeFill()
-        verify(board, times(1)).isRangeFilledWithNormalPiece(player.homeCellIndexRange)
+        val mockStrategy = mock(PlayerPiecesActionStrategy::class.java)
+        `when`(contextStrategy.getPlayerPiecesStrategy(pieceList)).thenReturn(mockStrategy)
+        player.updateDiceBoxStatus()
+        verify(mockStrategy).updateDiceBoxStatus(diceBox, pieceList, board)
     }
 
     @Test(expected = MoveException::class)
@@ -109,113 +92,122 @@ class PlayerTest {
         player.move(null, null)
     }
 
+    @Test(expected = MoveException::class)
+    fun given_move_called_when_startCellNumber_is_null_and_player_does_not_have_dead_piece_then_throw_MoveException() {
+        val mockInGamePiece = mock(Piece::class.java)
+        mockInGamePiece.state = PieceState.IN_GAME
+        pieceList.add(mockInGamePiece)
+        pieceList.add(mockInGamePiece)
+        player.move(null, 5)
+    }
+
+    @Test(expected = MoveException::class)
+    fun given_move_called_when_startCellNumber_is_1_and_player_does_not_have_piece_with_location_1_then_throw_MoveException() {
+        val mockInGamePiece = mock(Piece::class.java)
+        mockInGamePiece.state = PieceState.IN_GAME
+        mockInGamePiece.location = 4
+        pieceList.add(mockInGamePiece)
+        pieceList.add(mockInGamePiece)
+        player.move(null, 5)
+    }
+
     @Test
-    fun given_move_24_23_called_when_dice1_number_is_1_then_moveCompletedEvent_should_be_called() {
-        board.initBoard()
-        val StartCellNumber = 24
-        val destinationCellNumber = 23
-        val mockedDice = mock(Dice::class.java)
-        `when`(mockedDice.number).thenReturn(1)
-        val diceBox = mock(DiceBox::class.java)
-        `when`(diceBox.getActiveDiceWithNumber(1)).thenReturn(mockedDice)
+    fun given_move_called_when_startCellNumber_is_1_then_board_getHeadPiece_1_should_be_called() {
         player.diceBox = diceBox
-        player.move(StartCellNumber, destinationCellNumber)
+        player.move(1, 5)
+        verify(board).getHeadPiece(1)
+    }
+
+    @Test
+    fun given_move_called_when_startCellNumber_is_1_and_destinationCellNumber_is_4_and_then_playerPieceStrategy_findDice_should_be_called() {
+        player.diceBox = diceBox
+        val mockedPiece = mock(Piece::class.java)
+        `when`(mockedPiece.moveType).thenReturn(MoveType.Normal)
+        `when`(board.getHeadPiece(1)).thenReturn(mockedPiece)
+        val strategy = mock(PlayerPiecesActionStrategy::class.java)
+        `when`(contextStrategy.getPlayerPiecesStrategy(pieceList)).thenReturn(strategy)
+        player.move(1, 4)
+        verify(strategy).findDice(1, 4, diceBox, board)
+    }
+
+    @Test
+    fun given_move_24_23_called_when_piece_and_dice_is_exist_then_strategy_move_should_be_called() {
+        player.diceBox = diceBox
+        val startCellNumber = 24
+        val destinationCellNumber = 23
+        val mockedPiece = mock(Piece::class.java)
+        `when`(mockedPiece.moveType).thenReturn(MoveType.Normal)
+        `when`(board.getHeadPiece(startCellNumber)).thenReturn(mockedPiece)
+        val strategy = mock(PlayerPiecesActionStrategy::class.java)
+        `when`(contextStrategy.getPlayerPiecesStrategy(pieceList)).thenReturn(strategy)
+        val mockDice = mock(Dice::class.java)
+        `when`(strategy.findDice(startCellNumber, destinationCellNumber,
+            diceBox, board)).thenReturn(mockDice)
+        player.move(startCellNumber, destinationCellNumber)
+        verify(strategy).move(mockDice, mockedPiece, board)
+    }
+
+    @Test
+    fun given_move_24_23_called_when_piece_and_dice_is_exist_and_strategy_move_is_true_then_dice_use_should_be_called() {
+        player.diceBox = diceBox
+        val startCellNumber = 24
+        val destinationCellNumber = 23
+        val mockedPiece = mock(Piece::class.java)
+        `when`(mockedPiece.moveType).thenReturn(MoveType.Normal)
+        `when`(board.getHeadPiece(startCellNumber)).thenReturn(mockedPiece)
+        val strategy = mock(PlayerPiecesActionStrategy::class.java)
+        `when`(contextStrategy.getPlayerPiecesStrategy(pieceList)).thenReturn(strategy)
+        val mockDice = mock(Dice::class.java)
+        `when`(strategy.findDice(startCellNumber, destinationCellNumber,
+            diceBox, board)).thenReturn(mockDice)
+        `when`(strategy.move(mockDice, mockedPiece, board)).thenReturn(true)
+        player.move(startCellNumber, destinationCellNumber)
+        verify(mockDice).use()
+    }
+
+    @Test
+    fun given_move_24_23_called_when_piece_and_dice_is_exist_and_strategy_move_is_true_then_MoveCompletedEvent_should_be_invoked() {
+        player.diceBox = diceBox
+        val startCellNumber = 24
+        val destinationCellNumber = 23
+        val mockedPiece = mock(Piece::class.java)
+        `when`(mockedPiece.moveType).thenReturn(MoveType.Normal)
+        `when`(board.getHeadPiece(startCellNumber)).thenReturn(mockedPiece)
+        val strategy = mock(PlayerPiecesActionStrategy::class.java)
+        `when`(contextStrategy.getPlayerPiecesStrategy(pieceList)).thenReturn(strategy)
+        val mockDice = mock(Dice::class.java)
+        `when`(strategy.findDice(startCellNumber, destinationCellNumber,
+            diceBox, board)).thenReturn(mockDice)
+        `when`(strategy.move(mockDice, mockedPiece, board)).thenReturn(true)
+        player.move(startCellNumber, destinationCellNumber)
         verify(diceDistributor).onEvent(MoveCompletedEvent(player))
     }
 
     @Test
-    fun given_move_24_23_called_when_dice_number_is_1_then_diceBox_useDice_should_be_called() {
-        board.initBoard()
-        val StartCellNumber = 24
-        val destinationCellNumber = 23
-        val mockedDice = mock(Dice::class.java)
-        `when`(mockedDice.number).thenReturn(1)
-        val diceBox = mock(DiceBox::class.java)
-        `when`(diceBox.getActiveDiceWithNumber(1)).thenReturn(mockedDice)
+    fun given_move_24_23_called_when_piece_and_dice_is_exist_and_strategy_move_is_true_and_all_pieces_are_in_won_state_then_GameEndedEvent_should_be_invoked() {
         player.diceBox = diceBox
-        player.move(StartCellNumber, destinationCellNumber)
-        verify(diceBox).useDice(mockedDice)
+        val startCellNumber = 24
+        val destinationCellNumber = 23
+        val mockedPiece = mock(Piece::class.java)
+        `when`(mockedPiece.moveType).thenReturn(MoveType.Normal)
+        `when`(board.getHeadPiece(startCellNumber)).thenReturn(mockedPiece)
+        val strategy = mock(PlayerPiecesActionStrategy::class.java)
+        `when`(contextStrategy.getPlayerPiecesStrategy(pieceList)).thenReturn(strategy)
+        val mockDice = mock(Dice::class.java)
+        `when`(strategy.findDice(startCellNumber, destinationCellNumber,
+            diceBox, board)).thenReturn(mockDice)
+        `when`(strategy.move(mockDice, mockedPiece, board)).thenReturn(true)
+        player.move(startCellNumber, destinationCellNumber)
+        val mockInGamePiece = mock(Piece::class.java)
+        mockInGamePiece.state = PieceState.WON
+        pieceList.add(mockInGamePiece)
+        pieceList.add(mockInGamePiece)
+        verify(diceDistributor).onEvent(GameEndedEvent(player))
     }
 
     @Test(expected = MoveException::class)
     fun given_move_with_null_and_2_called_when_player_has_not_dead_piece_then_throw_move_exception() {
         player.diceBox = diceBox
         player.move(null, 2)
-    }
-}
-
-
-@GameScope
-@Component(
-    modules = [PlayerModule::class, PieceListModule::class,
-        BoardModule::class, DiceBoxModule::class, PlayerPiecesStrategyModule::class]
-)
-interface PlayerComponentTest {
-
-    @Component.Builder
-    interface Builder {
-        fun setPieceListModule(pieceListModule: PieceListModule): Builder
-        fun setBoardModule(boardModule: BoardModule): Builder
-        fun setDiceBoxModule(spyDiceBoxModuleTest: DiceBoxModule): Builder
-        fun setContextStrategyModule(playerPiecesStrategyModule: PlayerPiecesStrategyModule): Builder
-        fun build(): PlayerComponentTest
-    }
-
-    fun inject(playerTest: PlayerTest)
-}
-
-class SpyPieceListModule : PieceListModule() {
-    override fun provideReverseList(): ArrayList<Piece> {
-        val pieceList = arrayListOf<Piece>()
-        super.provideReverseList().forEach {
-            pieceList.add(spy(it))
-        }
-        return pieceList
-    }
-
-    override fun provideNormalList(): ArrayList<Piece> {
-        val pieceList = arrayListOf<Piece>()
-        super.provideReverseList().forEach {
-            pieceList.add(spy(it))
-        }
-        return pieceList
-
-    }
-}
-
-class SpyBoardModule : BoardModule() {
-    override fun provideBoard(
-        normalPieceList: ArrayList<Piece>,
-        reversePieceList: ArrayList<Piece>
-    ): Board {
-        return spy(super.provideBoard(normalPieceList, reversePieceList))
-    }
-}
-
-class SpyPlayerPiecesStrategyModule : PlayerPiecesStrategyModule() {
-    override fun providePlayerPiecesContextStrategy(
-        inGamePieceStrategy: PlayerPiecesActionStrategy,
-        removePieceStrategy: PlayerPiecesActionStrategy,
-        deadPieceStrategy: PlayerPiecesActionStrategy
-    ): PlayerPiecesContextStrategy {
-        return spy(
-            super.providePlayerPiecesContextStrategy(
-                inGamePieceStrategy,
-                removePieceStrategy,
-                deadPieceStrategy
-            )
-        )
-    }
-
-    override fun providePlayerIsInGamePieceStrategy(): PlayerPiecesActionStrategy {
-        return spy(super.providePlayerIsInGamePieceStrategy())
-    }
-
-    override fun providePlayerIsInRemovePieceStrategy(): PlayerPiecesActionStrategy {
-        return spy(super.providePlayerIsInRemovePieceStrategy())
-    }
-
-    override fun providePlayerIsInDeadPieceStrategy(): PlayerPiecesActionStrategy {
-        return spy(super.providePlayerIsInDeadPieceStrategy())
     }
 }
