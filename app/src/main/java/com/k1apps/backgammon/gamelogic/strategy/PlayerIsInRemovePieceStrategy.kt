@@ -6,6 +6,7 @@ import com.k1apps.backgammon.Constants.REVERSE_HOME_RANGE
 import com.k1apps.backgammon.gamelogic.*
 
 class PlayerIsInRemovePieceStrategy : PlayerPiecesActionStrategy() {
+
     override fun updateDiceBoxStatus(diceBox: DiceBox, list: ArrayList<Piece>, board: Board) {
         val homeCellIndexRange: IntRange = if (list[0].moveType == MoveType.Normal) {
             NORMAL_HOME_RANGE
@@ -13,7 +14,7 @@ class PlayerIsInRemovePieceStrategy : PlayerPiecesActionStrategy() {
             REVERSE_HOME_RANGE
         }
         if (isInRemovePieceState(homeCellIndexRange, list).not()) {
-            throw ChooseStrategyException("State is not remove piece")
+            throw ChooseStrategyException("State is not in 'remove piece'")
         }
         val headPieces = getHeadInGamePiecesFrom(list)
         diceBox.allActiveDicesNumbers().forEach { number ->
