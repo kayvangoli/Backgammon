@@ -47,7 +47,6 @@ class DiceTest {
         dice.enableWith(NUMBER)
         dice.use()
         dice.roll()
-        verify(dice, times(1)).enabled = false
     }
 
     @Test
@@ -161,8 +160,9 @@ class DiceTest {
 
     @Test
     fun given_createMemento_called_when_restore_memento_to_new_object_then_new_object_should_equal_to_first_object() {
+        dice.roll()
         val memento = dice.createMemento()
-        val dice1 = DiceImpl(random)
+        val dice1 = DiceImpl(random, DiceStatus())
         dice1.restore(memento)
         assertTrue(dice1 == dice)
     }

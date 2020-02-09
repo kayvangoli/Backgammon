@@ -78,14 +78,14 @@ class DiceImpl(
     }
 
     override fun createMemento(): Memento {
-        return DiceMemento(enabled, used, number)
+        return DiceMemento(status.createMemento(), twice, number)
     }
 
     override fun restore(memento: Memento) {
         (memento as DiceMemento).let {
             number = it.number
-            used = it.used
-            enabled = it.enabled
+            twice = it.twice
+            status.restore(it.status)
         }
     }
 
@@ -93,14 +93,14 @@ class DiceImpl(
         if (other !is DiceImpl) {
             return false
         }
-        return other.used == used &&
-                other.enabled == enabled &&
-                other.number == number
+        return status == other.status &&
+                twice == other.twice &&
+                number == other.number
     }
 
     private data class DiceMemento(
-        val enabled: Boolean = false,
-        val used: Boolean,
+        val status: Memento,
+        val twice: Boolean,
         val number: Byte?
     ) : Memento
 }

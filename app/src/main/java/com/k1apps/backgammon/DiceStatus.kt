@@ -1,8 +1,10 @@
 package com.k1apps.backgammon
 
+import com.k1apps.backgammon.gamelogic.memento.Memento
+import com.k1apps.backgammon.gamelogic.memento.Originator
 import javax.inject.Inject
 
-class DiceStatus @Inject constructor() {
+class DiceStatus @Inject constructor() : Originator {
     private var enable1 = false
     private var enable2 = false
     private var twice = false
@@ -56,6 +58,40 @@ class DiceStatus @Inject constructor() {
         if (enable2) {
             count++
         }
-        return count;
+        return count
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is DiceStatus) {
+            return false
+        }
+        return enable2 == other.enable2 &&
+                enable1 == other.enable1 &&
+                twice == other.twice
+    }
+
+    override fun createMemento(): Memento {
+        return StatusMemento(enable1, enable2, twice)
+    }
+
+    override fun restore(memento: Memento) {
+        (memento as StatusMemento).let {
+            enable1 = it.enable1
+            enable2 = it.enable2
+            twice = it.twice
+        }
+    }
+
+    override fun hashCode(): Int {
+        var result = enable1.hashCode()
+        result = 31 * result + enable2.hashCode()
+        result = 31 * result + twice.hashCode()
+        return result
+    }
+
+    private data class StatusMemento(
+        val enable1: Boolean,
+        val enable2: Boolean,
+        val twice: Boolean
+    ) : Memento
 }
