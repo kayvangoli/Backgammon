@@ -102,13 +102,13 @@ class DiceDistributorTest {
         `when`(player1.diceBox).thenReturn(diceBox)
         val diceBoxThrownEvent = DiceBoxThrownEvent(player1)
         diceDistributor.onEvent(diceBoxThrownEvent)
-        verify(player1, times(1)).updateDicesStateInDiceBox()
+        verify(player1, times(1)).updateDiceBoxStatus()
     }
 
     @Test
     fun given_DiceBoxThrownEvent_called_by_player1_when_player1_has_diceBox_and_diceBox_does_not_have_enable_dice_then_retake_diceBox_from_player1_and_set_it_to_player2() {
         `when`(player1.diceBox).thenReturn(diceBox)
-        `when`(diceBox.isAtLeastOneDiceEnable()).thenReturn(false)
+        `when`(diceBox.isEnabled()).thenReturn(false)
         val diceBoxThrownEvent = DiceBoxThrownEvent(player1)
         diceDistributor.onEvent(diceBoxThrownEvent)
         verify(player1, times(1)).retakeDiceBox()

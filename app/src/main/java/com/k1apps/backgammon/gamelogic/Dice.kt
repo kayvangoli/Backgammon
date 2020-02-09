@@ -1,47 +1,80 @@
 package com.k1apps.backgammon.gamelogic
 
-import com.k1apps.backgammon.Constants.DICE_RANGE
+import com.k1apps.backgammon.DiceStatus
 import com.k1apps.backgammon.gamelogic.memento.Memento
 import com.k1apps.backgammon.gamelogic.memento.Originator
 import kotlin.random.Random
 
-class DiceImpl(override val random: Random) : Dice {
-    override var enabled: Boolean = false
-    override var used: Boolean = false
-    override var number: Byte? = null
-        private set(value) {
-            value?.let {
-                if (value !in DICE_RANGE) {
-                    throw DiceRangeException("$value is not in dice range($DICE_RANGE)")
-                }
-            }
+class DiceImpl(
+    override val random: Random,
+    override val status: DiceStatus
+) : Dice {
+    private var twice = false
+        set(value) {
+            status.setTwice(value)
             field = value
         }
 
+    override var number: Byte? = null
+        private set
+
     override fun roll(): Byte {
-        if (used.not()) {
-            throw DiceException("Can not roll unUsed dice!")
+        if (isRolled()) {
+            throw DiceException("Roll dice twice!")
         }
-        enabled = false
-        used = false
         number = random.nextInt(1, 7).toByte()
         return number!!
     }
 
-    override fun isActive(): Boolean {
-        if (enabled.not()) {
+    private fun isRolled(): Boolean {
+        return number != null
+    }
+
+    override fun isActive() = isRolled() && status.enable
+
+    override fun enableWith(number: Byte): Boolean {
+        if (isRolled().not()) {
+            throw DiceException("Dice is not rolled!")
+        }
+        if (this.number != number) {
             return false
         }
-        if (used) {
+        if (status.isFullEnabled()) {
             return false
+        }
+        status.enable = true
+        return true
+    }
+
+    override fun use(): Boolean {
+        if (isRolled().not()) {
+            throw DiceException("Dice is not roll yet!")
+        }
+        if (status.enable.not()) {
+            return false
+        }
+        status.enable = false
+        if (twice) {
+            twice = false
+        } else {
+            number = null
         }
         return true
     }
 
-    override fun copy(): Dice? {
-        val dice = DiceImpl(random)
-        dice.number = number
-        return dice
+    override fun twice() {
+        if (isRolled().not()) {
+            throw DiceException("Dice is not roll yet!")
+        }
+        twice = true
+    }
+
+    override fun getActiveNumbers(): List<Byte> {
+        val lst = arrayListOf<Byte>()
+        for (item in 0 until status.enableCount()) {
+            lst.add(number!!.toByte())
+        }
+        return lst
     }
 
     override fun createMemento(): Memento {
@@ -74,10 +107,12 @@ class DiceImpl(override val random: Random) : Dice {
 
 interface Dice : Originator {
     val random: Random
-    var enabled: Boolean
-    var used: Boolean
     val number: Byte?
+    val status: DiceStatus
+    fun enableWith(number: Byte): Boolean
+    fun use(): Boolean
     fun roll(): Byte
     fun isActive(): Boolean
-    fun copy(): Dice?
+    fun twice()
+    fun getActiveNumbers(): List<Byte>
 }

@@ -4,7 +4,7 @@ import com.k1apps.backgammon.Constants.BOARD_LOCATION_RANGE
 import com.k1apps.backgammon.gamelogic.*
 
 abstract class PlayerPiecesActionStrategy {
-    abstract fun updateDicesState(diceBox: DiceBox, list: ArrayList<Piece>, board: Board)
+    abstract fun updateDiceBoxStatus(diceBox: DiceBox, list: ArrayList<Piece>, board: Board)
 
     protected fun getHeadInGamePiecesFrom(list: ArrayList<Piece>): List<Piece> {
         val result = arrayListOf<Piece>()
