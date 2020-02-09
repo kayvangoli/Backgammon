@@ -92,7 +92,7 @@ class PlayerIsInRemovePieceStrategyTest {
             it.location = 4
             `when`(board.canMovePiece(it, it.pieceAfterMove(1))).thenReturn(false)
             `when`(board.canMovePiece(it, it.pieceAfterMove(2))).thenReturn(true)
-            `when`(board.canMovePiece(it, it.pieceAfterMove(3))).thenReturn(false)
+//            `when`(board.canMovePiece(it, it.pieceAfterMove(3))).thenReturn(false)
         }
         `when`(diceBox.allActiveDicesNumbers()).thenReturn(arrayListOf(1, 2))
         playerPiecesActionStrategy.updateDiceBoxStatus(diceBox, lst, board)
