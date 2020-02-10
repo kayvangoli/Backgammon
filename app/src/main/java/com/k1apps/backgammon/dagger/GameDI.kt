@@ -4,6 +4,7 @@ import com.k1apps.backgammon.Constants.NORMAL_PIECE_LIST
 import com.k1apps.backgammon.Constants.NORMAL_PLAYER
 import com.k1apps.backgammon.Constants.REVERSE_PIECE_LIST
 import com.k1apps.backgammon.Constants.REVERSE_PLAYER
+import com.k1apps.backgammon.DiceStatus
 import com.k1apps.backgammon.gamelogic.*
 import com.k1apps.backgammon.gamelogic.strategy.PlayerPiecesContextStrategy
 import dagger.Component
@@ -130,8 +131,8 @@ open class DiceBoxModule {
     }
 
     @Provides
-    open fun provideDice(random: Random): Dice {
-        return DiceImpl(random)
+    open fun provideDice(random: Random, status: DiceStatus): Dice {
+        return DiceImpl(random, status)
     }
 
     @Provides

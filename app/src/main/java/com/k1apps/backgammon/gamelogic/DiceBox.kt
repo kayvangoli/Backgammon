@@ -4,107 +4,37 @@ import com.k1apps.backgammon.Constants.DICE_RANGE
 
 class DiceBoxImpl(override val dice1: Dice, override val dice2: Dice) : DiceBox {
 
-    override var dice3: Dice? = null
-        private set
-    override var dice4: Dice? = null
-        private set
-
     override fun roll() {
-        Pair(dice1.roll(), dice2.roll())
-        if (dice1.number == dice2.number) {
-            dice3 = dice2.copy()
-            dice4 = dice2.copy()
-        } else {
-            dice3 = null
-            dice4 = null
+        if (dice1.roll() == dice2.roll()) {
+            dice1.twice()
+            dice2.twice()
         }
     }
 
-    override fun updateDiceStateWith(number: Byte) {
+    override fun enableDiceWith(number: Byte) {
         assert(number in DICE_RANGE)
-        if (dice1.enabled.not() && dice1.number == number) {
-            dice1.enabled = true
-        } else if (dice2.enabled.not() && dice2.number == number) {
-            dice2.enabled = true
-        } else if (dice3 != null && dice3!!.enabled.not() && dice3!!.number == number) {
-            dice3!!.enabled = true
-        } else if (dice4 != null && dice4!!.enabled.not() && dice4!!.number == number) {
-            dice4!!.enabled = true
+        if (dice1.enableWith(number).not()) {
+            dice2.enableWith(number)
         }
     }
 
-    override fun isAtLeastOneDiceEnable(): Boolean {
-        if (dice1.enabled) {
-            return true
-        }
-        if (dice2.enabled) {
-            return true
-        }
-        dice3?.let {
-            if (it.enabled) {
-                return true
-            }
-        }
-        dice4?.let {
-            if (it.enabled) {
-                return true
-            }
-        }
-        return false
+    override fun isEnabled(): Boolean {
+        return dice1.isActive() || dice2.isActive()
     }
 
-    override fun enable() {
-        dice1.enabled = true
-        dice2.enabled = true
-        dice3?.enabled = true
-        dice4?.enabled = true
-    }
-
-    override fun getAllUnUsedNumbers(): List<Byte> {
+    override fun allActiveDicesNumbers(): List<Byte> {
         val list = arrayListOf<Byte>()
-        dice1.number?.let {
-            if (dice1.used.not()) {
-                list.add(it)
-            }
-        }
-        dice2.number?.let {
-            if (dice2.used.not()) {
-                list.add(it)
-            }
-        }
-        dice3?.number?.let {
-            if (dice3!!.used.not()) {
-                list.add(it)
-            }
-        }
-        dice4?.number?.let {
-            if (dice4!!.used.not()) {
-                list.add(it)
-            }
-        }
+        list.addAll(dice1.getActiveNumbers())
+        list.addAll(dice2.getActiveNumbers())
         return list
     }
 
     override fun getActiveDiceWithNumber(number: Int): Dice? {
-        dice1.number?.let {
-            if (number.toByte() == it && dice1.isActive()) {
-                return dice1
-            }
+        if (dice1.isActive() && dice1.number == number.toByte()) {
+            return dice1
         }
-        dice2.number?.let {
-            if (number.toByte() == it && dice2.isActive()) {
-                return dice2
-            }
-        }
-        dice3?.number?.let {
-            if (number.toByte() == it && dice3!!.isActive()) {
-                return dice3!!
-            }
-        }
-        dice4?.number?.let {
-            if (number.toByte() == it && dice4!!.isActive()) {
-                return dice4!!
-            }
+        if (dice1.isActive() && dice2.number == number.toByte()) {
+            return dice2
         }
         return null
     }
@@ -121,38 +51,16 @@ class DiceBoxImpl(override val dice1: Dice, override val dice2: Dice) : DiceBox 
         }
         return null
     }
-
-    override fun useDice(dice: Dice) {
-        if (dice.used) {
-            throw DiceException("Can not reuse dice")
-        }
-        var diceExist = false
-        when {
-            dice === dice1 -> diceExist = true
-            dice === dice2 -> diceExist = true
-            dice === dice3 -> diceExist = true
-            dice === dice4 -> diceExist = true
-        }
-        if (diceExist.not()) {
-            throw DiceException("Can not use dice while not exist")
-        }
-        dice.used = true
-    }
-
 }
 
 interface DiceBox {
     fun roll()
     val dice1: Dice
     val dice2: Dice
-    val dice3: Dice?
-    val dice4: Dice?
-    fun updateDiceStateWith(number: Byte)
-    fun isAtLeastOneDiceEnable(): Boolean
-    fun enable()
-    fun getAllUnUsedNumbers(): List<Byte>
+    fun enableDiceWith(number: Byte)
+    fun isEnabled(): Boolean
+    fun allActiveDicesNumbers(): List<Byte>
     fun getActiveDiceWithNumber(number: Int): Dice?
     fun getActiveDiceGreaterEqual(number: Int): Dice?
-    fun useDice(dice: Dice)
 }
 

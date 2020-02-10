@@ -45,26 +45,18 @@ class PlayerImpl(
         diceBox = null
     }
 
-    override fun updateDicesStateInDiceBox() {
+    override fun updateDiceBoxStatus() {
         playerPiecesContextStrategy.getPlayerPiecesStrategy(pieceList)
-            .updateDicesState(diceBox!!, pieceList, board)
+            .updateDiceBoxStatus(diceBox!!, pieceList, board)
     }
 
-    override fun haveDiedPiece(): Boolean {
+    private fun haveDiedPiece(): Boolean {
         pieceList.forEach {
             if (it.state == PieceState.DEAD) {
                 return true
             }
         }
         return false
-    }
-
-    override fun isHomeRangeFill(): Boolean {
-        return if (moveType == MoveType.Normal) {
-            board.isRangeFilledWithNormalPiece(homeCellIndexRange)
-        } else {
-            board.isRangeFilledWithReversePiece(homeCellIndexRange)
-        }
     }
 
     override fun move(startCellNumber: Int?, destinationCellNumber: Int?) {
@@ -81,14 +73,14 @@ class PlayerImpl(
             }
         }
         if (piece != null && piece.moveType == moveType) {
-            val playerPiecesStrategy =
-                playerPiecesContextStrategy.getPlayerPiecesStrategy(pieceList)
+            val playerPiecesStrategy = playerPiecesContextStrategy
+                .getPlayerPiecesStrategy(pieceList)
             val dice = playerPiecesStrategy
                 .findDice(startCellNumber, destinationCellNumber, diceBox!!, board)
             dice?.let {
                 val moveResult = playerPiecesStrategy.move(it, piece, board)
                 if (moveResult) {
-                    diceBox!!.useDice(it)
+                    it.use()
                     EventBus.getDefault().post(MoveCompletedEvent(this))
                     if (allPieceAreWon()) {
                         EventBus.getDefault().post(GameEndedEvent(this))
@@ -98,9 +90,9 @@ class PlayerImpl(
         }
     }
 
-    override fun getTargetCellsBasedOn(number: Byte, cellPosition: Int?): Int? {
+    override fun getTargetCellsBasedOn(number: Byte, cellPosition: Int?): List<Int> {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        return null
+        return arrayListOf()
     }
 
     private fun allPieceAreWon(): Boolean {
@@ -131,11 +123,9 @@ interface Player {
     fun roll()
     fun retakeDice()
     fun retakeDiceBox()
-    fun updateDicesStateInDiceBox()
-    fun haveDiedPiece(): Boolean
-    fun isHomeRangeFill(): Boolean
+    fun updateDiceBoxStatus()
     fun move(startCellNumber: Int?, destinationCellNumber: Int?)
-    fun getTargetCellsBasedOn(number: Byte, cellPosition: Int?): Int?
+    fun getTargetCellsBasedOn(number: Byte, cellPosition: Int?): List<Int>
 }
 
 enum class PlayerType {

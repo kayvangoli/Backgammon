@@ -107,7 +107,7 @@ class GameTest {
     fun given_getTargetCellsBasedOn_called_when_playerType_is_incorrect_then_should_return_empty_array() {
         `when`(player1.playerType).thenReturn(PlayerType.AndroidPlayer)
         `when`(diceDistributor.whichPlayerHasDice()).thenReturn(Pair(player1, null))
-        val lst = game.getTargetCellsBaseOn(PlayerType.LocalPlayer, 10)
+        val lst = game.getTargetCellsBasedOn(PlayerType.LocalPlayer, 10)
         assertTrue(lst.isEmpty())
     }
 
@@ -116,9 +116,9 @@ class GameTest {
         `when`(player1.diceBox).thenReturn(mock(DiceBox::class.java))
         `when`(player1.playerType).thenReturn(PlayerType.LocalPlayer)
         `when`(diceDistributor.whichPlayerHasDice()).thenReturn(Pair(player1, null))
-        `when`(player1.diceBox!!.getAllUnUsedNumbers()).thenReturn(arrayListOf(4, 5))
+        `when`(player1.diceBox!!.allActiveDicesNumbers()).thenReturn(arrayListOf(4, 5))
         val cellPosition = 10
-        game.getTargetCellsBaseOn(PlayerType.LocalPlayer, cellPosition)
+        game.getTargetCellsBasedOn(PlayerType.LocalPlayer, cellPosition)
         verify(player1).getTargetCellsBasedOn(4, cellPosition)
         verify(player1).getTargetCellsBasedOn(5, cellPosition)
     }

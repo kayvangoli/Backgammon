@@ -33,43 +33,39 @@ class DiceDistributorImpl(
     @Synchronized
     @Subscribe
     override fun onEvent(event: DiceThrownEvent) {
-        event.player.retakeDice()
-        if (getOpponent(event.player).dice == null) {
-            with(diceBox) {
-                when {
-                    dice1.number!! > dice2.number!! -> {
-                        setDiceBox(player1)
-                    }
-                    dice1.number!! < dice2.number!! -> {
-                        setDiceBox(player2)
-                    }
-                    else -> setDiceToPlayers()
+        with(diceBox) {
+            if (dice1.number == null || dice2.number == null) {
+                return
+            }
+            retakeDices()
+            when {
+                dice1.number!! > dice2.number!! -> {
+                    setDiceBox(player1)
                 }
+                dice1.number!! < dice2.number!! -> {
+                    setDiceBox(player2)
+                }
+                else -> setDiceToPlayers()
             }
         }
     }
 
+    private fun retakeDices() {
+        player1.retakeDice()
+        player2.retakeDice()
+    }
+
     private fun setDiceBox(player: Player) {
-        // TODO: 10/11/19 Kayvan: View Interaction
-        if (player.haveDiedPiece()) {
-            val opponent = getOpponent(player)
-            if (opponent.isHomeRangeFill()) {
-                opponent.diceBox = diceBox
-            } else {
-                player.diceBox = diceBox
-            }
-        } else {
-            player.diceBox = diceBox
-        }
+        getOpponent(player).retakeDiceBox()
+        player.diceBox = diceBox
     }
 
     @Subscribe
     override fun onEvent(event: DiceBoxThrownEvent) {
         with(event.player) {
-            updateDicesStateInDiceBox()
-            if (diceBox!!.isAtLeastOneDiceEnable().not()) {
+            updateDiceBoxStatus()
+            if (diceBox!!.isEnabled().not()) {
                 // TODO: 10/11/19 Kayvan: View interaction: no move
-                retakeDiceBox()
                 setDiceBox(getOpponent(this))
             }
         }
