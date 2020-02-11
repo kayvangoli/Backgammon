@@ -90,7 +90,7 @@ class PlayerImpl(
         }
     }
 
-    override fun getTargetCellsBasedOn(number: Byte, cellPosition: Int?): List<Int> {
+    override fun getTargetCellsBasedOn(cellPosition: Int?): List<Int> {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         return arrayListOf()
     }
@@ -125,7 +125,7 @@ interface Player {
     fun retakeDiceBox()
     fun updateDiceBoxStatus()
     fun move(startCellNumber: Int?, destinationCellNumber: Int?)
-    fun getTargetCellsBasedOn(number: Byte, cellPosition: Int?): List<Int>
+    fun getTargetCellsBasedOn(cellPosition: Int?): List<Int>
 }
 
 enum class PlayerType {

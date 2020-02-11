@@ -27,20 +27,15 @@ class GameImpl(
         }
     }
 
-    override fun getTargetCellsBasedOn(playerType: PlayerType, cellPosition: Int): ArrayList<Int> {
-        val targetArray = arrayListOf<Int>()
+    override fun getTargetCellsBasedOn(playerType: PlayerType, cellPosition: Int): List<Int> {
+        var targetArray: List<Int> = arrayListOf()
         val pair = diceDistributor.whichPlayerHasDice()
         pair?.let {
             val player = it.first
             if (it.second != null || player.playerType != playerType) {
                 return targetArray
             }
-            player.diceBox!!.allActiveDicesNumbers().forEach { number ->
-                val target = player.getTargetCellsBasedOn(number, cellPosition)
-                target?.let {
-                    targetArray.add(target)
-                }
-            }
+            targetArray = player.getTargetCellsBasedOn(cellPosition)
         }
         return targetArray
     }
@@ -55,6 +50,6 @@ class GameImpl(
 interface Game {
     fun start()
     fun roll(playerType: PlayerType)
-    fun getTargetCellsBasedOn(playerType: PlayerType, cellPosition: Int): ArrayList<Int>
+    fun getTargetCellsBasedOn(playerType: PlayerType, cellPosition: Int): List<Int>
 }
 
