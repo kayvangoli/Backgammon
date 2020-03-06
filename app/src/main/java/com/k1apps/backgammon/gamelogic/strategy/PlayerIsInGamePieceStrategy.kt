@@ -4,8 +4,8 @@ import com.k1apps.backgammon.gamelogic.*
 
 class PlayerIsInGamePieceStrategy : PlayerPiecesActionStrategy() {
 
-    override fun updateDiceBoxStatus(diceBox: DiceBox, list: ArrayList<Piece>, board: Board) {
-        val headPieces = getHeadInGamePiecesFrom(list)
+    override fun updateDiceBoxStatus(diceBox: DiceBox, list: PieceList, board: Board) {
+        val headPieces = list.getHeadsPieces()
         headPieces.forEach { piece ->
             diceBox.allActiveDicesNumbers().forEach { number ->
                 val pieceAfterMove = piece.pieceAfterMove(number)

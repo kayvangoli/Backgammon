@@ -8,8 +8,8 @@ import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 interface Board {
-    val pieceList1: ArrayList<Piece>
-    val pieceList2: ArrayList<Piece>
+    val pieceList1: PieceList
+    val pieceList2: PieceList
     fun initBoard()
     fun canMovePiece(fromPiece: Piece?, toPiece: Piece?): Boolean
     fun isRangeFilledWithNormalPiece(range: IntRange): Boolean
@@ -20,7 +20,7 @@ interface Board {
 }
 
 class BoardImpl @Inject constructor(
-    override val pieceList1: ArrayList<Piece>, override val pieceList2: ArrayList<Piece>
+    override val pieceList1: PieceList, override val pieceList2: PieceList
 ) : Board {
 
     private val cells: ArrayMap<Int, ArrayList<Piece>> = ArrayMap()
@@ -57,10 +57,10 @@ class BoardImpl @Inject constructor(
     }
 
     private fun initLists() {
-        pieceList1.forEach {
+        pieceList1.list.forEach {
             setPieceIntoCell(it)
         }
-        pieceList2.forEach {
+        pieceList2.list.forEach {
             setPieceIntoCell(it)
         }
     }

@@ -29,7 +29,7 @@ class PlayerTest {
     @Mock
     private lateinit var contextStrategy: PlayerPiecesContextStrategy
     @Spy
-    private var pieceList = arrayListOf<Piece>()
+    private var pieceList = NormalPieceList()
 
     @Before
     fun setup() {
@@ -39,7 +39,7 @@ class PlayerTest {
     }
 
     @Test
-    fun given_roll_called_when_player_has_dice_then_roll_dice_and_post_dice_thrown_event_callback_invoked() {
+    fun given_roll_called_when_player_has_dice_then_roll_dice_and_post_dice_thrown_event_invoked() {
         val diceMock: Dice = mock(Dice::class.java)
         `when`(diceMock.roll()).thenReturn(2)
         player.dice = diceMock
@@ -96,8 +96,8 @@ class PlayerTest {
     fun given_move_called_when_startCellNumber_is_null_and_player_does_not_have_dead_piece_then_throw_MoveException() {
         val mockInGamePiece = mock(Piece::class.java)
         mockInGamePiece.state = PieceState.IN_GAME
-        pieceList.add(mockInGamePiece)
-        pieceList.add(mockInGamePiece)
+        pieceList.list.add(mockInGamePiece)
+        pieceList.list.add(mockInGamePiece)
         player.move(null, 5)
     }
 
@@ -106,8 +106,8 @@ class PlayerTest {
         val mockInGamePiece = mock(Piece::class.java)
         mockInGamePiece.state = PieceState.IN_GAME
         mockInGamePiece.location = 4
-        pieceList.add(mockInGamePiece)
-        pieceList.add(mockInGamePiece)
+        pieceList.list.add(mockInGamePiece)
+        pieceList.list.add(mockInGamePiece)
         player.move(null, 5)
     }
 
@@ -197,11 +197,8 @@ class PlayerTest {
         `when`(strategy.findDice(startCellNumber, destinationCellNumber,
             diceBox, board)).thenReturn(mockDice)
         `when`(strategy.move(mockDice, mockedPiece, board)).thenReturn(true)
+        `when`(pieceList.allPieceAreWon()).thenReturn(true)
         player.move(startCellNumber, destinationCellNumber)
-        val mockInGamePiece = mock(Piece::class.java)
-        mockInGamePiece.state = PieceState.WON
-        pieceList.add(mockInGamePiece)
-        pieceList.add(mockInGamePiece)
         verify(diceDistributor).onEvent(GameEndedEvent(player))
     }
 

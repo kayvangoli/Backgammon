@@ -53,8 +53,8 @@ open class BoardModule {
     @Provides
     @GameScope
     open fun provideBoard(
-        @Named(NORMAL_PIECE_LIST) normalPieceList: ArrayList<Piece>,
-        @Named(REVERSE_PIECE_LIST) reversePieceList: ArrayList<Piece>
+        @Named(NORMAL_PIECE_LIST) normalPieceList: PieceList,
+        @Named(REVERSE_PIECE_LIST) reversePieceList: PieceList
     ): Board {
         return BoardImpl(normalPieceList, reversePieceList)
     }
@@ -67,7 +67,7 @@ open class PlayerModule {
     @Provides
     @Named(NORMAL_PLAYER)
     open fun providePlayer1(
-        @Named(NORMAL_PIECE_LIST) pieceList: ArrayList<Piece>,
+        @Named(NORMAL_PIECE_LIST) pieceList: PieceList,
         board: Board,
         playerPiecesContextStrategy: PlayerPiecesContextStrategy
     ): Player {
@@ -79,7 +79,7 @@ open class PlayerModule {
     @Provides
     @Named(REVERSE_PLAYER)
     open fun providePlayer2(
-        @Named(REVERSE_PIECE_LIST) pieceList: ArrayList<Piece>,
+        @Named(REVERSE_PIECE_LIST) pieceList: PieceList,
         board: Board,
         playerPiecesContextStrategy: PlayerPiecesContextStrategy
     ): Player {
@@ -96,25 +96,15 @@ open class PieceListModule {
     @Provides
     @GameScope
     @Named(NORMAL_PIECE_LIST)
-    open fun provideReverseList(): ArrayList<Piece> {
-        val arrayList: ArrayList<Piece> = arrayListOf()
-        for (item in 0 until 15) {
-            arrayList.add(PieceFactory.createNormalPiece())
-        }
-        pieceListArrangementNormal(arrayList)
-        return arrayList
+    open fun provideNormalList(): PieceList {
+        return NormalPieceList()
     }
 
     @Provides
     @GameScope
     @Named(REVERSE_PIECE_LIST)
-    open fun provideNormalList(): ArrayList<Piece> {
-        val arrayList: ArrayList<Piece> = arrayListOf()
-        for (item in 0 until 15) {
-            arrayList.add(PieceFactory.createReversePiece())
-        }
-        pieceListArrangementReverse(arrayList)
-        return arrayList
+    open fun provideReverseList(): PieceList {
+        return ReversePieceList()
     }
 
 }

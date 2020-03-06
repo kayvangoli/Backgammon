@@ -3,10 +3,9 @@ package com.k1apps.backgammon.gamelogic.strategy
 import com.k1apps.backgammon.Constants
 import com.k1apps.backgammon.gamelogic.*
 
-class PlayerIsInDeadPieceStrategy :
-    PlayerPiecesActionStrategy() {
-    override fun updateDiceBoxStatus(diceBox: DiceBox, list: ArrayList<Piece>, board: Board) {
-        val deadList = deadPieceList(list)
+class PlayerIsInDeadPieceStrategy : PlayerPiecesActionStrategy() {
+    override fun updateDiceBoxStatus(diceBox: DiceBox, list: PieceList, board: Board) {
+        val deadList = list.deadPieces()
         if (deadList.isEmpty()) {
             throw ChooseStrategyException("There are no dead piece in list")
         }
@@ -49,15 +48,5 @@ class PlayerIsInDeadPieceStrategy :
             throw CellNumberException("Move piece to Game with range greater than dice")
         }
         return diceBox.getActiveDiceWithNumber(destinationCellNumber)
-    }
-
-    private fun deadPieceList(list: ArrayList<Piece>): List<Piece> {
-        val deadList = arrayListOf<Piece>()
-        list.forEach {
-            if (it.state == PieceState.DEAD) {
-                deadList.add(it)
-            }
-        }
-        return deadList
     }
 }

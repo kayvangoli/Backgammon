@@ -14,7 +14,7 @@ fun pieceListArrangementReverse(arrayList: MutableList<Piece>) {
     setPiecesLocation(arrayList.subList(10, 15), 19)
 }
 
-fun pieceListArrangement(arrayList: ArrayList<Piece>, configList: ArrangementListConfig) {
+fun pieceListArrangement(arrayList: MutableList<Piece>, configList: ArrangementListConfig) {
     var pieceIndex = 0
     configList.arrayConfig.forEach { arrangementConfig ->
         for (item in 1..arrangementConfig.count) {
@@ -25,7 +25,7 @@ fun pieceListArrangement(arrayList: ArrayList<Piece>, configList: ArrangementLis
 
 }
 
-fun pieceListArrangementInOneLocation(arrayList: ArrayList<Piece>, location: Int) {
+fun pieceListArrangementInOneLocation(arrayList: MutableList<Piece>, location: Int) {
     arrayList.forEach {
         it.location = location
     }

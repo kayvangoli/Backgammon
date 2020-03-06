@@ -19,50 +19,52 @@ class PlayerIsInDeadPieceStrategyTest {
     @Mock
     private lateinit var diceBox: DiceBox
     @Mock
-    private lateinit var lst: ArrayList<Piece>
+    private lateinit var pieceList: PieceList
     private var num1: Byte = 4
     private var num2: Byte = 5
 
     @Before
     fun setUp() {
-        lst = arrayListOf()
         playerPiecesActionStrategy = PlayerIsInDeadPieceStrategy()
     }
 
     @Test
-    fun given_updateDiceBoxStatus_with_called_when_dices_numbers_are_4_5_and_two_pieces_are_dead_and_board_canMovePiece_is_true_then_diceBox_enableDiceWith_4_5_must_be_called() {
+    fun given_updateDiceBoxStatus_called_when_dices_numbers_are_4_5_and_two_pieces_are_dead_and_board_canMovePiece_is_true_then_diceBox_enableDiceWith_4_5_must_be_called() {
         val deadPiece = mock(Piece::class.java)
         val pieceAfterMove = mock(Piece::class.java)
         `when`(pieceAfterMove.state).thenReturn(PieceState.IN_GAME)
         `when`(deadPiece.pieceAfterMove(ArgumentMatchers.anyByte())).thenReturn(pieceAfterMove)
-        `when`(deadPiece.state).thenReturn(PieceState.DEAD)
+        val lst = arrayListOf<Piece>()
         lst.add(deadPiece)
         lst.add(deadPiece)
+
+        `when`(pieceList.deadPieces()).thenReturn(lst)
         `when`(diceBox.allActiveDicesNumbers()).thenReturn(arrayListOf(num1, num2))
         `when`(board.canMovePiece(deadPiece, pieceAfterMove)).thenReturn(true)
-        playerPiecesActionStrategy.updateDiceBoxStatus(diceBox, lst, board)
+        playerPiecesActionStrategy.updateDiceBoxStatus(diceBox, pieceList, board)
         verify(diceBox, atLeastOnce()).enableDiceWith(num1)
         verify(diceBox, atLeastOnce()).enableDiceWith(num2)
     }
 
     @Test
-    fun given_updateDiceBoxStatus_with_called_when_dices_numbers_are_4_5_and_two_pieces_are_dead_and_board_canMovePiece_is_false_then_diceBox_enableDiceWith_4_5_must_be_called() {
+    fun given_updateDiceBoxStatus_with_called_when_dices_numbers_are_4_5_and_two_pieces_are_dead_and_board_canMovePiece_is_false_then_diceBox_enableDiceWith_4_5_never_must_be_called() {
         val deadPiece = mock(Piece::class.java)
         val pieceAfterMove = mock(Piece::class.java)
         `when`(pieceAfterMove.state).thenReturn(PieceState.IN_GAME)
         `when`(deadPiece.pieceAfterMove(ArgumentMatchers.anyByte())).thenReturn(pieceAfterMove)
-        `when`(deadPiece.state).thenReturn(PieceState.DEAD)
+        val lst = arrayListOf<Piece>()
         lst.add(deadPiece)
         lst.add(deadPiece)
+        `when`(pieceList.deadPieces()).thenReturn(lst)
         `when`(diceBox.allActiveDicesNumbers()).thenReturn(arrayListOf(num1, num2))
         `when`(board.canMovePiece(deadPiece, pieceAfterMove)).thenReturn(false)
-        playerPiecesActionStrategy.updateDiceBoxStatus(diceBox, lst, board)
+        playerPiecesActionStrategy.updateDiceBoxStatus(diceBox, pieceList, board)
         verify(diceBox, never()).enableDiceWith(num1)
         verify(diceBox, never()).enableDiceWith(num2)
     }
 
     @Test
-    fun given_updateDiceBoxStatus_with_called_when_dices_numbers_are_4_5_and_two_pieces_are_dead_and_board_canMovePiece4_is_true_then_diceBox_enableDiceWith_4_must_be_called() {
+    fun given_updateDiceBoxStatus_called_when_dices_numbers_are_4_5_and_two_pieces_are_dead_and_board_canMovePiece4_is_true_then_diceBox_enableDiceWith_4_must_be_called() {
         val deadPiece = mock(Piece::class.java)
         val pieceAfterMove = mock(Piece::class.java)
         `when`(pieceAfterMove.state).thenReturn(PieceState.IN_GAME)
@@ -70,24 +72,22 @@ class PlayerIsInDeadPieceStrategyTest {
         `when`(pieceAfterMove1.state).thenReturn(PieceState.IN_GAME)
         `when`(deadPiece.pieceAfterMove(num1)).thenReturn(pieceAfterMove)
         `when`(deadPiece.pieceAfterMove(num2)).thenReturn(pieceAfterMove1)
-        `when`(deadPiece.state).thenReturn(PieceState.DEAD)
+        val lst = arrayListOf<Piece>()
         lst.add(deadPiece)
         lst.add(deadPiece)
+        `when`(pieceList.deadPieces()).thenReturn(lst)
         `when`(diceBox.allActiveDicesNumbers()).thenReturn(arrayListOf(num1, num2))
         `when`(board.canMovePiece(deadPiece, pieceAfterMove)).thenReturn(true)
         `when`(board.canMovePiece(deadPiece, pieceAfterMove1)).thenReturn(false)
-        playerPiecesActionStrategy.updateDiceBoxStatus(diceBox, lst, board)
+        playerPiecesActionStrategy.updateDiceBoxStatus(diceBox, pieceList, board)
         verify(diceBox, atLeastOnce()).enableDiceWith(num1)
         verify(diceBox, never()).enableDiceWith(num2)
     }
 
     @Test(expected = ChooseStrategyException::class)
     fun given_updateDiceBoxStatus_called_when_no_any_piece_dead_then_throw_exception() {
-        val piece = mock(Piece::class.java)
-        `when`(piece.state).thenReturn(PieceState.WON)
-        lst.add(piece)
-        lst.add(piece)
-        playerPiecesActionStrategy.updateDiceBoxStatus(diceBox, lst, board)
+        `when`(pieceList.deadPieces()).thenReturn(arrayListOf())
+        playerPiecesActionStrategy.updateDiceBoxStatus(diceBox, pieceList, board)
     }
 
     @Test(expected = ChooseStrategyException::class)

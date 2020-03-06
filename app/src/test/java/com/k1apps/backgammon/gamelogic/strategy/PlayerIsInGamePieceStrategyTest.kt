@@ -12,85 +12,83 @@ import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
 class PlayerIsInGamePieceStrategyTest {
-    
+
     private lateinit var playerPiecesActionStrategy: PlayerPiecesActionStrategy
     @Mock
     private lateinit var board: Board
     @Mock
     private lateinit var diceBox: DiceBox
     @Mock
-    private lateinit var lst: ArrayList<Piece>
+    private lateinit var pieceList: PieceList
     private var num1: Byte = 1
     private var num2: Byte = 4
 
     @Before
     fun setUp() {
-        lst = arrayListOf()
-        for (item in 0 until 15) {
-            lst.add(spy(PieceFactory.createNormalPiece()))
-        }
-        pieceListArrangementNormal(lst)
         playerPiecesActionStrategy = PlayerIsInGamePieceStrategy()
     }
 
 
     @Test
-    fun given_updateDiceBoxStatus_called_when_dices_numbers_are_1_4_with_default_arrangement_and_board_canMovePiece_return_true_then_diceBox_enableDiceWith_4_and_1_atLeast_1_time_must_be_called() {
+    fun given_updateDiceBoxStatus_called_when_dices_numbers_are_1_4_and_piece_is_exist_and_board_canMovePiece_return_true_then_diceBox_enableDiceWith_4_and_1_atLeast_1_time_must_be_called() {
         `when`(diceBox.allActiveDicesNumbers()).thenReturn(arrayListOf(num1, num2))
         `when`(board.canMovePiece(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(true)
-        playerPiecesActionStrategy.updateDiceBoxStatus(diceBox, lst, board)
+        val lst = arrayListOf<Piece>()
+        val mockPiece = mock(Piece::class.java)
+        `when`(mockPiece.pieceAfterMove(ArgumentMatchers.anyByte())).thenReturn(mockPiece)
+        lst.add(mockPiece)
+        `when`(pieceList.getHeadsPieces()).thenReturn(lst)
+        playerPiecesActionStrategy.updateDiceBoxStatus(diceBox, pieceList, board)
         verify(diceBox, atLeastOnce()).enableDiceWith(num1)
         verify(diceBox, atLeastOnce()).enableDiceWith(num2)
     }
 
     @Test
-    fun given_updateDiceBoxStatus_called_when_dices_numbers_are_1_4_with_default_arrangement_and_board_canMovePiece_return_false_then_diceBox_enableDiceWith_4_and_1_never_not_called() {
-        `when`(diceBox.allActiveDicesNumbers()).thenReturn(arrayListOf(num1, num2))
-        `when`(board.canMovePiece(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(false)
-        playerPiecesActionStrategy.updateDiceBoxStatus(diceBox, lst, board)
+    fun given_updateDiceBoxStatus_called_when_dices_numbers_are_1_4_and_piece_exist_is_and_board_canMovePiece_return_false_then_diceBox_enableDiceWith_4_and_1_never_not_called() {
+        playerPiecesActionStrategy.updateDiceBoxStatus(diceBox, pieceList, board)
         verify(diceBox, never()).enableDiceWith(num1)
         verify(diceBox, never()).enableDiceWith(num2)
     }
 
     @Test
-    fun given_updateDiceBoxStatus_called_when_dices_numbers_are_1_4_with_default_arrangement_and_board_canMovePiece1_return_true_then_diceBox_enableDiceWith_1_atLeast_1_time_must_be_called() {
-        val myLIst = arrayListOf<Piece>()
+    fun given_updateDiceBoxStatus_called_when_dices_numbers_are_1_4_and_piece_is_exist_and_board_canMovePiece1_return_true_then_diceBox_enableDiceWith_1_atLeast_1_time_must_be_called() {
         val piece = mock(Piece::class.java)
-        with(piece) {
-            `when`(location).thenReturn(1)
-            `when`(state).thenReturn(PieceState.IN_GAME)
-            `when`(pieceAfterMove(ArgumentMatchers.anyByte())).thenReturn(piece)
-        }
-        myLIst.add(piece)
+        `when`(piece.pieceAfterMove(ArgumentMatchers.anyByte())).thenReturn(piece)
+        val lst = arrayListOf<Piece>()
+        lst.add(piece)
+        `when`(pieceList.getHeadsPieces()).thenReturn(lst)
         `when`(diceBox.allActiveDicesNumbers()).thenReturn(arrayListOf(num1, num2))
         `when`(board.canMovePiece(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(true)
             .thenReturn(false)
-        playerPiecesActionStrategy.updateDiceBoxStatus(diceBox, myLIst, board)
+        playerPiecesActionStrategy.updateDiceBoxStatus(diceBox, pieceList, board)
         verify(diceBox, atLeastOnce()).enableDiceWith(num1)
         verify(diceBox, never()).enableDiceWith(num2)
     }
 
     @Test(expected = ChooseStrategyException::class)
     fun given_move_called_when_destination_cell_is_out_of_board_then_thrown_chooseStrategyException() {
-        val piece = lst[0]
-        piece.location = 2
         val dice = mock(Dice::class.java)
         `when`(dice.number).thenReturn(3)
+        val piece = mock(Piece::class.java)
+        `when`(piece.pieceAfterMove(3)).thenReturn(null)
+        `when`(piece.state).thenReturn(PieceState.IN_GAME)
         playerPiecesActionStrategy.move(dice, piece, board)
     }
 
     @Test(expected = ChooseStrategyException::class)
     fun when_move_called_and_piece_state_is_not_inGame_then_thrown_chooseStrategyException() {
-        val piece = lst[0]
-        piece.state = PieceState.WON
+        val piece = mock(Piece::class.java)
+        `when`(piece.state).thenReturn(PieceState.WON)
         val dice = mock(Dice::class.java)
         playerPiecesActionStrategy.move(dice, piece, board)
     }
 
     @Test
     fun given_move_called_then_move_should_be_true_and_board_move_called() {
-        val piece = lst[14]
+        val piece = mock(Piece::class.java)
         val dice = mock(Dice::class.java)
+        `when`(piece.state).thenReturn(PieceState.IN_GAME)
+        `when`(piece.pieceAfterMove(ArgumentMatchers.anyByte())).thenReturn(piece)
         `when`(dice.number).thenReturn(num1)
         `when`(board.move(piece, num1)).thenReturn(true)
         val move = playerPiecesActionStrategy.move(dice, piece, board)

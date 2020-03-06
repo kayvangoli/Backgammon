@@ -8,7 +8,6 @@ import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -43,8 +42,8 @@ class BoardTest {
 
     @Test
     fun list_size_is_15() {
-        assertTrue("list1 size is ${board.pieceList1.size}", board.pieceList1.size == 15)
-        assertTrue("list2 size is ${board.pieceList2.size}", board.pieceList2.size == 15)
+        assertTrue("list1 size is ${board.pieceList1.list.size}", board.pieceList1.list.size == 15)
+        assertTrue("list2 size is ${board.pieceList2.list.size}", board.pieceList2.list.size == 15)
     }
 
     @Test
@@ -85,43 +84,43 @@ class BoardTest {
     @Test
     fun when_board_init_is_called_then_player2_piece_with_index_0_location_should_be_1() {
         assertTrue(
-            "player1 piece location with index 0 is ${player1.pieceList[0].location}",
-            player2.pieceList[0].location == 1
+            "player1 piece location with index 0 is ${player1.pieceList.list[0].location}",
+            player2.pieceList.list[0].location == 1
         )
     }
 
     @Test
     fun when_board_init_is_called_then_player2_piece_with_index_2_location_should_be_12() {
         assertTrue(
-            "player1 piece location with index 2 is ${player1.pieceList[2].location}",
-            player2.pieceList[2].location == 12
+            "player1 piece location with index 2 is ${player1.pieceList.list[2].location}",
+            player2.pieceList.list[2].location == 12
         )
     }
 
     @Test
     fun when_board_init_is_called_then_player1_piece_with_index_0_location_should_be_24() {
         assertTrue(
-            "player1 piece location with index 0 is ${player2.pieceList[0].location}",
-            player1.pieceList[0].location == 24
+            "player1 piece location with index 0 is ${player2.pieceList.list[0].location}",
+            player1.pieceList.list[0].location == 24
         )
     }
 
     @Test
     fun when_board_init_is_called_then_player1_piece_with_index_2_location_should_be_13() {
         assertTrue(
-            "player1 piece location with index 2 is ${player2.pieceList[2].location}",
-            player1.pieceList[2].location == 13
+            "player1 piece location with index 2 is ${player2.pieceList.list[2].location}",
+            player1.pieceList.list[2].location == 13
         )
     }
 
     private fun check(index: Int, location1: Int, location2: Int) {
         assertTrue(
-            "location is: ${board.pieceList1[index].location}",
-            board.pieceList1[index].location == location1
+            "location is: ${board.pieceList1.list[index].location}",
+            board.pieceList1.list[index].location == location1
         )
         assertTrue(
-            "location is: ${board.pieceList2[index].location}",
-            board.pieceList2[index].location == location2
+            "location is: ${board.pieceList2.list[index].location}",
+            board.pieceList2.list[index].location == location2
         )
     }
 
@@ -141,8 +140,8 @@ class BoardTest {
         player1.homeCellIndexRange.forEach {
             arrangements.add(ArrangementConfig(2, it))
         }
-        pieceListArrangement(board.pieceList1, ArrangementListConfig(arrangements))
-        pieceListArrangementInOneLocation(board.pieceList2, 15)
+        pieceListArrangement(board.pieceList1.list, ArrangementListConfig(arrangements))
+        pieceListArrangementInOneLocation(board.pieceList2.list, 15)
         board.initBoard()
         assertTrue(board.isRangeFilledWithNormalPiece(player1.homeCellIndexRange))
     }
@@ -153,27 +152,27 @@ class BoardTest {
         player2.homeCellIndexRange.forEach {
             arrangements.add(ArrangementConfig(2, it))
         }
-        pieceListArrangement(board.pieceList2, ArrangementListConfig(arrangements))
-        pieceListArrangementInOneLocation(board.pieceList1, 1)
+        pieceListArrangement(board.pieceList2.list, ArrangementListConfig(arrangements))
+        pieceListArrangementInOneLocation(board.pieceList1.list, 1)
         board.initBoard()
         assertTrue(board.isRangeFilledWithReversePiece(player2.homeCellIndexRange))
     }
 
     @Test
     fun when_canMovePiece_called_with_default_arrangement_and_move_normal_piece_from_cell_12_to_7_then_return_true() {
-        val piece = board.pieceList1[3]
+        val piece = board.pieceList1.list[3]
         assertTrue(board.canMovePiece(piece, piece.pieceAfterMove(5)))
     }
 
     @Test
     fun when_canMovePiece_called_with_default_arrangement_and_move_reverse_piece_from_cell_12_to_13_then_return_false() {
-        val piece = board.pieceList2[2]
+        val piece = board.pieceList2.list[2]
         assertFalse(board.canMovePiece(piece, piece.pieceAfterMove(1)))
     }
 
     @Test
     fun when_movePiece_called_with_default_arrangement_and_second_index_move_normal_piece_with_number_2_then_piece_location_should_be_11() {
-        val piece = board.pieceList1[2]
+        val piece = board.pieceList1.list[2]
         val move = board.move(piece, 2)
         assertTrue(piece.location == 11)
         assertTrue(move)
@@ -181,7 +180,7 @@ class BoardTest {
 
     @Test
     fun when_movePiece_called_with_default_arrangement_and_third_move_reverse_piece_with_number_5_then_piece_location_should_be_17() {
-        val piece = board.pieceList2[3]
+        val piece = board.pieceList2.list[3]
         val move = board.move(piece, 5)
         assertTrue(piece.location == 17)
         assertTrue(move)
@@ -189,10 +188,10 @@ class BoardTest {
 
     @Test
     fun when_movePiece_called_with_default_arrangement_and_one_opponent_piece_location_is_11_and_my_piece_index_is_2_and_number_is_2_then_opponent_should_be_killed_and_my_piece_location_should_be_11_and_move_true() {
-        val opponentPiece = board.pieceList2[0]
+        val opponentPiece = board.pieceList2.list[0]
         opponentPiece.location = 11
         board.initBoard()
-        val myPiece = board.pieceList1[2]
+        val myPiece = board.pieceList1.list[2]
         val move = board.move(myPiece, 2)
         assertTrue(opponentPiece.state == PieceState.DEAD)
         assertTrue(myPiece.location == 11)
@@ -201,10 +200,10 @@ class BoardTest {
 
     @Test
     fun when_reverse_movePiece_called_with_default_arrangement_and_one_opponent_piece_location_is_14_and_my_piece_index_is_2_and_number_is_2_then_opponent_should_be_killed_and_my_piece_location_should_be_14_and_move_true() {
-        val opponentPiece = board.pieceList1[0]
+        val opponentPiece = board.pieceList1.list[0]
         opponentPiece.location = 14
         board.initBoard()
-        val myPiece = board.pieceList2[2]
+        val myPiece = board.pieceList2.list[2]
         val move = board.move(myPiece, 2)
         assertTrue(opponentPiece.state == PieceState.DEAD)
         assertTrue(myPiece.location == 14)
@@ -213,13 +212,13 @@ class BoardTest {
 
     @Test(expected = MoveException::class)
     fun when_move_called_with_number_8_then_throw_exception() {
-        val piece = board.pieceList1[0]
+        val piece = board.pieceList1.list[0]
         board.move(piece, 8)
     }
 
     @Test
     fun when_movePiece_called_with_default_arrangement_and_my_piece_index_is_3_and_number_is_1_then_myPiece_location_stay_unchanged_and_move_false() {
-        val myPiece = board.pieceList1[3]
+        val myPiece = board.pieceList1.list[3]
         val location = myPiece.location
         val move = board.move(myPiece, 1)
         assertTrue(myPiece.location == location)
@@ -228,7 +227,7 @@ class BoardTest {
 
     @Test
     fun when_reverse_movePiece_called_with_default_arrangement_and_my_piece_index_is_3_and_number_is_1_then_myPiece_location_stay_unchanged_and_move_false() {
-        val myPiece = board.pieceList2[3]
+        val myPiece = board.pieceList2.list[3]
         val location = myPiece.location
         val move = board.move(myPiece, 1)
         assertTrue(myPiece.location == location)
@@ -237,7 +236,7 @@ class BoardTest {
 
     @Test
     fun when_movePiece_called_with_default_arrangement_and_my_piece_index_is_14_and_number_is_6_then_myPiece_state_should_be_won_and_move_true() {
-        val myPiece = board.pieceList1[14]
+        val myPiece = board.pieceList1.list[14]
         val move = board.move(myPiece, 6)
         assertTrue(myPiece.state == PieceState.WON)
         assertTrue(move)
@@ -245,7 +244,7 @@ class BoardTest {
 
     @Test
     fun when_reverse_movePiece_called_with_default_arrangement_and_my_piece_index_is_14_and_number_is_6_then_myPiece_state_should_be_won_and_move_true() {
-        val myPiece = board.pieceList2[14]
+        val myPiece = board.pieceList2.list[14]
         val move = board.move(myPiece, 6)
         assertTrue(myPiece.state == PieceState.WON)
         assertTrue(move)
@@ -316,7 +315,7 @@ class BoardTest {
 
     @Test(expected = MoveException::class)
     fun when_move_called_with_won_piece_then_throw_exception() {
-        val piece = board.pieceList1[0]
+        val piece = board.pieceList1.list[0]
         piece.state = PieceState.WON
         board.move(piece, 4)
     }
