@@ -80,6 +80,10 @@ class PieceImpl(override val moveType: MoveType) : Piece {
             location
         }
     }
+
+    override fun kill() {
+        state = PieceState.DEAD
+    }
 }
 
 interface Piece {
@@ -89,6 +93,7 @@ interface Piece {
     var location: Int
     val moveType: MoveType
     fun copy(): Piece
+    fun kill()
 }
 
 enum class PieceState {

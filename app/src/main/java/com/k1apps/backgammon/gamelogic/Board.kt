@@ -1,15 +1,12 @@
 package com.k1apps.backgammon.gamelogic
 
-import androidx.collection.ArrayMap
 import com.k1apps.backgammon.Constants.BOARD_LOCATION_RANGE
 import com.k1apps.backgammon.Constants.DICE_RANGE
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 interface Board {
-    val pieceList1: PieceList
-    val pieceList2: PieceList
+    val cells: List<BoardCell>
     fun initBoard()
     fun canMovePiece(fromPiece: Piece?, toPiece: Piece?): Boolean
     fun isRangeFilledWithNormalPiece(range: IntRange): Boolean
@@ -20,48 +17,28 @@ interface Board {
 }
 
 class BoardImpl @Inject constructor(
-    override val pieceList1: PieceList, override val pieceList2: PieceList
+    private val pieceList1: PieceList,
+    private val pieceList2: PieceList,
+    override val cells: List<BoardCell>
 ) : Board {
-
-    private val cells: ArrayMap<Int, ArrayList<Piece>> = ArrayMap()
 
     override fun initBoard() {
         clearCell()
         initLists()
-        checkList()
-    }
-
-    private fun checkList() {
-        var pieceCount = 0
-        cells.forEach { cell ->
-            if (cell.value.size > 0) {
-                pieceCount += cell.value.size
-                val moveType = cell.value[0].moveType
-                cell.value.forEach {
-                    if (it.moveType != moveType) {
-                        throw CellFilledWithDifferencePieceException()
-                    }
-                }
-            }
-        }
-        if (pieceCount != 30) {
-            throw BoardPieceCountException("Piece count in board is: $pieceCount")
-        }
     }
 
     private fun clearCell() {
         cells.forEach {
-            it.value.clear()
+            it.clear()
         }
-        cells.clear()
     }
 
     private fun initLists() {
         pieceList1.list.forEach {
-            setPieceIntoCell(it)
+            cells[it.location].insertPiece(it)
         }
         pieceList2.list.forEach {
-            setPieceIntoCell(it)
+            cells[it.location].insertPiece(it)
         }
     }
 
@@ -70,12 +47,7 @@ class BoardImpl @Inject constructor(
             return false
         }
         val cell = cells[toPiece.location]
-        cell?.let {
-            if (cell.size > 1 && cell[0].moveType != toPiece.moveType) {
-                return false
-            }
-        }
-        return true
+        return cell.insertState(toPiece) != PieceInsertState.FAILED
     }
 
     override fun getHeadPiece(cellNumber: Int): Piece? {
@@ -83,7 +55,7 @@ class BoardImpl @Inject constructor(
             throw CellNumberException("Selected cell number is: $cellNumber")
         }
         val cell = cells[cellNumber]
-        return cell?.get(0)
+        return cell.pieces.last()
     }
 
     override fun findDistanceBetweenTwoCell(startCell: Int, destinationCell: Int): Int {
@@ -98,10 +70,8 @@ class BoardImpl @Inject constructor(
 
     override fun isRangeFilledWithNormalPiece(range: IntRange): Boolean {
         range.forEach { index ->
-            cells[index]?.let {
-                if (it.size <= 1 || it[0].moveType == MoveType.Revers) {
-                    return false
-                }
+            if (cells[index].isBannedBy(MoveType.Normal).not()) {
+                return false
             }
         }
         return true
@@ -109,10 +79,8 @@ class BoardImpl @Inject constructor(
 
     override fun isRangeFilledWithReversePiece(range: IntRange): Boolean {
         range.forEach { index ->
-            cells[index]?.let {
-                if (it.size <= 1 || it[0].moveType == MoveType.Normal) {
-                    return false
-                }
+            if (cells[index].isBannedBy(MoveType.Revers).not()) {
+                return false
             }
         }
         return true
@@ -128,57 +96,16 @@ class BoardImpl @Inject constructor(
         }
         val pieceAfterMove = piece.pieceAfterMove(number)
         if (pieceAfterMove == null) {
-            removePieceFromCell(piece)
+            cells[piece.location].remove()
             piece.state = PieceState.WON
             moveCompleted = true
         } else {
             if (canMovePiece(piece, pieceAfterMove)) {
                 piece.state = pieceAfterMove.state
                 piece.location = pieceAfterMove.location
-                moveCompleted = setPieceIntoCell(piece)
+                moveCompleted = cells[piece.location].insertPiece(piece) != PieceInsertState.FAILED
             }
         }
         return moveCompleted
-    }
-
-    private fun setPieceIntoCell(piece: Piece): Boolean {
-        var isSet = false
-        val arrayList = cells[piece.location]
-        if (arrayList != null) {
-            when {
-                arrayList.size > 1 -> if (piece.moveType == arrayList[0].moveType) {
-                    arrayList.add(piece)
-                    isSet = true
-                }
-                arrayList.size == 1 -> isSet = if (piece.moveType == arrayList[0].moveType) {
-                    arrayList.add(piece)
-                    true
-                } else {
-                    val firstPiece = arrayList[0]
-                    removePieceFromCell(firstPiece)
-                    killPiece(firstPiece)
-                    arrayList.add(piece)
-                    true
-                }
-                else -> {
-                    arrayList.add(piece)
-                    isSet = true
-                }
-            }
-        } else {
-            val createdArray = arrayListOf<Piece>()
-            createdArray.add(piece)
-            cells[piece.location] = createdArray
-            isSet = true
-        }
-        return isSet
-    }
-
-    private fun killPiece(piece: Piece) {
-        piece.state = PieceState.DEAD
-    }
-
-    private fun removePieceFromCell(piece: Piece) {
-        cells[piece.location]?.remove(piece)
     }
 }

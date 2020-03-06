@@ -1,5 +1,6 @@
 package com.k1apps.backgammon.dagger
 
+import com.k1apps.backgammon.Constants
 import com.k1apps.backgammon.Constants.NORMAL_PIECE_LIST
 import com.k1apps.backgammon.Constants.NORMAL_PLAYER
 import com.k1apps.backgammon.Constants.REVERSE_PIECE_LIST
@@ -54,11 +55,21 @@ open class BoardModule {
     @GameScope
     open fun provideBoard(
         @Named(NORMAL_PIECE_LIST) normalPieceList: PieceList,
-        @Named(REVERSE_PIECE_LIST) reversePieceList: PieceList
+        @Named(REVERSE_PIECE_LIST) reversePieceList: PieceList,
+        cells: List<BoardCell>
     ): Board {
-        return BoardImpl(normalPieceList, reversePieceList)
+        return BoardImpl(normalPieceList, reversePieceList, cells)
     }
 
+    @Provides
+    @GameScope
+    fun provideCells(): List<BoardCell> {
+        val list = arrayListOf<BoardCell>()
+        for (item in Constants.BOARD_LOCATION_RANGE) {
+            list.add(BoardCellImpl(arrayListOf()))
+        }
+        return list
+    }
 }
 
 @Module(includes = [PieceListModule::class, BoardModule::class, PlayerPiecesStrategyModule::class])
