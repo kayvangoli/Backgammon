@@ -33,5 +33,5 @@ This project is licensed under the MIT License.
 
 The MIT License is a permissive free software license that allows you to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software. However, it also comes with no warranty and no liability, so it's important to understand the implications before using the software.
 
-You can find the full text of the license in the `LICENSE` file.
+You can find the full text of the license in the [License](./LICENSE) file.
 
