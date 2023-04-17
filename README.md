@@ -29,9 +29,9 @@ If you would like to contribute to this project, please follow these steps:
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the Apache License 2.0.
 
-The MIT License is a permissive free software license that allows you to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software. However, it also comes with no warranty and no liability, so it's important to understand the implications before using the software.
+The Apache License 2.0 is a permissive free software license that allows you to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software. However, it also comes with certain obligations and limitations, so it's important to understand the implications before using the software.
 
-You can find the full text of the license in the [License](./LICENSE) file.
+You can find the full text of the license in the [LICENSE](./LICENSE) file.
 
