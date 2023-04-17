@@ -52,7 +52,7 @@ dependencies {
     testImplementation 'org.robolectric:robolectric:3.8'
 
     //for kotlin mockito
-    testImplementation 'org.mockito:mockito-inline:2.13.0'
+    testImplementation 'org.mockito:mockito-inline:5.2.0'
 
     //java mockito
 //    testImplementation "org.mockito:mockito-core:$mockito_version"
